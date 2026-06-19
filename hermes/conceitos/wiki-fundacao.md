@@ -37,8 +37,7 @@ hermes/                        → Hermes Agent
 hermes-config/                 → configuração do Hermes
   notes/                       → notas gerais
   _rules/                      → regras do agente
-infra-vps/                     → Docker, Swarm, Traefik, VPS
-  gotchas/                     → problemas conhecidos
+infra-vps/vps.md               → Docker, Swarm, Traefik, IPVS, VPS
 geral/                         → conteúdo não categorizado (a eliminar)
   procedures/
   sessoes/
