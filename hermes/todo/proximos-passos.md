@@ -19,5 +19,5 @@ timestamp: 2026-06-18T00:00:00+00:00
 
 ## 🔗 Conexões entre projetos
 - [[hermes/sessoes/2026-06-18-crise-update-recuperacao.md|2026-06-18-crise-update]]
-- [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao (histórico + conceito)]]
+- [[hermes/conceitos/wiki.md|wiki (histórico + conceito)]]
 - [[infra-vps/vps.md|vps (IPVS, hardware, stack)]]

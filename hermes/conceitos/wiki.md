@@ -1,7 +1,7 @@
 ---
 type: concept
 tags: [ai-memory, hermes, obsidian, wiki]
-title: Wiki como Fonte da Verdade
+title: Wiki
 description: A wiki markdown (+ SQLite + FTS5 + Git) é a memória durável. Conhecimento vai pra wiki, não pra memory() do Hermes.
 timestamp: 2026-06-17T00:00:00+00:00
 ---
@@ -29,7 +29,7 @@ A solução: **ai-memory** — um servidor Rust que indexa markdown puro em SQLi
 ## Estrutura atual do vault
 
 ```
-wiki-fundacao.md               → este arquivo (conceito central)
+wiki.md                       → este arquivo (conceito central)
 hermes/                        → Hermes Agent
   conceitos/                   → conceitos transversais
   sessoes/                     → registro de sessões
@@ -79,7 +79,7 @@ Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que 
 
 ## Navegação
 
-- [[hermes/conceitos/wiki-fundacao.md|📄 Este arquivo (wiki-fundacao)]]
+- [[hermes/conceitos/wiki.md|📄 Wiki]]
 - [[infra-vps/vps.md|🖥 VPS (infraestrutura)]]
 - [[hermes-config/hermes-config.md|📂 Config]]
 - [[hermes/procedures/firecrawl-multi-platform-search.md|🔥 Firecrawl]]

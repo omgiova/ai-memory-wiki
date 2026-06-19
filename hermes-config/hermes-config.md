@@ -35,7 +35,7 @@ Detalhes de infra no [[infra-vps/vps.md|vps]].
 ## Conexões
 
 - [[infra-vps/vps.md|vps]] — hardware e serviços da stack
-- [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]] — base de conhecimento
+- [[hermes/conceitos/wiki.md|wiki]] — base de conhecimento
 - [[hermes/procedures/firecrawl-multi-platform-search.md|🔥 Firecrawl]] — busca multi-plataforma
 - [[hermes/sessoes/2026-06-18-crise-update-recuperacao.md|🔄 Crise update]] — recuperação de sessões
 - [[hermes/sessoes/hermes-sessoes.md|📂 Sessões]]
