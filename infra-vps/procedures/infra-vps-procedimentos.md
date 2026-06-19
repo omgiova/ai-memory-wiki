@@ -1,3 +1,3 @@
 # Procedimentos de Infra
 
-- [[infra-vps/procedures/diagnostico-502-traefik.md|diagnostico-502-traefik]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]

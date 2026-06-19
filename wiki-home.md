@@ -35,12 +35,8 @@
 ### infra-vps
 
   - [[infra-vps/infra-vps-home.md|INDEX]]
+  - [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
   - [[infra-vps/decisions/infra-vps-decisoes.md|INDEX]]
-  - [[infra-vps/decisions/arquitetura-rede-swarm.md|arquitetura-rede-swarm]]
   - [[infra-vps/gotchas/infra-vps-gotchas.md|INDEX]]
-  - [[infra-vps/gotchas/docker-swarm-ipvs-overlay.md|docker-swarm-ipvs-overlay]]
-  - [[infra-vps/gotchas/ipvs-table-vazia.md|ipvs-table-vazia]]
   - [[infra-vps/procedures/infra-vps-procedimentos.md|INDEX]]
-  - [[infra-vps/procedures/diagnostico-502-traefik.md|diagnostico-502-traefik]]
   - [[infra-vps/rules/infra-vps-regras.md|INDEX]]
-  - [[infra-vps/rules/autorizacao-docker.md|autorizacao-docker]]

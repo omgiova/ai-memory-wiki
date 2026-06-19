@@ -36,7 +36,7 @@ timestamp: 2026-06-18T00:00:00+00:00
 - [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
 - [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
 - [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
-- [[infra-vps/decisions/arquitetura-rede-swarm.md|arquitetura-rede-swarm]]
-- [[infra-vps/gotchas/docker-swarm-ipvs-overlay.md|docker-swarm-ipvs-overlay]]
-- [[infra-vps/gotchas/ipvs-table-vazia.md|ipvs-table-vazia]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
 

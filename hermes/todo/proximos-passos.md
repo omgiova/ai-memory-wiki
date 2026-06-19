@@ -24,5 +24,5 @@ timestamp: 2026-06-18T00:00:00+00:00
 - [[hermes/procedures/implementar-memoria-arquivos.md|implementar-memoria-arquivos]]
 - [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
 - [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
-- [[infra-vps/rules/autorizacao-docker.md|autorizacao-docker]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
 

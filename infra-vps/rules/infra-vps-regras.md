@@ -1,3 +1,3 @@
 # Regras de Infra
 
-- [[infra-vps/rules/autorizacao-docker.md|autorizacao-docker]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]

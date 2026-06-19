@@ -60,5 +60,5 @@ timestamp: 2026-06-17T00:00:00+00:00
 - [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
 - [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
 - [[hermes/todo/proximos-passos.md|proximos-passos]]
-- [[infra-vps/procedures/diagnostico-502-traefik.md|diagnostico-502-traefik]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
 

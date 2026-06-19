@@ -1,4 +1,3 @@
 # Gotchas
 
-- [[infra-vps/gotchas/docker-swarm-ipvs-overlay.md|docker-swarm-ipvs-overlay]]
-- [[infra-vps/gotchas/ipvs-table-vazia.md|ipvs-table-vazia]]
+- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
