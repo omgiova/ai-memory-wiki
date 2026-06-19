@@ -33,10 +33,7 @@ timestamp: 2026-06-18T00:00:00+00:00
 - [[hermes-config/notes/visao-geral.md|visao-geral]]
 
 ## 🔗 Conexões entre projetos
-- [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
-- [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
+- [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
 - [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
-- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
-- [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
 - [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
 

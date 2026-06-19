@@ -1,20 +1,20 @@
 # Hermes
 
+### conceitos
+
+  - [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
 
 ### decisions
 
   - [[hermes/decisions/hermes-decisoes.md|INDEX]]
-  - [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
 
 ### procedures
 
   - [[hermes/procedures/hermes-procedimentos.md|INDEX]]
-  - [[hermes/procedures/implementar-memoria-arquivos.md|implementar-memoria-arquivos]]
 
 ### rules
 
   - [[hermes/rules/hermes-regras.md|INDEX]]
-  - [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
 
 ### sessoes
 

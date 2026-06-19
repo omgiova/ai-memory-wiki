@@ -29,6 +29,6 @@ Base de conhecimento persistente.
 - [[hermes-config/notes/arquitetura-vps.md|arquitetura-vps]]
 
 ## 🔗 Conexões entre projetos
-- [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
+- [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
 - [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
 

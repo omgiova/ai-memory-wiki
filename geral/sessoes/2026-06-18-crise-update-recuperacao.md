@@ -47,9 +47,5 @@ updates:
 [[geral/sessoes/geral-sessoes.md|📂 Voltar para sessoes]]
 
 ## 🔗 Conexões entre projetos
-- [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
-- [[hermes/procedures/implementar-memoria-arquivos.md|implementar-memoria-arquivos]]
-- [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
-- [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
+- [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
 - [[hermes/todo/proximos-passos.md|proximos-passos]]
-

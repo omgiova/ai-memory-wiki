@@ -1,6 +1,5 @@
 # Índice: root/vault-enriched
 
-
 ### geral
 
   - [[geral/geral-home.md|INDEX]]
@@ -12,12 +11,10 @@
 ### hermes
 
   - [[hermes/hermes-home.md|INDEX]]
+  - [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
   - [[hermes/decisions/hermes-decisoes.md|INDEX]]
-  - [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
   - [[hermes/procedures/hermes-procedimentos.md|INDEX]]
-  - [[hermes/procedures/implementar-memoria-arquivos.md|implementar-memoria-arquivos]]
   - [[hermes/rules/hermes-regras.md|INDEX]]
-  - [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
   - [[hermes/sessoes/2026-06-18-recuperacao-e-wiki.md|2026-06-18-recuperacao-e-wiki]]
   - [[hermes/sessoes/hermes-sessoes.md|INDEX]]
   - [[hermes/todo/hermes-tarefas.md|INDEX]]

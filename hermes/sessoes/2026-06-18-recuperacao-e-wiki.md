@@ -38,9 +38,7 @@ timestamp: 2026-06-18T00:00:00+00:00
 
 ## 🔗 Conexões entre projetos
 - [[geral/sessoes/2026-06-18-crise-update-recuperacao.md|2026-06-18-crise-update-recuperacao]]
-- [[hermes/decisions/memoria-wiki-markdown.md|memoria-wiki-markdown]]
-- [[hermes/procedures/implementar-memoria-arquivos.md|implementar-memoria-arquivos]]
-- [[hermes/rules/conhecimento-na-wiki.md|conhecimento-na-wiki]]
+- [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
 - [[hermes/todo/proximos-passos.md|proximos-passos]]
 - [[hermes-config/notes/arquitetura-vps.md|arquitetura-vps]]
 
