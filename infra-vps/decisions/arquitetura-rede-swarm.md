@@ -1,7 +1,12 @@
 ---
-tier: semantic
+type: decision
 tags: [decision, docker, infra-vps, n8n, projetos, traefik]
+title: Decisão: Arquitetura de Rede do Docker Swarm
+description: Usuário → Traefik porta 443 → DNS do Swarm resolve service name projetosn8neditor → DNS retorna VIP 10.11.x.x → IPVS roteia do VIP pro container real 10.11.x.x:5678
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 ## Decisão: Arquitetura de Rede do Docker Swarm
 
 **Data:** 2026-06-18  

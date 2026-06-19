@@ -1,7 +1,12 @@
 ---
-tier: semantic
+type: session
 tags: [ai-memory, docker, github, hermes, n8n, obsidian, projetos, sessoe, vps, wiki]
+title: Sessão: 2026-06-18 — Recuperação de Infra + Fundação da Wiki
+description: 7 páginas em projetos/infra-vps/ e projetos/hermes/ decisions, gotchas, procedures, rules
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 ## Sessão: 2026-06-18 — Recuperação de Infra + Fundação da Wiki
 
 ### O que aconteceu

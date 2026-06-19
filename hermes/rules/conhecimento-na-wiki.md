@@ -1,7 +1,12 @@
 ---
-tier: semantic
+type: rule
 tags: [ai-memory, docker, hermes, projetos, rule, wiki]
+title: Regra: Conhecimento Durável Vai pra Wiki, Não pra Memory()
+description: 1. Escrever markdown no filesystem: /root/ai-memory-wiki/wiki/<projeto>/<tipo>/<nome>.md 2. Indexar via: docker exec ai-memory ai-memory write-page --path <path> --body "<markdown>" 3. Memory do He...
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 ## Regra: Conhecimento Durável Vai pra Wiki, Não pra Memory()
 
 **Data:** 2026-06-18

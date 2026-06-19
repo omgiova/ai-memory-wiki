@@ -1,7 +1,13 @@
 ---
-tier: semantic
+type: procedure
 tags: [docker, infra-vps, n8n, procedure, projetos, traefik]
+title: Procedimento: Diagnosticar 502 Bad Gateway no Traefik
+description: 1. Testar o endpoint direto via Traefik bash curl -sI https://projetos-n8n-editor.igkokh.easypanel.host/ Se 200 → não é problema de rota. Se 502 → continuar.
+resource: https://projetos-n8n-editor.igkokh.easypanel.host/
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 ## Procedimento: Diagnosticar 502 Bad Gateway no Traefik
 
 **Data:** 2026-06-18

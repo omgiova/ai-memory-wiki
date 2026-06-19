@@ -1,8 +1,12 @@
 ---
-pinned: true
-tier: semantic
+type: session
 tags: [github, hermes, projetos, sessoe, telegram]
+title: Sessão: 2026-06-18 — Crise de update + Recuperação de Sessões
+description: preupdatebackup: true noninteractivelocalchanges: discard
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 # Sessão: 2026-06-18 — Crise de update + Recuperação de Sessões
 
 ## O que aconteceu

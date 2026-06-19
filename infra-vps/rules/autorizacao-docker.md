@@ -1,7 +1,12 @@
 ---
-tier: semantic
+type: rule
 tags: [docker, infra-vps, projetos, rule, traefik, wiki]
+title: Regra: Autorização Obrigatória Para Comandos Docker Swarm
+description: 1. NUNCA executar docker service update sem autorização explícita do usuário - Principalmente: --network-rm, --network-add, --force, scale
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 ## Regra: Autorização Obrigatória Para Comandos Docker Swarm
 
 **Data:** 2026-06-18

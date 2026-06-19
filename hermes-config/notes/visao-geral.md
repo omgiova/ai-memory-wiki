@@ -1,8 +1,12 @@
 ---
-pinned: true
-tier: semantic
+type: note
 tags: [n8n, note, remotion, telegram, vps]
+title: Hermes Agent — Visão Geral
+description: Base de conhecimento persistente. - 01 - Projetos/ — contexto de cada projeto - 02 - Conhecimento/ — regras, decisões, padrões - 03 - Logs/ — resumo de sessões - 04 - Recursos/ — automação e mídia
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 # Hermes Agent — Visão Geral
 
 ## Stack

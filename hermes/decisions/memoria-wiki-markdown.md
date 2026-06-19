@@ -1,7 +1,12 @@
 ---
-tier: semantic
+type: decision
 tags: [ai-memory, alexa, decision, docker, github, hermes, mcp, n8n, obsidian, projetos, remotion, traefik, vps, wiki]
+title: Decisão: Memória Baseada em Markdown + FTS5 + SQLite + Git
+description: Camada Tecnologia Função --------- Fonte da verdade Markdown puro Editável no Obsidian, grep, diff, git Índice SQLite + FTS5 Busca全文 rápida, embeddings opcionais Versionamento Git Histórico, diff, ...
+timestamp: 2026-06-17T00:00:00+00:00
 ---
+
+
 ## Decisão: Memória Baseada em Markdown + FTS5 + SQLite + Git
 
 **Data:** 2026-06-17  

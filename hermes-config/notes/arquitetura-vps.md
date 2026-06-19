@@ -1,8 +1,12 @@
 ---
-pinned: true
-tier: semantic
+type: note
 tags: [ai-memory, alexa, docker, mcp, n8n, note, vps]
+title: Arquitetura do VPS
+description: hermes-config/notes/INDEX.md📂 Voltar para notes
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 # Arquitetura do VPS
 
 ## Hardware

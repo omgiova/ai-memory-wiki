@@ -1,12 +1,12 @@
 ---
-tags:
-- firecrawl
-- search
-- github
-- reddit
-- twitter
-tier: semantic
+type: procedure
+tags: [ai-memory, firecrawl, hermes, procedure, web, workflow]
+title: Usar Firecrawl para Busca e Scraping Multi-Plataforma
+description: Usar firecrawl search com sintaxe site: para buscar em plataformas específicas.
+timestamp: 2026-06-19T00:00:00+00:00
 ---
+
+
 # Firecrawl — Busca Multi-Plataforma
 
 Usar `firecrawl search` com sintaxe `site:` para buscar em plataformas específicas.

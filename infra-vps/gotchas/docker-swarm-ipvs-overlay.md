@@ -1,7 +1,12 @@
 ---
-tier: semantic
+type: gotcha
 tags: [docker, gotcha, n8n, node-red, postgres, traefik]
+title: Docker Swarm: IPVS table vazia após recriação de containers
+description: A tabela IPVS responsável por rotear tráfego dos VIPs pros containers reais não foi repovoada após: - docker service scale <serviço>=0 mata container original - docker service update --network-rm/-...
+timestamp: 2026-06-18T00:00:00+00:00
 ---
+
+
 # Docker Swarm: IPVS table vazia após recriação de containers
 
 ## Sintomas
