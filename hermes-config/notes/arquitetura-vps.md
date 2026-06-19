@@ -1,6 +1,6 @@
 ---
 type: note
-tags: [ai-memory, alexa, docker, mcp, n8n, note, vps]
+tags: [ai-memory, alexa, docker, mcp, n8n, vps]
 title: Arquitetura do VPS
 description: Resumo da arquitetura do VPS — hardware, serviços, stack
 timestamp: 2026-06-18T00:00:00+00:00

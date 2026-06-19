@@ -1,6 +1,6 @@
 ---
 type: note
-tags: [n8n, note, remotion, telegram, vps]
+tags: [n8n, remotion, telegram, vps]
 title: Hermes Agent — Visão Geral
 description: Visão geral do ecossistema — stack, estrutura do vault, conexões
 timestamp: 2026-06-18T00:00:00+00:00
