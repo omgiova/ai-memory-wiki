@@ -23,11 +23,10 @@
   - [[hermes-config/_rules/hermes-config-regras.md|INDEX]]
   - [[hermes-config/_rules/regras-do-agente.md|regras-do-agente]]
   - [[hermes-config/notes/hermes-config-notas.md|INDEX]]
-  - [[hermes-config/notes/arquitetura-vps.md|arquitetura-vps]]
+  - [[infra-vps/vps.md|vps]]
   - [[hermes-config/notes/visao-geral.md|visao-geral]]
 
 ### infra-vps
 
-  - [[infra-vps/infra-vps-home.md|INDEX]]
+  - [[infra-vps/vps.md|vps]]
   - [[infra-vps/gotchas/ipvs-table-502.md|ipvs-table-502]]
-  - [[infra-vps/gotchas/infra-vps-gotchas.md|INDEX]]

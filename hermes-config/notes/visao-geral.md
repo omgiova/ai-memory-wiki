@@ -26,7 +26,7 @@ Base de conhecimento persistente.
 [[hermes-config/notes/hermes-config-notas.md|📂 Voltar para notes]]
 
 ## 🔗 Relacionados (mesmo grupo)
-- [[hermes-config/notes/arquitetura-vps.md|arquitetura-vps]]
+- [[infra-vps/vps.md|vps]]
 
 ## 🔗 Conexões entre projetos
 - [[hermes/conceitos/wiki-fundacao.md|wiki-fundacao]]
