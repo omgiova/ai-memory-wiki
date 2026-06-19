@@ -79,9 +79,9 @@ Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que 
 
 ## Navegação
 
-- [[hermes/conceitos/wiki.md|📄 Wiki]]
-- [[infra-vps/vps.md|🖥 VPS (infraestrutura)]]
-- [[hermes-config/hermes-config.md|📂 Config]]
-- [[hermes/procedures/firecrawl-multi-platform-search.md|🔥 Firecrawl]]
-- [[hermes/sessoes/2026-06-18-crise-update-recuperacao.md|🔄 Crise update]]
-- [[hermes/todo/proximos-passos.md|📋 Próximos passos]]
+- [[conhecimento/wiki.md|📄 Wiki]]
+- [[infraestrutura/vps.md|🖥 VPS (infraestrutura)]]
+- [[infraestrutura/hermes.md|📂 Config]]
+- [[automacao/firecrawl.md|🔥 Firecrawl]]
+- [[historico/crise-update.md|🔄 Crise update]]
+- [[pendencias/proximos-passos.md|📋 Próximos passos]]

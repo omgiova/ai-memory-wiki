@@ -15,6 +15,6 @@ timestamp: 2026-06-18T00:00:00+00:00
 5. **Criar AGENTS.md** — placa apontando pra wiki, pra outros agentes (Codex, Claude Code) saberem onde buscar contexto
 
 ## 🔗 Conexões entre projetos
-- [[hermes/sessoes/2026-06-18-crise-update-recuperacao.md|2026-06-18-crise-update]]
-- [[hermes/conceitos/wiki.md|wiki (histórico + conceito)]]
-- [[infra-vps/vps.md|vps (IPVS, hardware, stack)]]
+- [[historico/crise-update.md|2026-06-18-crise-update]]
+- [[conhecimento/wiki.md|wiki (histórico + conceito)]]
+- [[infraestrutura/vps.md|vps (IPVS, hardware, stack)]]

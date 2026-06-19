@@ -30,12 +30,12 @@ Assistente pessoal do Giovani. Direto, técnico, eficiente.
 
 O Hermes roda no VPS Hostinger KVM 2 (Ubuntu), exposto via Telegram. A stack inclui n8n para automação, Node-RED para casa, ai-memory para memória persistente, e Remotion para mídia programática.
 
-Detalhes de infra no [[infra-vps/vps.md|vps]].
+Detalhes de infra no [[infraestrutura/vps.md|vps]].
 
 ## Conexões
 
-- [[infra-vps/vps.md|vps]] — hardware e serviços da stack
-- [[hermes/conceitos/wiki.md|wiki]] — base de conhecimento
-- [[hermes/procedures/firecrawl-multi-platform-search.md|🔥 Firecrawl]] — busca multi-plataforma
-- [[hermes/sessoes/2026-06-18-crise-update-recuperacao.md|🔄 Crise update]] — recuperação de sessões
-- [[hermes/todo/proximos-passos.md|📋 Próximos passos]]
+- [[infraestrutura/vps.md|vps]] — hardware e serviços da stack
+- [[conhecimento/wiki.md|wiki]] — base de conhecimento
+- [[automacao/firecrawl.md|🔥 Firecrawl]] — busca multi-plataforma
+- [[historico/crise-update.md|🔄 Crise update]] — recuperação de sessões
+- [[pendencias/proximos-passos.md|📋 Próximos passos]]
