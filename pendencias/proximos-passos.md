@@ -12,8 +12,6 @@ status: stable
 ### Pendente
 
 1. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
-2. **Revisar SOUL.md** — o system prompt do Hermes
-3. **Migrar conhecimento acumulado** — continuar capturando decisões, gotchas e procedimentos das sessões passadas do Hermes
 
 ### Concluído
 
@@ -22,6 +20,8 @@ status: stable
 - ~~**Criar AGENTS.md**~~ — feito ([[AGENTS.md]])
 - ~~**Criar estrutura `diario/`**~~ — feito
 - ~~**Criar pasta `raw/`**~~ — feito
+- ~~**Revisar SOUL.md**~~ — feito (regra bundled skills + referência à wiki em `/root/wiki/`)
+- ~~**Migrar de ai-memory para wiki Karpathy**~~ — feito (Docker parado, MCP desabilitado, hook auto-push configurado)
 
 ## 🔗 Conexões entre projetos
 - [[historico/crise-update.md|2026-06-18-crise-update]]

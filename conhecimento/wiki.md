@@ -16,16 +16,15 @@ status: stable
 
 A `memory()` do Hermes tem limite de 2.200 chars e é uma caixa preta sem estrutura. Sem taxonomia (decisão, gotcha, procedimento, regra ficam tudo misturado), sem versionamento, sem portabilidade.
 
-A solução: **ai-memory** — um servidor Rust que indexa markdown puro em SQLite + FTS5, versionado por Git.
+A solução: **wiki Git pura** — markdown puro versionado em Git, sincronizado automaticamente com GitHub via hook `post-commit`. Vault em `/root/wiki/`, espelhado em `omgiova/ai-memory-wiki`.
 
 | Camada | Tecnologia | Função |
 |---|---|---|
 | Fonte da verdade | **Markdown puro** | Editável no Obsidian, grep, diff, git |
-| Índice | **SQLite + FTS5** | Busca rápida, embeddings opcionais |
-| Versionamento | **Git** | Histórico, diff, rollback |
-| Servidor | **Rust** | Rápido, baixo consumo |
-| Acesso | **MCP tools** (Hermes) | Consulta/escreve automaticamente |
-| Visual | **Web UI** (`:49374/web`) + Obsidian | Navegação visual |
+| Versionamento | **Git** | Histórico, diff, rollback — hook auto-push |
+| Sync | **GitHub** (`omgiova/ai-memory-wiki`) | Acesso de qualquer agente, qualquer máquina |
+| Acesso | **read_file / search_files** | Hermes lê/escreve direto, sem servidor |
+| Visual | **Obsidian** (Windows/Android) | Navegação e edição visual |
 
 ## Estrutura atual do vault
 
@@ -58,10 +57,10 @@ AGENTS.md                         → instruções para agentes externos (Claude
 
 ## Como funciona
 
-1. **Escrever:** agente cria/atualiza markdown no vault (`/root/ai-memory-wiki/`)
-2. **Indexar:** o ai-memory server (Rust) indexa automaticamente em SQLite + FTS5
-3. **Consultar:** Hermes usa MCP tools (`memory_query`, `memory_read_page`, etc.)
-4. **Versionar:** Git. Vault sincronizado com GitHub (`omgiova/ai-memory-wiki`) e Obsidian no Windows
+1. **Escrever:** agente cria/atualiza markdown em `/root/wiki/`
+2. **Commitar:** `git commit` — hook `post-commit` faz pull --rebase + push automático
+3. **Versionar:** Git → GitHub (`omgiova/ai-memory-wiki`) + Obsidian no Windows via clone
+4. **Consultar:** Hermes lê direto via `read_file` / `search_files` (sem MCP intermediário)
 
 ## Regras
 
