@@ -23,7 +23,6 @@ status: stable
 | Hermes Agent | 9119 | Dashboard |
 | n8n | — | Automação (MCP) |
 | Node-RED | 8800 | Automação residencial + Alexa |
-| ai-memory | 49374 | Memória agêntica |
 
 ## Stack de desenvolvimento
 
@@ -127,4 +126,4 @@ systemctl restart docker
 
 ## Visão geral do ecossistema
 
-A stack roda num único VPS Hostinger KVM 2 com Ubuntu. O Hermes Agent é o orquestrador de automação pessoal, n8n e Node-RED cuidam de workflows, e o ai-memory mantém a base de conhecimento persistente.
+A stack roda num único VPS Hostinger KVM 2 com Ubuntu. O Hermes Agent é o orquestrador de automação pessoal, n8n e Node-RED cuidam de workflows, e a wiki em `/root/wiki/` mantém a base de conhecimento persistente.
