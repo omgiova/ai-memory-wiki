@@ -3,8 +3,8 @@ type: concept
 tags: [ai-memory, hermes, obsidian, wiki]
 title: Wiki
 description: A wiki markdown (+ SQLite + FTS5 + Git) é a memória durável. Conhecimento vai pra wiki, não pra memory() do Hermes.
-timestamp: 2026-06-17T00:00:00+00:00
-status: draft
+timestamp: 2026-06-19T00:00:00+00:00
+status: stable
 ---
 
 # Wiki como Fonte da Verdade
@@ -29,39 +29,55 @@ A solução: **ai-memory** — um servidor Rust que indexa markdown puro em SQLi
 
 ## Estrutura atual do vault
 
+> ⚠️ **Regra de manutenção:** esta seção deve ser atualizada sempre que um arquivo ou pasta for criado, renomeado ou removido do vault. É a fonte da verdade da estrutura — se a árvore abaixo não bater com o `git ls-files`, está desatualizada.
+
 ```
-wiki.md                       → este arquivo (conceito central)
-hermes/                        → Hermes Agent
-  conceitos/                   → conceitos transversais
-  sessoes/                     → registro de sessões
-  todo/                        → próximos passos
-hermes-config/                 → configuração do Hermes
-  notes/                       → notas gerais
-  _rules/                      → regras do agente
-infra-vps/vps.md               → Docker, Swarm, Traefik, IPVS, VPS
-hermes/procedures/             → procedures do Hermes
+index.md                          → ponto de entrada único do vault
+AGENTS.md                         → instruções para agentes externos (Claude, Manus, Codex…)
+│
+├── automacao/
+│   └── firecrawl.md              → busca multi-plataforma com sintaxe site:
+│
+├── conhecimento/
+│   └── wiki.md                   → este arquivo — conceito central, regras e histórico
+│
+├── diario/                       → daily notes / memória episódica (ex: 2026-06-19.md)
+│
+├── historico/
+│   └── crise-update.md           → recuperação de sessões após /update corromper state.db
+│
+├── infraestrutura/
+│   ├── hermes.md                 → identidade, regras, stack e preferências do Hermes
+│   └── vps.md                    → hardware, serviços, Docker Swarm, IPVS
+│
+├── pendencias/
+│   └── proximos-passos.md        → to-do list ativa
+│
+└── raw/                          → fontes brutas imutáveis (PDFs, artigos, logs)
 ```
 
 ## Como funciona
 
-1. **Escrever:** agente cria/atualiza markdown no vault (`/root/ai-memory-wiki/wiki/`)
+1. **Escrever:** agente cria/atualiza markdown no vault (`/root/ai-memory-wiki/`)
 2. **Indexar:** o ai-memory server (Rust) indexa automaticamente em SQLite + FTS5
 3. **Consultar:** Hermes usa MCP tools (`memory_query`, `memory_read_page`, etc.)
-4. **Versionar:** Git. Vault sincronizado com GitHub (`omgiova/ai-memory-wiki`) e Obsidian no celular
+4. **Versionar:** Git. Vault sincronizado com GitHub (`omgiova/ai-memory-wiki`) e Obsidian no Windows
 
 ## Regras
 
 1. **Conhecimento durável vai pra wiki, não pra `memory()`** — toda decisão, gotcha, procedimento, regra vira markdown
-2. **Memory() do Hermes** é cache de sessão (2.200 chars), não fonte da verdade
-3. **Uma página por conceito** — seguir OKF (Open Knowledge Format): `type`, `title`, `description`, `tags`, `timestamp`
+2. **`memory()` do Hermes** é cache de sessão (2.200 chars), não fonte da verdade
+3. **Uma página por conceito** — seguir OKF (Open Knowledge Format): `type`, `title`, `description`, `tags`, `timestamp`, `status`
 4. **Cross-links** entre páginas relacionadas usando wikilinks (`[[path/to/file.md|display]]`)
-5. **Todo arquivo** tem frontmatter OKF com `type`, `title`, `description`, `tags`, `timestamp`
+5. **Todo arquivo** tem frontmatter OKF completo
+6. **`status`** indica confiabilidade: `draft` (em construção), `stable` (confiável), `deprecated` (obsoleto)
+7. **Estrutura do vault** em `conhecimento/wiki.md` deve refletir `git ls-files` — atualizar junto com qualquer mudança de estrutura
 
 ## Histórico
 
 ### Fundação (2026-06-18)
 
-Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que quebraram n8n e Node-RED (IPVS table corrompida → 502), foi criada a estrutura inicial da wiki com 7 páginas em `projetos/infra-vps/` e `projetos/hermes/` — o embrião do que virou este vault.
+Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que quebraram n8n e Node-RED (IPVS table corrompida → 502), foi criada a estrutura inicial da wiki — o embrião do que virou este vault.
 
 ### 5 Pilares do objetivo final
 
@@ -71,18 +87,11 @@ Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que 
 4. **Loop de auto-aprendizado** (sessão → extração → memória)
 5. **Handoff entre agentes** (trocar de ferramenta sem perder contexto)
 
-### Pendente
-
-- Migrar conhecimento acumulado de semanas de uso pra wiki
-- Configurar auto-improve loop do ai-memory
-- Garantir handoff entre agentes (Hermes ↔ Codex etc.)
-- Revisar SOUL.md + criar AGENTS.md
-
 ## Navegação
 
-- [[conhecimento/wiki.md|📄 Wiki]]
-- [[infraestrutura/vps.md|🖥 VPS (infraestrutura)]]
-- [[infraestrutura/hermes.md|📂 Config]]
+- [[index.md|🏠 Index]]
+- [[infraestrutura/vps.md|🖥 VPS]]
+- [[infraestrutura/hermes.md|🤖 Hermes Config]]
 - [[automacao/firecrawl.md|🔥 Firecrawl]]
 - [[historico/crise-update.md|🔄 Crise update]]
 - [[pendencias/proximos-passos.md|📋 Próximos passos]]
