@@ -4,6 +4,7 @@ tags: [ai-memory, firecrawl, hermes, procedure, web, workflow]
 title: Firecrawl — Busca e Scraping Multi-Plataforma
 description: Usar firecrawl search com sintaxe site: para buscar em plataformas específicas.
 timestamp: 2026-06-19T00:00:00+00:00
+status: draft
 ---
 
 # Firecrawl — Busca Multi-Plataforma

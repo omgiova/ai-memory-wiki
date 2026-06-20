@@ -3,6 +3,7 @@ type: index
 title: ai-memory-wiki
 description: Conhecimento durável do Hermes Agent — infra, automação, regras e histórico
 timestamp: 2026-06-19T00:00:00+00:00
+status: stable
 ---
 
 # ai-memory-wiki

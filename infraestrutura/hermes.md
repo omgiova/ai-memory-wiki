@@ -4,6 +4,7 @@ tags: [hermes, config, identity, rules]
 title: Configuração do Hermes
 description: Identidade, regras, stack e visão geral do Hermes Agent — assistente pessoal do Giovani
 timestamp: 2026-06-19T00:00:00+00:00
+status: stable
 ---
 
 # Configuração do Hermes
