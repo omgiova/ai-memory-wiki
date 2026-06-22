@@ -50,7 +50,17 @@ O link do Telegram `https://t.me/c/3870518428/1/537` revela:
 - `1` → thread/topic_id
 - `537` → **message_id**
 
-⚠️ O gateway do Hermes consome os updates via long polling, então `getUpdates` retorna vazio. O message_id **não** está disponível no contexto do agente — precisa vir do link da mensagem ou de outra fonte.
+⚠️ O gateway do Hermes consome os updates via long polling, então `getUpdates` retorna vazio.
+
+**Porém**, o gateway **já injeta o message_id** na variável de contexto da sessão:
+
+```python
+from gateway.session_context import get_session_env
+msg_id = get_session_env("HERMES_SESSION_MESSAGE_ID")  # ex: "527"
+chat_id = get_session_env("HERMES_SESSION_CHAT_ID")     # ex: "-1003870518428"
+```
+
+Isso significa que o Hermes **pode reagir a mensagens automaticamente** sem pedir o message_id ao usuário. A variável `HERMES_SESSION_MESSAGE_ID` reflete o message_id da mensagem que触发ou o turn atual.
 
 ## Emojis suportados como reação
 
@@ -82,9 +92,10 @@ O update chega como `MessageReactionUpdated`:
 
 ## Pendências
 
+- [x] ~~Verificar se o gateway precisa de restart após mudar config~~ — variável `HERMES_SESSION_MESSAGE_ID` já disponível no contexto
+- [x] ~~Descobrir como obter message_id sem pedir ao usuário~~ — `get_session_env("HERMES_SESSION_MESSAGE_ID")` funciona
 - [ ] Ativar `telegram.reactions: true` no config.yaml
 - [ ] Testar recebimento de reações (Giovani reage → Hermes vê)
-- [ ] Verificar se o gateway precisa de restart após mudar config
 
 ## Conexões
 
