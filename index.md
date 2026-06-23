@@ -39,7 +39,7 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 
 ## 📓 Diário
 
-Notas de sessão geradas automaticamente pelo wiki-review. Memória episódica — consultar para contexto recente.
+Inbox da wiki — captura bruta automática por sessão (wiki-review). Contém preferências reveladas, correções de comportamento, técnicas descobertas e pendências abertas. Não é destino final — insights estáveis devem ser extraídos e integrados em páginas permanentes.
 
 - [[diario/2026-06-23-20260623.md|2026-06-23]] — dashboard basic auth, preferência por ação direta, skill hermes-maintenance
 - [[diario/2026-06-22-20260622.md|2026-06-22]] — reações Telegram, protocolo test-then-act, Crawlee/Apify
