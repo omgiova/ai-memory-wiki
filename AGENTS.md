@@ -105,6 +105,14 @@ AGENTS.md          ← só o humano edita este arquivo
 
 ## Git e commits
 
+> ⚠️ **OBRIGATÓRIO:** após criar ou modificar **qualquer** arquivo, executar imediatamente:
+> ```bash
+> git -C /root/ai-memory-wiki/wiki add -A
+> git -C /root/ai-memory-wiki/wiki commit -m "<tipo>(<escopo>): <descrição>"
+> git -C /root/ai-memory-wiki/wiki push origin main
+> ```
+> Nunca deixar o repositório com mudanças não commitadas ou não enviadas ao remoto.
+
 **Formato de commit:**
 ```
 <tipo>(<escopo>): <descrição curta>

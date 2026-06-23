@@ -1,9 +1,9 @@
 ---
 type: concept
-tags: [hermes, config, identity, rules]
+tags: [hermes, config, identity, rules, modelos, mcp]
 title: Configuração do Hermes
-description: Identidade, regras, stack e visão geral do Hermes Agent — assistente pessoal do Giovani
-timestamp: 2026-06-19T00:00:00+00:00
+description: Identidade, regras, stack, modelos ativos e preferências do Hermes Agent — assistente pessoal do Giovani
+timestamp: 2026-06-22T00:00:00+00:00
 status: stable
 ---
 
@@ -38,14 +38,50 @@ Assistente pessoal do Giovani. Direto, técnico, eficiente.
 
 ## Stack
 
-O Hermes roda no VPS Hostinger KVM 2 (Ubuntu), exposto via Telegram. A stack inclui n8n para automação, Node-RED para casa, e Remotion para mídia programática. A memória persistente é a wiki em `/root/wiki/` (espelhada em GitHub).
+- **VPS:** Hostinger KVM 2 (Ubuntu)
+- **Automação:** n8n + Node-RED
+- **Mídia:** React + Remotion
+- **Gateway:** Telegram (celular)
 
 Detalhes de infra no [[infraestrutura/vps.md|vps]].
+
+## Componentes do Sistema
+
+- `SOUL.md` — system prompt fixo do Hermes
+- `config.yaml` — configurações do Hermes
+- `plugins/` — plugins habilitados (spotify)
+- `skills/` — skills instaladas
+- `cron/` — jobs agendados
+
+## Modelos (2026-06-22)
+
+- **Principal:** `moonshotai/kimi-k2.6` via Nvidia NIM
+- **Vision / auxiliary.vision:** `minimaxai/minimax-m3` via Nvidia NIM (suporta vídeo até 30min)
+- **Provedor:** Nvidia NIM (`https://integrate.api.nvidia.com/v1`)
+- **Fallback:** não configurado
+
+### APIs configuradas no .env
+
+- `NVIDIA_API_KEY` — Nvidia NIM (modelos principais e auxiliares)
+- `GOOGLE_API_KEY` — Gemini
+- `ELEVENLABS_API_KEY` — ElevenLabs TTS/STT
+- `GROQ_API_KEY` — Groq (STT whisper; LLM pendente fix de compatibilidade)
+
+### Slots auxiliares
+
+13 slots fixos no Hermes (`auxiliary.*` no config.yaml). Cada slot aceita `fallback_chain` próprio e independente.
+NIM free tier funciona bem em slots auxiliares (1 chamada por ativação), mas não como modelo principal agêntico (15–20 chamadas/tarefa → 429).
+
+## MCP Servers
+
+- **n8n** — `/root/.hermes/mcp-installs/n8n/` (enabled)
+- **ElevenLabs** — `uvx elevenlabs-mcp` (enabled)
+- **ai-memory** — `http://127.0.0.1:49374/mcp` (disabled — não usar)
 
 ## Conexões
 
 - [[infraestrutura/vps.md|vps]] — hardware e serviços da stack
 - [[conhecimento/wiki.md|wiki]] — base de conhecimento
-- [[automacao/firecrawl.md|🔥 Firecrawl]] — busca multi-plataforma
-- [[historico/crise-update.md|🔄 Crise update]] — recuperação de sessões
-- [[pendencias/proximos-passos.md|📋 Próximos passos]]
+- [[automacao/firecrawl.md|Firecrawl]] — busca multi-plataforma
+- [[historico/crise-update.md|Crise update]] — recuperação de sessões
+- [[pendencias/proximos-passos.md|Próximos passos]]
