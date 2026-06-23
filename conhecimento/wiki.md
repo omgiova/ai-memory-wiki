@@ -28,34 +28,7 @@ A solução: **wiki Git pura** — markdown puro versionado em Git, sincronizado
 
 ## Estrutura atual do vault
 
-> ⚠️ **Regra de manutenção:** esta seção deve ser atualizada sempre que um arquivo ou pasta for criado, renomeado ou removido do vault. É a fonte da verdade da estrutura — se a árvore abaixo não bater com o `git ls-files`, está desatualizada.
-
-```
-index.md                          → ponto de entrada único do vault
-AGENTS.md                         → instruções para agentes externos (Claude, Manus, Codex…)
-│
-├── automacao/
-│   ├── firecrawl.md              → busca multi-plataforma com sintaxe site:
-│   └── wiki-review.md            → agente background que salva insights no diario/ a cada 10 turnos
-│
-├── conhecimento/
-│   └── wiki.md                   → este arquivo — conceito central, regras e histórico
-│
-├── diario/                       → daily notes / memória episódica (ex: 2026-06-19.md)
-│
-├── historico/
-│   └── crise-update.md           → recuperação de sessões após /update corromper state.db
-│
-├── infraestrutura/
-│   ├── hermes.md                 → identidade, regras, stack e preferências do Hermes
-│   └── vps.md                    → hardware, serviços, Docker Swarm, IPVS
-│
-├── pendencias/
-│   └── proximos-passos.md        → to-do list ativa
-│
-└── raw/
-    └── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
-```
+Ver [[AGENTS.md]] — fonte da verdade da estrutura, sempre sincronizada com `git ls-files`.
 
 ## Como funciona
 
@@ -72,7 +45,7 @@ AGENTS.md                         → instruções para agentes externos (Claude
 4. **Cross-links** entre páginas relacionadas usando wikilinks (`[[path/to/file.md|display]]`)
 5. **Todo arquivo** tem frontmatter OKF completo
 6. **`status`** indica confiabilidade: `draft` (em construção), `stable` (confiável), `deprecated` (obsoleto)
-7. **Estrutura do vault** em `conhecimento/wiki.md` deve refletir `git ls-files` — atualizar junto com qualquer mudança de estrutura
+7. **Estrutura do vault** em `AGENTS.md` deve refletir `git ls-files` — atualizar junto com qualquer mudança de estrutura
 
 ## Histórico
 
