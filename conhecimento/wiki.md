@@ -53,7 +53,8 @@ AGENTS.md                         → instruções para agentes externos (Claude
 ├── pendencias/
 │   └── proximos-passos.md        → to-do list ativa
 │
-└── raw/                          → fontes brutas imutáveis (PDFs, artigos, logs)
+└── raw/
+    └── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
 ```
 
 ## Como funciona

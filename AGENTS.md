@@ -40,7 +40,8 @@ AGENTS.md                         → este arquivo
 ├── pendencias/
 │   └── proximos-passos.md        → to-do list ativa
 │
-└── raw/                          → fontes brutas imutáveis (PDFs, artigos, logs)
+└── raw/
+    └── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
 ```
 
 ---
@@ -91,6 +92,38 @@ status: <status>     # veja status abaixo
 5. **`diario/`** segue o padrão `diario/YYYY-MM-DD.md` com `type: daily`
 6. **Tags** em kebab-case, no plural, sem acentos (ex: `sessoes`, não `sessoe` ou `sessão`)
 7. **`status: draft`** ao criar uma página nova; mudar para `stable` quando revisada
+
+---
+
+## Operações
+
+### Ingest — adicionar arquivo ou conhecimento novo
+
+Checklist obrigatório. Executar **nesta ordem** a cada novo arquivo criado:
+
+1. **Criar o arquivo** no diretório correto (`automacao/`, `infraestrutura/`, `historico/`, `raw/`, etc.)
+2. **Adicionar frontmatter OKF completo** — `type`, `tags`, `title`, `description`, `timestamp`, `status`
+3. **Adicionar wikilinks** para páginas relacionadas (e atualizar as páginas relacionadas para linkar de volta)
+4. **Atualizar `index.md`** — nova entrada com link + descrição de uma linha na seção correta
+5. **Atualizar a estrutura do vault** em `AGENTS.md` e `conhecimento/wiki.md` — ambas as árvores devem bater com `git ls-files`
+6. **Commitar tudo junto** — um commit por operação de ingest
+
+### Query — responder a uma pergunta com base na wiki
+
+1. Ler `index.md` para identificar páginas relevantes
+2. Ler as páginas identificadas
+3. Sintetizar resposta com referências (`[[página]]`)
+4. Se a resposta for valiosa (análise, comparação, decisão), **criar uma página nova** com ela — bons insights não devem ficar só no chat
+
+### Lint — health-check periódico
+
+Executar quando solicitado pelo usuário:
+
+- Páginas órfãs sem nenhum link apontando pra elas
+- Contradições entre páginas (`status: stable` conflitando com info mais recente)
+- Conceitos mencionados em várias páginas mas sem página própria
+- Entradas no `index.md` sem correspondente em `git ls-files` (e vice-versa)
+- Árvore do vault em `AGENTS.md` / `conhecimento/wiki.md` fora de sync com `git ls-files`
 
 ---
 

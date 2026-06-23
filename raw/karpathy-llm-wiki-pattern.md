@@ -1,3 +1,12 @@
+---
+type: raw
+tags: [padrao, llm-wiki, karpathy, referencia]
+title: LLM Wiki Pattern — Karpathy
+description: Documento original de Andrej Karpathy descrevendo o padrão de wiki persistente mantida por LLM.
+timestamp: 2026-06-23T00:00:00+00:00
+status: stable
+---
+
 # LLM Wiki
 
 A pattern for building personal knowledge bases using LLMs.

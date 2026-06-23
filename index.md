@@ -31,3 +31,7 @@ Base de conhecimento persistente. Tudo que não cabe na memory() do Hermes.
 ## 📋 Pendências
 
 - [[pendencias/proximos-passos.md|Próximos passos]] — o que falta fazer
+
+## 📦 Raw
+
+- [[raw/karpathy-llm-wiki-pattern.md|LLM Wiki Pattern]] — documento original de Karpathy, fonte do padrão que esta wiki segue
