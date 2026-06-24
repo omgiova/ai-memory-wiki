@@ -1,30 +1,35 @@
-# Telegram Topics — Mapa de Chats e Tópicos
+---
+type: concept
+tags: [telegram, topicos, canais]
+title: Telegram Topics — HERMES & GIONATO
+description: Mapa completo de chats, tópicos e IDs do Telegram do Giovani para entrega de mensagens
+timestamp: 2026-06-24T17:15:00-03:00
+status: stable
+---
 
-## DM (Direta)
-- **Nome:** Giovani (DM)
-- **Chat ID:** `142422888`
-- **Tipo:** Conversa privada com o bot
+# Telegram Topics — HERMES & GIONATO
 
-## Grupo: HERMES & GIONATO
-- **Chat ID:** `-1003870518428`
-- **Tipo:** Supergrupo com fórum (is_forum=true)
+Chat ID: `-1003870518428` — Supergrupo com fórum (is_forum=true)
 
-### Tópicos confirmados
+## Tópicos Confirmados
 
-| Nome | Thread ID | Target | Confirmado |
-|------|-----------|--------|------------|
-| **Geral** | `1` | `telegram:-1003870518428:1` | 2026-06-24 |
-| **wiki_review** | `749` | `telegram:-1003870518428:749` | 2026-06-24 |
-| **Skills** | `282` | `telegram:-1003870518428:282` | 2026-06-24 (Giovani: "Esse é o tópico Skills") |
+| Nome | Thread ID | Target |
+|------|-----------|--------|
+| **Geral** | `1` | `telegram:-1003870518428:1` |
+| **Skills** | `282` | `telegram:-1003870518428:282` |
+| **Substack** | `112` | `telegram:-1003870518428:112` |
+| **wiki_review** | `749` | `telegram:-1003870518428:749` |
 
-### Tópicos pendentes de confirmação
-- **Teste** `8` — relatado como incorreto, aguardando correção
-- **(atual)** `78` — relatado como incorreto, aguardando correção
-- **Substack** `112` — relatado como incorreto, aguardando correção
+## DM
+
+Giovani (principal): `142422888` — conversa privada com o bot.
 
 ## Como usar
-Para enviar para qualquer destino, usar o formato:
+
+Para enviar para qualquer destino:
+
 ```
 telegram:<chat_id>:<thread_id>
 ```
-Omitir `:thread_id` para ir ao tópico padrão do grupo.
+
+Omitir `:thread_id` para o tópico padrão. Omitir tudo para DM (home).
