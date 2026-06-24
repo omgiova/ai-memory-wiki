@@ -41,6 +41,7 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 
 Inbox da wiki — captura bruta automática por sessão (wiki-review). Contém preferências reveladas, correções de comportamento, técnicas descobertas e pendências abertas. Não é destino final — insights estáveis devem ser extraídos e integrados em páginas permanentes.
 
+- [[wiki/diario/2026-06-24-20260624.md|2026-06-24]] — .hermes.md unificado com AGENTS.md, correção sobre follow-ups e memory() sem permissão
 - [[wiki/diario/2026-06-23-20260623.md|2026-06-23]] — dashboard basic auth, preferência por ação direta, skill hermes-maintenance
 - [[wiki/diario/2026-06-22-20260622.md|2026-06-22]] — reações Telegram, protocolo test-then-act, Crawlee/Apify
 - [[wiki/diario/2026-06-22-20260621.md|2026-06-21]] — sessão anterior (ver arquivo para detalhes)
