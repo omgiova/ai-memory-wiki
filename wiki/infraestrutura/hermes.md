@@ -3,7 +3,7 @@ type: concept
 tags: [hermes, config, identity, rules, modelos, mcp]
 title: Configuração do Hermes
 description: Identidade, regras, stack, modelos ativos e preferências do Hermes Agent — assistente pessoal do Giovani
-timestamp: 2026-06-22T00:00:00+00:00
+timestamp: 2026-06-24T00:00:00+00:00
 status: stable
 ---
 
