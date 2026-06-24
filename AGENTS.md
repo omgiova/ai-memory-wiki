@@ -5,6 +5,39 @@ Compatível com: Claude Code, OpenAI Codex CLI, Manus, Cursor, Windsurf, Gemini 
 
 ---
 
+## Git e commits
+
+> ⚠️ **OBRIGATÓRIO:** após criar ou modificar **qualquer** arquivo, executar imediatamente:
+> ```bash
+> git -C /root/wiki add -A
+> git -C /root/wiki commit -m "<tipo>(<escopo>): <descrição>"
+> git -C /root/wiki push origin main
+> ```
+> Nunca deixar o repositório com mudanças não commitadas ou não enviadas ao remoto.
+
+**Formato de commit:**
+```
+<tipo>(<escopo>): <descrição curta>
+
+- detalhe 1
+- detalhe 2
+```
+
+**Tipos de commit:** `docs`, `chore`, `fix`, `feat`  
+**Escopo:** nome da pasta ou arquivo principal afetado (ex: `vps`, `wiki`, `firecrawl`)
+
+**Exemplos:**
+```
+docs(vps): adiciona seção de troubleshooting de rede overlay
+chore(wiki): atualiza estrutura do vault após criação de diario/
+fix(crise-update): corrige typo na tag sessoes
+feat(diario): adiciona daily note 2026-06-19
+```
+
+**Branches:** trabalhar em `main` por padrão. Feature branch só se explicitamente solicitado.
+
+---
+
 ## O que é este repositório
 
 **Hermes AI Memory Wiki** — base de conhecimento persistente do agente Hermes (assistente pessoal do Giovani). Segue o padrão **LLM Wiki de Karpathy**: Markdown puro como fonte da verdade, versionado por Git, indexado por SQLite + FTS5, visualizado no Obsidian.
@@ -136,39 +169,6 @@ Executar quando solicitado pelo usuário:
 .obsidian/
 AGENTS.md          ← só o humano edita este arquivo
 ```
-
----
-
-## Git e commits
-
-> ⚠️ **OBRIGATÓRIO:** após criar ou modificar **qualquer** arquivo, executar imediatamente:
-> ```bash
-> git -C /root/wiki add -A
-> git -C /root/wiki commit -m "<tipo>(<escopo>): <descrição>"
-> git -C /root/wiki push origin main
-> ```
-> Nunca deixar o repositório com mudanças não commitadas ou não enviadas ao remoto.
-
-**Formato de commit:**
-```
-<tipo>(<escopo>): <descrição curta>
-
-- detalhe 1
-- detalhe 2
-```
-
-**Tipos de commit:** `docs`, `chore`, `fix`, `feat`  
-**Escopo:** nome da pasta ou arquivo principal afetado (ex: `vps`, `wiki`, `firecrawl`)
-
-**Exemplos:**
-```
-docs(vps): adiciona seção de troubleshooting de rede overlay
-chore(wiki): atualiza estrutura do vault após criação de diario/
-fix(crise-update): corrige typo na tag sessoes
-feat(diario): adiciona daily note 2026-06-19
-```
-
-**Branches:** trabalhar em `main` por padrão. Feature branch só se explicitamente solicitado.
 
 ---
 
