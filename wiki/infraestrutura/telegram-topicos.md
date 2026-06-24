@@ -13,9 +13,9 @@ Grupo principal: `-1003870518428`
 
 | Tópico | thread_id | Descrição |
 |---|---|---|
-|| Geral | 1 | Tópico padrão do grupo |
-|| wiki_review | 749 | Espelho em tempo real do que o wiki_review escreve no diário |
-|| Skills | 282 | Tópico de skills do Hermes, confirmado em 2026-06-24 |
+| Geral | 1 | Tópico padrão do grupo |
+| wiki_review | 749 | Espelho em tempo real do que o wiki_review escreve no diário |
+| Skills | 282 | Tópico de skills do Hermes, confirmado em 2026-06-24 |
 
 > Veja [[telegram/topics.md]] para o mapa completo e atualizado de todos os chats e tópicos.
 
