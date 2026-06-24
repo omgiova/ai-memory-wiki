@@ -51,8 +51,8 @@ Documentação de todas as diferenças identificadas entre `wiki_review.py` (clo
 | 25 | Teardown | `review_agent.close()` | sim | sim | ✅ igual |
 | 26 | Teardown | `review_agent = None` após close | sim | não | ❌ menor |
 | 27 | Mensagens | snapshot `_session_messages` após run | sim | não | ⚠️ intencional |
-| 28 | Notificação | `_safe_print` com summary de ações | sim | não | ⚠️ intencional |
-| 29 | Notificação | `background_review_callback` | sim | não | ⚠️ intencional |
+| 28 | Notificação | `_safe_print` com mensagem de conclusão | `💾 Self-improvement review: ...` | `📓 Wiki review: 📝 Wiki daily note atualizada` | ✅ restaurado (2026-06-24) |
+| 29 | Notificação | `background_review_callback` | sim | adicionado (2026-06-24) | ✅ restaurado |
 | 30 | Erro | `logger.warning` no except da thread | sim | adicionado (2026-06-24) | ✅ corrigido |
 | 31 | Erro | `agent._emit_auxiliary_failure` no except | sim | não | ⚠️ OK (silencioso por design) |
 | 32 | Erro | cleanup de `review_agent` no finally (exception path) | sim | não | ❌ menor |
@@ -88,6 +88,7 @@ Documentação de todas as diferenças identificadas entre `wiki_review.py` (clo
 | `_bg_review_auto_deny` (#1) | Adicionado — evita deadlock em input() se terminal tool for acionada |
 | `_set_approval_callback(None)` (#2) | Adicionado no finally — limpa callback ao fim da thread |
 | Logger na thread (#30) | Trocado `logger.debug` por `logger.warning` — erros agora visíveis nos logs |
+| `_safe_print` + callback (#28+29) | Restaurado — `📓 Wiki review: 📝 Wiki daily note atualizada` (existia na versão original, perdido na recriação do arquivo) |
 
 ## Conexões
 
