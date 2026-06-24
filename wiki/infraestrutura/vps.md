@@ -9,6 +9,23 @@ status: stable
 
 # Infraestrutura do VPS
 
+## Acesso SSH
+
+| Contexto | Comando |
+|---|---|
+| WiFi (IPv4) | `ssh root@2.24.121.135` |
+| 4G (IPv6, porta 2222) | `ssh -p 2222 root@2a02:4780:75:41ec::1` |
+
+**Por que dois métodos:**
+- Operadora 4G fornece apenas IPv6 → IPv4 (`2.24.121.135`) é unreachable sem VPN
+- Warp bloqueia portas não-padrão → não resolve o problema
+- Solução: sshd escuta também na porta 2222; acesso 4G usa endereço IPv6 nativo
+
+**Configuração aplicada (2026-06-23):**
+- `/etc/ssh/sshd_config`: `Port 22` + `Port 2222`
+- sshd gerencia porta 2222 diretamente (fora do socket activation do systemd)
+- Chave ED25519 do Termux já autorizada em `/root/.ssh/authorized_keys`
+
 ## Hardware
 
 - **VPS:** Hostinger KVM 2
