@@ -3,7 +3,7 @@ type: reference
 tags: [hermes, wiki, automacao, background-review, wiki-review, comparacao]
 title: wiki_review vs background_review — Comparação Completa
 description: Tabela completa de todas as diferenças entre o clone wiki_review e o background_review nativo do Hermes (41 itens).
-timestamp: 2026-06-24T00:00:00+00:00
+timestamp: 2026-06-23T21:00:00-03:00
 status: stable
 ---
 

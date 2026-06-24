@@ -2,7 +2,7 @@
 type: index
 title: wiki
 description: Catálogo completo da wiki — uma linha por página, atualizado a cada ingest
-timestamp: 2026-06-23T00:00:00+00:00
+timestamp: 2026-06-22T21:00:00-03:00
 status: stable
 ---
 

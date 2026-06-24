@@ -3,7 +3,7 @@ type: concept
 tags: [docker, n8n, vps, infra]
 title: Infraestrutura do VPS
 description: Hostinger KVM 2 — hardware, serviços rodando, stack Docker Swarm, IPVS, problemas conhecidos
-timestamp: 2026-06-18T00:00:00+00:00
+timestamp: 2026-06-17T21:00:00-03:00
 status: stable
 ---
 

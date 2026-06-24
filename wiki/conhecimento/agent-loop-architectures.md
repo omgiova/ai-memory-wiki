@@ -3,7 +3,7 @@ type: concept
 tags: [agentes, loops, arquitetura, harness]
 title: Arquiteturas de Loop em Agentes
 description: Comparação de como diferentes frameworks de agente (Hermes, OpenClaw, Claude Code, Codex, Cline) implementam detecção de loop, aprovação, circuit breaker e verificação cruzada.
-timestamp: 2026-06-24T00:00:00+00:00
+timestamp: 2026-06-23T21:00:00-03:00
 status: draft
 ---
 

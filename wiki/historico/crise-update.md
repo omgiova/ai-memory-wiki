@@ -3,7 +3,7 @@ type: session
 tags: [github, hermes, sessoes, telegram]
 title: Sessão: 2026-06-18 — Crise de update + Recuperação de Sessões
 description: Múltiplos /update corromperam state.db. Backup automático salvou. hermes import restaurou em 10s.
-timestamp: 2026-06-18T00:00:00+00:00
+timestamp: 2026-06-17T21:00:00-03:00
 status: stable
 ---
 

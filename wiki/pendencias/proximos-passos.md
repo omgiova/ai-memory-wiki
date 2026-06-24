@@ -3,7 +3,7 @@ type: todo
 tags: [github, hermes, obsidian, todo, wiki]
 title: Próximos Passos
 description: Pendências ativas da wiki — migração de conhecimento, AGENTS.md, revisão do SOUL.md e estrutura de diário/raw
-timestamp: 2026-06-19T00:00:00+00:00
+timestamp: 2026-06-18T21:00:00-03:00
 status: stable
 ---
 

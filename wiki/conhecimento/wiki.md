@@ -3,7 +3,7 @@ type: concept
 tags: [ai-memory, hermes, obsidian, wiki]
 title: Wiki
 description: A wiki markdown (+ SQLite + FTS5 + Git) é a memória durável. Conhecimento vai pra wiki, não pra memory() do Hermes.
-timestamp: 2026-06-19T00:00:00+00:00
+timestamp: 2026-06-18T21:00:00-03:00
 status: stable
 ---
 

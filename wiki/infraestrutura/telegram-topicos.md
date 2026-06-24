@@ -3,7 +3,7 @@ type: concept
 tags: [telegram, infraestrutura, topicos]
 title: Telegram — Tópicos do Grupo
 description: Mapa completo de chats, tópicos e IDs do Telegram do Giovani para entrega de mensagens pelo Hermes
-timestamp: 2026-06-24T20:09:56+00:00
+timestamp: 2026-06-24T17:09:56-03:00
 status: stable
 ---
 

@@ -3,7 +3,7 @@ type: procedure
 tags: [hermes, wiki, automacao, background, diario, plugin]
 title: Wiki Review — Auto-escrita de diário em background
 description: Plugin que roda a cada N turnos e salva insights da conversa na wiki (diario/).
-timestamp: 2026-06-24T12:00:00+00:00
+timestamp: 2026-06-24T09:00:00-03:00
 status: stable
 ---
 

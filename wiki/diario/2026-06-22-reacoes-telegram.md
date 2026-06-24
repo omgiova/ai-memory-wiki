@@ -3,7 +3,7 @@ type: daily
 tags: [telegram, reacoes, bot-api, setmessagereaction, hermes]
 title: Reações no Telegram via Bot API
 description: Como usar setMessageReaction para reagir a mensagens e como receber reações de usuários
-timestamp: 2026-06-22T00:10:00+00:00
+timestamp: 2026-06-21T21:10:00-03:00
 status: stable
 ---
 

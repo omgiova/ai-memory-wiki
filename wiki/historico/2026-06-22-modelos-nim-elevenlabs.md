@@ -3,7 +3,7 @@ type: session
 tags: [hermes, nvidia-nim, elevenlabs, modelos, mcp, tts, groq]
 title: "Sessão 2026-06-22 — Modelos NIM + ElevenLabs MCP + Groq"
 description: Configuração de modelos via Nvidia NIM, diagnóstico de rate limit agêntico, instalação do MCP ElevenLabs e tentativa de configurar Groq.
-timestamp: 2026-06-22T00:00:00+00:00
+timestamp: 2026-06-21T21:00:00-03:00
 status: stable
 ---
 
