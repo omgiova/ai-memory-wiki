@@ -14,16 +14,16 @@ Processo em background que analisa a conversa automaticamente e escreve insights
 ## Como funciona
 
 1. `turn_finalizer.py` é chamado ao fim de cada turno do Hermes
-2. Chama `_increment_and_check_counter()` — lê `/root/.hermes/wiki_review_counter`, incrementa e salva
-3. Quando o contador chega em 10, dispara uma thread daemon em background
+2. Verifica `_should_review_memory` — o mesmo gatilho do `background_review` nativo (a cada `_memory_nudge_interval` turnos, padrão 10)
+3. Quando o gatilho dispara, wiki_review roda **no mesmo turno** que o background_review de memória
 4. A thread instancia um `AIAgent` filho (fork do agente principal) com toolset restrito a `file`
 5. O agente filho lê o histórico da conversa e escreve seções no diário
 6. Após o agente terminar, o código Python faz `git add -A && git commit` diretamente
 7. O hook `post-commit` de `/root/wiki/` faz `git pull --rebase + push` automaticamente
 
 ```
-turno N → finalize_turn() → _increment_and_check_counter()
-                                    ↓ contador == 10
+turno N → finalize_turn() → _should_review_memory == True
+                                    ↓ (mesmo gatilho do background_review)
                           spawn_wiki_review_thread()
                                     ↓ thread daemon
                           AIAgent(toolset=["file"])
@@ -39,23 +39,20 @@ turno N → finalize_turn() → _increment_and_check_counter()
 
 | Arquivo | Papel |
 |---|---|
-| `/root/.hermes/agent/turn_finalizer.py` | Gatilho — chama o contador e dispara a thread |
-| `/root/.hermes/agent/wiki_review.py` | Toda a lógica: contador, agente filho, git commit |
-| `/root/.hermes/wiki_review_counter` | Contador persistido em disco (sobrevive a restarts) |
+| `/root/.hermes/agent/turn_finalizer.py` | Gatilho — verifica `_should_review_memory` e dispara a thread |
+| `/root/.hermes/agent/wiki_review.py` | Toda a lógica: agente filho, git commit |
 | `/root/wiki/diario/YYYY-MM-DD-*.md` | Saída — daily notes escritas pelo agente |
 | `/root/wiki/.git/hooks/post-commit` | Hook que faz push automático após commit |
 
 ## Configuração
 
+O intervalo de disparo é o mesmo do background_review nativo: `agent._memory_nudge_interval` (padrão 10 turnos, configurável em `config.yaml` via `memory.nudge_interval`).
+
 ```python
 # em wiki_review.py
-_COUNTER_PATH = Path("/root/.hermes/wiki_review_counter")
-_WIKI_REVIEW_INTERVAL = 10   # dispara a cada N turnos
 WIKI_DIR = Path("/root/wiki")
 DIARIO_DIR = WIKI_DIR / "diario"
 ```
-
-Para mudar o intervalo, editar `_WIKI_REVIEW_INTERVAL` em `wiki_review.py`.
 
 ## O prompt (3 perguntas)
 
