@@ -11,9 +11,11 @@ status: stable
 
 ### Pendente
 
-1. **Criar `wiki_review.py`** — módulo `/root/.hermes/agent/wiki_review.py` com `spawn_wiki_review_thread` e `_increment_and_check_counter`; o trigger já existe em `turn_finalizer.py` mas o import falha silenciosamente. Ver [[wiki/automacao/wiki-review.md]] para spec completa.
+1. **Backup GitHub privado do `.hermes`** — criar repo privado `omgiova/hermes-config` com `agent/`, `skills/`, `plugins/`, `scripts/`, `cron/`, `SOUL.md`, `AGENTS.md`, `config.yaml` (excluindo `.env`, `backups/`, `logs/`, `node_modules/`, `node/`, `venv/`). Configurar auto-push via hook ou cron.
 
-2. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
+2. **Backup geral da VPS** — ativar snapshot automático no painel da Hostinger (KVM 2) ou configurar restic/borg para storage externo. Cobre tudo que o GitHub não cobre (binários, databases, OS).
+
+3. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
 
 ### Concluído
 
