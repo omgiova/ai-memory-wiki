@@ -46,14 +46,11 @@ Sempre usar `--scrape` para ver o conteúdo completo da página, não só o snip
 | HTML vazio no `--scrape` | Site usa JS dinâmico (SPA) | Tentar sem `--scrape` para ver o snippet |
 | Timeout | Site lento ou bloqueando | Reduzir `--limit` ou tentar novamente |
 
-## Gotcha: web_search do Hermes não funciona
+## web_search agora configurado ✅
 
-A tool `web_search` do Hermes retorna erro "No web search provider configured". Isso **não significa que não há busca** — o firecrawl CLI funciona e é o método correto. Nunca aceitar "não configurado" sem verificar se existe alternativa CLI.
+A tool `web_search` do Hermes agora está configurada com Firecrawl como backend (`search_backend: firecrawl`). Funciona normalmente para buscas rápidas (até 5 resultados).
 
-```bash
-which firecrawl        # deve retornar /usr/local/bin/firecrawl
-firecrawl --status     # mostra créditos e auth
-```
+Usar `web_search` para consultas simples. Usar `firecrawl search` via terminal quando precisar de mais controle (`--limit`, `--scrape`, sintaxe `site:`).
 
 ## Conexões
 

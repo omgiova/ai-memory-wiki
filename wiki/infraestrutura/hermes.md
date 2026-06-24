@@ -60,6 +60,12 @@ Detalhes de infra no [[wiki/infraestrutura/vps.md|vps]].
 - **Provedor:** Nvidia NIM (`https://integrate.api.nvidia.com/v1`)
 - **Fallback:** não configurado
 
+### Web Search
+
+- **Backend:** Firecrawl (`search_backend: firecrawl`, `extract_backend: firecrawl`)
+- API key e URL configurados no `.env` (`FIRECRAWL_API_KEY`, `FIRECRAWL_API_URL`)
+- Usar `web_search` para buscas rápidas, `firecrawl search` via terminal para buscas avançadas
+
 ### APIs configuradas no .env
 
 - `NVIDIA_API_KEY` — Nvidia NIM (modelos principais e auxiliares)
