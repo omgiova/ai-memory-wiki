@@ -73,14 +73,11 @@ AGENTS.md                         → este arquivo (schema)
     │
     ├── infraestrutura/
     │   ├── hermes.md             → identidade, regras, stack e preferências do Hermes
-    │   ├── telegram-topicos.md   → tópicos do grupo Telegram (resumo)
+    │   ├── telegram-topicos.md   → mapa completo de chats, tópicos e IDs do Telegram
     │   └── vps.md                → hardware, serviços, Docker Swarm, IPVS
     │
-    ├── pendencias/
-    │   └── proximos-passos.md    → to-do list ativa
-    │
-    └── telegram/
-        └── topics.md             → mapa completo de chats e tópicos confirmados
+    └── pendencias/
+        └── proximos-passos.md    → to-do list ativa
 ```
 
 ---

@@ -2,24 +2,37 @@
 type: concept
 tags: [telegram, infraestrutura, topicos]
 title: Telegram — Tópicos do Grupo
-description: Registro dos tópicos (forum threads) do grupo Telegram do Giovani com o Hermes
+description: Mapa completo de chats, tópicos e IDs do Telegram do Giovani para entrega de mensagens pelo Hermes
 timestamp: 2026-06-24T20:09:56+00:00
-status: draft
+status: stable
 ---
 
 # Telegram — Tópicos do Grupo
 
-Grupo principal: `-1003870518428`
+Supergrupo com fórum (`is_forum=true`): `-1003870518428`
 
-| Tópico | thread_id | Descrição |
+## Tópicos Confirmados
+
+| Nome | thread_id | Target |
 |---|---|---|
-| Geral | 1 | Tópico padrão do grupo |
-| wiki_review | 749 | Espelho em tempo real do que o wiki_review escreve no diário |
-| Skills | 282 | Tópico de skills do Hermes, confirmado em 2026-06-24 |
+| Geral | 1 | `telegram:-1003870518428:1` |
+| Substack | 112 | `telegram:-1003870518428:112` |
+| Skills | 282 | `telegram:-1003870518428:282` |
+| wiki_review | 749 | `telegram:-1003870518428:749` |
 
-> Veja [[telegram/topics.md]] para o mapa completo e atualizado de todos os chats e tópicos.
+## DM
+
+Giovani (principal): `142422888` — conversa privada com o bot.
+
+## Como usar
+
+```
+telegram:<chat_id>:<thread_id>
+```
+
+Omitir `:thread_id` para o tópico padrão (Geral). Omitir tudo para DM (home).
 
 ## Conexões
 
 - [[infraestrutura/hermes.md]] — stack e configuração do Hermes
-- [[automacao/wiki-review.md]] — plugin que escreve no diário e notifica este tópico
+- [[automacao/wiki-review.md]] — plugin que escreve no diário e notifica o tópico wiki_review
