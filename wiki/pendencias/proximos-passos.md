@@ -17,6 +17,8 @@ status: stable
 
 3. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
 
+6. **[RASCUNHO] Unificar skills na wiki** — pesquisar documentação técnica de sistemas existentes (ex: MCP tools + LLM Wiki, skills como páginas `type: procedure`) para que skills do Hermes também vivam na wiki e sejam acessíveis a qualquer agente (Claude Code, Codex, Manus). Não implementar sem validação externa. *Registrado em 2026-06-24.*
+
 5. **Print de início de sessão no wiki_review** — adicionar via `on_session_start` (ou hook equivalente) um print `"📓 Ligando o wiki_review"` que aparece quando uma nova sessão começa, indicando que o wiki_review está ativo. Diferente do "iniciando..." atual (que dispara a cada 10 turnos antes de analisar).
 
 4. **Limpar source tree do Hermes** — após testar background_review e wiki_review por um tempo e confirmar que tudo funciona, remover do source tree (`/usr/local/lib/hermes-agent/`) as mudanças que foram aplicadas lá por engano: `AGENTS.md` (redirect) e `agent/turn_finalizer.py` (trigger do wiki_review). Essas mudanças devem existir apenas em `/root/.hermes/` (overrides). O source tree deve ficar limpo (igual ao upstream) para que `hermes update` não precise stashar nada.
