@@ -18,30 +18,31 @@ Compatível com: Claude Code, OpenAI Codex CLI, Manus, Cursor, Windsurf, Gemini 
 > Esta seção deve estar sempre sincronizada com `git ls-files`. Ao criar, renomear ou remover qualquer arquivo ou pasta, atualize aqui.
 
 ```
-index.md                          → ponto de entrada único
-AGENTS.md                         → este arquivo
+index.md                          → ponto de entrada único (catálogo)
+AGENTS.md                         → este arquivo (schema)
 │
-├── automacao/
-│   ├── firecrawl.md              → busca multi-plataforma com sintaxe site:
-│   └── wiki-review.md            → agente background que salva insights no diario/ a cada 10 turnos
+├── raw/                          → fontes brutas imutáveis
+│   └── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
 │
-├── conhecimento/
-│   └── wiki.md                   → conceito central, regras e histórico da wiki
-│
-├── diario/                       → daily notes / memória episódica (YYYY-MM-DD.md)
-│
-├── historico/
-│   └── crise-update.md           → recuperação de sessões após /update corromper state.db
-│
-├── infraestrutura/
-│   ├── hermes.md                 → identidade, regras, stack e preferências do Hermes
-│   └── vps.md                    → hardware, serviços, Docker Swarm, IPVS
-│
-├── pendencias/
-│   └── proximos-passos.md        → to-do list ativa
-│
-└── raw/
-    └── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
+└── wiki/                         → páginas geradas e mantidas pelo LLM
+    ├── automacao/
+    │   ├── firecrawl.md          → busca multi-plataforma com sintaxe site:
+    │   └── wiki-review.md        → agente background que salva insights no diario/ a cada 10 turnos
+    │
+    ├── conhecimento/
+    │   └── wiki.md               → conceito central, regras e histórico da wiki
+    │
+    ├── diario/                   → daily notes / memória episódica (YYYY-MM-DD.md)
+    │
+    ├── historico/
+    │   └── crise-update.md       → recuperação de sessões após /update corromper state.db
+    │
+    ├── infraestrutura/
+    │   ├── hermes.md             → identidade, regras, stack e preferências do Hermes
+    │   └── vps.md                → hardware, serviços, Docker Swarm, IPVS
+    │
+    └── pendencias/
+        └── proximos-passos.md    → to-do list ativa
 ```
 
 ---
@@ -89,7 +90,7 @@ status: <status>     # veja status abaixo
 2. **Wikilinks** para conectar páginas relacionadas: `[[caminho/arquivo.md|texto]]`
 3. **Toda página** tem frontmatter OKF completo + seção de navegação/conexões no final
 4. **`raw/`** é imutável — arquivos ali nunca são editados, apenas adicionados
-5. **`diario/`** segue o padrão `diario/YYYY-MM-DD.md` com `type: daily`
+5. **`wiki/diario/`** segue o padrão `wiki/diario/YYYY-MM-DD.md` com `type: daily`
 6. **Tags** em kebab-case, no plural, sem acentos (ex: `sessoes`, não `sessoe` ou `sessão`)
 7. **`status: draft`** ao criar uma página nova; mudar para `stable` quando revisada
 
@@ -101,11 +102,11 @@ status: <status>     # veja status abaixo
 
 Checklist obrigatório. Executar **nesta ordem** a cada novo arquivo criado:
 
-1. **Criar o arquivo** no diretório correto (`automacao/`, `infraestrutura/`, `historico/`, `raw/`, etc.)
+1. **Criar o arquivo** no diretório correto (`wiki/automacao/`, `wiki/infraestrutura/`, `wiki/historico/`, `raw/`, etc.)
 2. **Adicionar frontmatter OKF completo** — `type`, `tags`, `title`, `description`, `timestamp`, `status`
 3. **Adicionar wikilinks** para páginas relacionadas (e atualizar as páginas relacionadas para linkar de volta)
 4. **Atualizar `index.md`** — nova entrada com link + descrição de uma linha na seção correta
-5. **Atualizar a estrutura do vault** em `AGENTS.md` e `conhecimento/wiki.md` — ambas as árvores devem bater com `git ls-files`
+5. **Atualizar a estrutura do vault** em `AGENTS.md` — deve bater com `git ls-files`
 6. **Commitar tudo junto** — um commit por operação de ingest
 
 ### Query — responder a uma pergunta com base na wiki
@@ -123,7 +124,7 @@ Executar quando solicitado pelo usuário:
 - Contradições entre páginas (`status: stable` conflitando com info mais recente)
 - Conceitos mencionados em várias páginas mas sem página própria
 - Entradas no `index.md` sem correspondente em `git ls-files` (e vice-versa)
-- Árvore do vault em `AGENTS.md` / `conhecimento/wiki.md` fora de sync com `git ls-files`
+- Árvore do vault em `AGENTS.md` fora de sync com `git ls-files`
 
 ---
 

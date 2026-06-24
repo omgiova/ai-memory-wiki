@@ -43,7 +43,7 @@ Assistente pessoal do Giovani. Direto, técnico, eficiente.
 - **Mídia:** React + Remotion
 - **Gateway:** Telegram (celular)
 
-Detalhes de infra no [[infraestrutura/vps.md|vps]].
+Detalhes de infra no [[wiki/infraestrutura/vps.md|vps]].
 
 ## Componentes do Sistema
 
@@ -80,8 +80,8 @@ NIM free tier funciona bem em slots auxiliares (1 chamada por ativação), mas n
 
 ## Conexões
 
-- [[infraestrutura/vps.md|vps]] — hardware e serviços da stack
-- [[conhecimento/wiki.md|wiki]] — base de conhecimento
-- [[automacao/firecrawl.md|Firecrawl]] — busca multi-plataforma
-- [[historico/crise-update.md|Crise update]] — recuperação de sessões
-- [[pendencias/proximos-passos.md|Próximos passos]]
+- [[wiki/infraestrutura/vps.md|vps]] — hardware e serviços da stack
+- [[wiki/conhecimento/wiki.md|wiki]] — base de conhecimento
+- [[wiki/automacao/firecrawl.md|Firecrawl]] — busca multi-plataforma
+- [[wiki/historico/crise-update.md|Crise update]] — recuperação de sessões
+- [[wiki/pendencias/proximos-passos.md|Próximos passos]]

@@ -64,8 +64,8 @@ Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que 
 ## Navegação
 
 - [[index.md|🏠 Index]]
-- [[infraestrutura/vps.md|🖥 VPS]]
-- [[infraestrutura/hermes.md|🤖 Hermes Config]]
-- [[automacao/firecrawl.md|🔥 Firecrawl]]
-- [[historico/crise-update.md|🔄 Crise update]]
-- [[pendencias/proximos-passos.md|📋 Próximos passos]]
+- [[wiki/infraestrutura/vps.md|🖥 VPS]]
+- [[wiki/infraestrutura/hermes.md|🤖 Hermes Config]]
+- [[wiki/automacao/firecrawl.md|🔥 Firecrawl]]
+- [[wiki/historico/crise-update.md|🔄 Crise update]]
+- [[wiki/pendencias/proximos-passos.md|📋 Próximos passos]]

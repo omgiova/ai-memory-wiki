@@ -57,4 +57,4 @@ firecrawl --status     # mostra créditos e auth
 
 ## Conexões
 
-- [[infraestrutura/hermes.md|Hermes Config]] — onde firecrawl está configurado na stack
+- [[wiki/infraestrutura/hermes.md|Hermes Config]] — onde firecrawl está configurado na stack

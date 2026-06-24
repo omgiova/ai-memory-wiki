@@ -95,6 +95,6 @@ O `_WIKI_REVIEW_PROMPT` dizia "só use write_file e read_file", mas o código co
 
 ## Conexões
 
-- [[infraestrutura/hermes.md|Hermes Config]] — onde os arquivos modificados vivem (`agent/`)
-- [[conhecimento/wiki.md|Wiki]] — estrutura do vault e regras de escrita
-- [[pendencias/proximos-passos.md|Próximos passos]]
+- [[wiki/infraestrutura/hermes.md|Hermes Config]] — onde os arquivos modificados vivem (`agent/`)
+- [[wiki/conhecimento/wiki.md|Wiki]] — estrutura do vault e regras de escrita
+- [[wiki/pendencias/proximos-passos.md|Próximos passos]]

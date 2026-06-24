@@ -24,6 +24,6 @@ status: stable
 - ~~**Migrar de ai-memory para wiki Karpathy**~~ — feito (Docker parado, MCP desabilitado, hook auto-push configurado)
 
 ## 🔗 Conexões entre projetos
-- [[historico/crise-update.md|2026-06-18-crise-update]]
-- [[conhecimento/wiki.md|wiki (histórico + conceito)]]
-- [[infraestrutura/vps.md|vps (IPVS, hardware, stack)]]
+- [[wiki/historico/crise-update.md|2026-06-18-crise-update]]
+- [[wiki/conhecimento/wiki.md|wiki (histórico + conceito)]]
+- [[wiki/infraestrutura/vps.md|vps (IPVS, hardware, stack)]]

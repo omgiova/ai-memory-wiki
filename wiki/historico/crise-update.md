@@ -44,7 +44,7 @@ Três fixes aplicados em `/root/.hermes/`:
 2. `non_interactive_local_changes: stash` — stash é restaurado em vez de dropado
 3. `SOUL.md` — regra: verificar `git ls-files` antes de editar qualquer skill
 
-Ver detalhes completos em [[diario/2026-06-20.md|sessão 2026-06-20]].
+Ver detalhes completos em [[wiki/diario/2026-06-20.md|sessão 2026-06-20]].
 
 ## Pendente
 
