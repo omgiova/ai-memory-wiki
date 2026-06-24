@@ -19,6 +19,8 @@ status: stable
 
 ### Concluído
 
+- ~~**Criar `wiki_review.py`**~~ — feito (2026-06-23), arquivo em `/root/.hermes/agent/wiki_review.py`
+
 - ~~**Sincronizar wiki com GitHub**~~ — feito (repo `omgiova/wiki`)
 - ~~**Conectar Obsidian**~~ — feito (espelhado no Windows via clone)
 - ~~**Criar AGENTS.md**~~ — feito ([[AGENTS.md]])
