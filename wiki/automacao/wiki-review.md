@@ -35,6 +35,10 @@ turno N → finalize_turn() → _increment_and_check_counter()
                           git pull --rebase + git push
 ```
 
+## Status atual
+
+> ⚠️ **`wiki_review.py` não existe.** O trigger em `turn_finalizer.py` (linha ~440) tenta importar `agent.wiki_review` mas o arquivo ainda não foi criado. A falha é silenciada por `except Exception: pass`, então o sistema não quebra — apenas o wiki_review nunca dispara. Ver [[wiki/pendencias/proximos-passos.md]] para rastrear.
+
 ## Arquivos envolvidos
 
 | Arquivo | Papel |

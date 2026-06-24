@@ -11,7 +11,9 @@ status: stable
 
 ### Pendente
 
-1. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
+1. **Criar `wiki_review.py`** — módulo `/root/.hermes/agent/wiki_review.py` com `spawn_wiki_review_thread` e `_increment_and_check_counter`; o trigger já existe em `turn_finalizer.py` mas o import falha silenciosamente. Ver [[wiki/automacao/wiki-review.md]] para spec completa.
+
+2. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
 
 ### Concluído
 
