@@ -13,6 +13,7 @@ Grupo principal: `-1003870518428`
 
 | Tópico | thread_id | Descrição |
 |---|---|---|
+| Geral | None | Tópico padrão do grupo (sem thread_id no Telegram) |
 | wiki_review | 749 | Espelho em tempo real do que o wiki_review escreve no diário |
 
 > Esta página está incompleta — Giovani tem outros tópicos documentados em outros lugares. Centralizar aqui quando possível.
