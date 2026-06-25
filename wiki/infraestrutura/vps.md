@@ -26,6 +26,10 @@ status: stable
 - sshd gerencia porta 2222 diretamente (fora do socket activation do systemd)
 - Chave ED25519 do Termux já autorizada em `/root/.ssh/authorized_keys`
 
+## Mobile (Termux / Android)
+
+- **Vault Obsidian:** `~/storage/shared/ai-memory-wiki` → `/storage/emulated/0/ai-memory-wiki`
+
 ## Hardware
 
 - **VPS:** Hostinger KVM 2
