@@ -73,6 +73,7 @@ AGENTS.md                         → este arquivo (schema)
     │
     ├── infraestrutura/
     │   ├── hermes.md             → identidade, regras, stack e preferências do Hermes
+    │   ├── hermes-api.md         → referência completa dos endpoints REST do Hermes Agent (gerada do /openapi.json)
     │   ├── telegram-topicos.md   → mapa completo de chats, tópicos e IDs do Telegram
     │   └── vps.md                → hardware, serviços, Docker Swarm, IPVS
     │
