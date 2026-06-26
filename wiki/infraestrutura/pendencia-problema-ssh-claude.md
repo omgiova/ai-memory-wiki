@@ -36,11 +36,15 @@ O processo sem terminal com flags `--output-format stream-json --input-format st
 - Processo daemon (sem terminal, `?`) com flags `--output-format stream-json` = extensão VS Code, não matar
 - Processo interativo (`pts/N`) = sessão ativa do Claude Code, não matar sem certeza
 
-**Etapa 2 — Hooks configurados, todos os curls e curls sem timeout** *(Problema 1)*
+**Etapa 2 — Hooks configurados, todos os curls e curls sem timeout** *(Problema 1)* ✅ FEITO (2026-06-26)
 ```bash
 cat ~/.claude/settings.json; echo "---curls-encontrados---"; grep -rn "curl" ~/.claude/ 2>/dev/null; echo "---curls-SEM-max-time---"; grep -rn "curl" ~/.claude/ 2>/dev/null | grep -v "max-time"
 ```
 *O que observar:* a seção `hooks` no settings.json; linhas na parte `curls-SEM-max-time` = vulnerabilidades a corrigir.
+
+**Resultado (2026-06-26):** 7 hooks do sistema `ai-memory` (legado) encontrados no `settings.json` — todos apontando para `http://127.0.0.1:49374` (servidor já down). Os curls nos scripts tinham `--max-time 0.5s`, então não travavam sessões. Porém os hooks eram inúteis e disparavam em vão a cada evento.
+
+**Ação tomada:** removidos os 7 hooks do `settings.json` e deletada a pasta `/root/.local/share/ai-memory/`. Settings ficou limpo com apenas `model` e `theme`. Problema 1 = **não se aplicava** (curls já tinham timeout), mas limpeza feita de qualquer forma.
 
 **Etapa 3 — Logs de sessões recentes e erros registrados** *(Problemas 1 e 2)*
 ```bash
