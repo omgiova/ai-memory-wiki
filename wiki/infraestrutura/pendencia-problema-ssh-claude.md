@@ -46,17 +46,21 @@ cat ~/.claude/settings.json; echo "---curls-encontrados---"; grep -rn "curl" ~/.
 
 **Ação tomada:** removidos os 7 hooks do `settings.json` e deletada a pasta `/root/.local/share/ai-memory/`. Settings ficou limpo com apenas `model` e `theme`. Problema 1 = **não se aplicava** (curls já tinham timeout), mas limpeza feita de qualquer forma.
 
-**Etapa 3 — Logs de sessões recentes e erros registrados** *(Problemas 1 e 2)*
+**Etapa 3 — Logs de sessões recentes e erros registrados** *(Problemas 1 e 2)* ✅ FEITO (2026-06-26)
 ```bash
 ls -lth ~/.claude/logs/ 2>/dev/null | head -10; echo "---erros-nos-logs---"; grep -rih "timeout\|hang\|error\|killed\|signal\|stuck" ~/.claude/logs/ 2>/dev/null | tail -30
 ```
 *O que observar:* datas dos logs (indicam quando sessões existiram); linhas de erro mostram padrão dos travamentos.
 
-**Etapa 4 — Configuração de permissões automáticas** *(Problema 3)*
+**Resultado (2026-06-26):** Sem pasta `~/.claude/logs/` — o Claude Code nesta versão não gera logs de texto separados. Busca extendida nos JSONLs de sessões e no journalctl não revelou erros de travamento registrados. O sistema não registra o "por que travou" de forma acessível — os travamentos ficam invisíveis nos logs, confirmando que o problema é o Problema 3 (prompt no terminal invisível no app).
+
+**Etapa 4 — Configuração de permissões automáticas** *(Problema 3)* ⏸ NÃO EXECUTADA
 ```bash
 grep -A5 "permissions\|autoApprove\|allow\|approve" ~/.claude/settings.json 2>/dev/null; echo "---settings-completo---"; cat ~/.claude/settings.json
 ```
 *O que observar:* se há ferramentas com aprovação automática configurada. Ausência total = toda tool pede [y/n] no terminal, invisível no app.
+
+**Contexto (2026-06-26):** O problema descrito (prompt de aprovação aparecendo no terminal do Termux mas invisível no app do Claude, deixando a sessão congelada em "Executando...") ocorreu em sessões anteriores. Na sessão de diagnóstico de hoje (usada tanto pelo celular quanto pelo PC via Remote Control + Termux) o erro não se repetiu. Etapa 4 adiada — não havia problema ativo para corrigir. Retomar se o travamento voltar a ocorrer.
 
 ---
 
