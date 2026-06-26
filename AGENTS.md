@@ -55,7 +55,11 @@ index.md                          → ponto de entrada único (catálogo)
 AGENTS.md                         → este arquivo (schema)
 │
 ├── raw/                          → fontes brutas imutáveis
-│   └── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
+│   ├── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
+│   └── google-okf/               → documentação oficial do Open Knowledge Format (Google Cloud)
+│       ├── SPEC.md               → especificação OKF v0.1 (baixada do GitHub)
+│       ├── README.md             → intro e agente de referência do repo okf/
+│       └── introducing-the-open-knowledge-format.md → blog post de lançamento (jun/2026)
 │
 └── wiki/                         → páginas geradas e mantidas pelo LLM
     ├── automacao/
@@ -65,6 +69,7 @@ AGENTS.md                         → este arquivo (schema)
     │
     ├── conhecimento/
     │   ├── wiki.md               → conceito central, regras e histórico da wiki
+    │   ├── okf.md                → Open Knowledge Format: o que é, nossa conformance, repo oficial para referência futura
     │   └── agent-loop-architectures.md  → comparação de loops entre Hermes, OpenClaw, Claude Code, Codex e Cline
     │
     ├── diario/                   → daily notes / memória episódica (YYYY-MM-DD.md)

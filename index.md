@@ -21,6 +21,7 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 ## 🧠 Conhecimento
 
 - [[wiki/conhecimento/wiki.md|Wiki]] — o que é esta wiki, como funciona, regras de escrita e histórico de fundação
+- [[wiki/conhecimento/okf.md|Open Knowledge Format (OKF)]] — padrão open source do Google Cloud para wikis de agentes; nossa wiki já é conformante; repo oficial para consulta futura
 - [[wiki/conhecimento/agent-loop-architectures.md|Arquiteturas de Loop em Agentes]] — comparação de detecção de loop, aprovação, circuit breaker entre Hermes, OpenClaw, Claude Code, Codex e Cline
 
 ## 🔧 Automação
@@ -40,6 +41,9 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 ## 📦 Raw
 
 - [[raw/karpathy-llm-wiki-pattern.md|LLM Wiki Pattern (Karpathy)]] — documento original do padrão que esta wiki segue; fonte imutável
+- [[raw/google-okf/SPEC.md|OKF SPEC.md]] — especificação oficial OKF v0.1 do Google Cloud
+- [[raw/google-okf/README.md|OKF README.md]] — intro e agente de referência do repo okf/
+- [[raw/google-okf/introducing-the-open-knowledge-format.md|Introducing the Open Knowledge Format]] — blog post do Google Cloud (jun/2026)
 
 ## 📓 Diário
 
