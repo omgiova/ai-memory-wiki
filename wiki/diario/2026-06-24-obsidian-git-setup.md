@@ -97,6 +97,27 @@ Adicionado o caminho do vault Obsidian no Android em `wiki/infraestrutura/vps.md
 
 ---
 
+## Incidente 2026-06-26 — Pull bloqueado no Android após o fix
+
+**Problema:** após o commit do fix acima, o Android ficou com erro ao tentar Pull:
+> "Your local changes to the following files would be overwritten by checkout: .obsidian/graph.json"
+
+**Causa:** o Android ainda tinha `app.json`, `appearance.json` e `graph.json` como arquivos locais modificados. O pull tentou deletá-los do rastreamento (o que o commit fez), mas o git se recusou a sobrescrever arquivos com mudanças locais.
+
+**Resolução:** usuário encontrou o botão de Discard no próprio Obsidian Android (na tela de Source Control) e descartou os arquivos manualmente. Depois o Pull funcionou normalmente.
+
+**Alternativa via Termux** (caso o botão não apareça ou não funcione):
+```bash
+rm ~/storage/shared/ai-memory-wiki/.obsidian/app.json \
+   ~/storage/shared/ai-memory-wiki/.obsidian/appearance.json \
+   ~/storage/shared/ai-memory-wiki/.obsidian/graph.json
+```
+Depois Pull no Obsidian. O Obsidian recria os arquivos automaticamente com configurações locais do Android, e o git os ignora.
+
+**Estado após resolução:** sincronização funcionando em todos os devices. Os 3 arquivos são locais por device e nunca mais vão para o git.
+
+---
+
 ## Pontos de atenção futuros
 
 - **`core-plugins.json` ainda é rastreado** — se divergir entre PC e Android (plugin ativado num e não no outro), pode gerar conflito. Monitorar.
