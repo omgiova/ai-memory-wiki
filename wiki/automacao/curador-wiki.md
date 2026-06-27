@@ -127,6 +127,29 @@ Chamar `claude -p` como subprocesso dentro de uma sessão Claude Code ativa é i
 **O que ainda não foi feito:**
 Nenhum fix foi aplicado ao script. A documentação deste erro vem antes de qualquer alteração no código — conforme solicitado pelo Giovani.
 
+### Tentativa 2 — planejada — aguardando execução
+
+**Aprendizado da tentativa 1:** o problema não foi chamar o script de dentro de uma sessão Claude Code ativa — isso faz parte do teste e está validado no [[wiki/conhecimento/plano-implementacao-loop.md|Plano de Loops]]. O problema foi o **bloqueio**: o Claude Code ficou esperando o script terminar, o timeout de 2 minutos do Bash tool estourou com o processo ainda rodando, e o kill subsequente derrubou a sessão.
+
+**Correção identificada:** manter o script sendo chamado da sessão ativa, mas desacoplar o processo com `nohup ... &` para que o Claude Code dispare e não fique bloqueado esperando. O script roda por conta própria e o Telegram sinaliza o fim.
+
+**Fixes a aplicar no script antes da execução:**
+
+1. **Mover o primeiro `log()` para antes de qualquer execução** — atualmente a primeira linha de log vem depois de `ls` e `shuf`, o que significa que uma falha cedo deixa o log vazio sem diagnóstico.
+2. **Adicionar `timeout 300` no `claude -p`** — se o modelo demorar mais de 5 minutos, o script mata o processo e registra o erro em vez de ficar preso indefinidamente. Valor escolhido com margem: na tentativa 1 o processo já estava em 2min18s quando verificado e provavelmente ainda não havia terminado.
+3. **Tratar `CURADORIA` vazia sem abortar** — com `set -euo pipefail`, se o `claude -p` for interrompido ou retornar vazio, o script aborta silenciosamente. Precisa de tratamento explícito para registrar o erro e encerrar com mensagem de falha no log.
+
+**Forma de chamada:**
+```bash
+nohup bash /root/curator-teste1.sh > /var/log/curator-teste1.log 2>&1 &
+```
+Chamado de dentro de uma sessão Claude Code ativa. O `nohup &` desacopla o processo — a sessão fica livre, o script roda independente, o Telegram confirma o fim.
+
+**O que esta tentativa valida (além da tentativa 1):**
+- O padrão `nohup &` dentro de sessão Claude Code ativa resolve o problema de bloqueio
+- O `timeout 300` é suficiente para o `claude -p` com prompt grande terminar com sucesso
+- O log registra corretamente início, progresso e fim da execução
+
 ---
 
 ## Conexões
