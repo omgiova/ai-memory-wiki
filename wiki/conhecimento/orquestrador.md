@@ -1,13 +1,13 @@
 ---
 type: concept
 tags: [wiki, manutencao, okf, padrao, auditoria, karpathy, memoria]
-title: Orquestrador da Memória — Panorama de Saúde do Vault
+title: Orquestrador da Memória — Panorama de Saúde da Wiki
 description: Auditoria profunda e estruturada da wiki — mapa de todos os pontos de atenção em estrutura, OKF, diário, automação, coordenação de agentes e cross-links, com roadmap de execução.
 timestamp: 2026-06-26T14:00:00-03:00
 status: stable
 ---
 
-# Orquestrador da Memória — Panorama de Saúde do Vault
+# Orquestrador da Memória — Panorama de Saúde da Wiki
 
 > Este documento é o mapa de saúde da wiki. Cada seção é uma área de atenção — com diagnóstico preciso, referência ao arquivo afetado e ação recomendada. Use-o como guia de manutenção contínua.
 
@@ -17,7 +17,7 @@ status: stable
 
 A wiki está **funcionalmente operacional**: OKF frontmatter presente, Git auto-push ativo, wiki_review rodando, index.md navegável, AGENTS.md como schema. O padrão Karpathy foi seguido corretamente desde a fundação.
 
-O que existe agora é **débito técnico acumulado** — inconsistências pequenas que sozinhas não travam nada, mas juntas aumentam a carga cognitiva dos agentes e degradam a confiabilidade do vault como fonte da verdade. Este documento mapeia tudo.
+O que existe agora é **débito técnico acumulado** — inconsistências pequenas que sozinhas não travam nada, mas juntas aumentam a carga cognitiva dos agentes e degradam a confiabilidade da wiki como fonte da verdade. Este documento mapeia tudo.
 
 **Escopo:** 25 páginas wiki + 10 entradas de diário + 4 arquivos raw + AGENTS.md + index.md.  
 **Data da auditoria:** 2026-06-26.
@@ -43,7 +43,7 @@ O que existe agora é **débito técnico acumulado** — inconsistências pequen
 ### 1.3 — Cross-links em formato Obsidian, não em Markdown padrão
 
 **Arquivos:** Todos (diário, infraestrutura, automação, conhecimento).  
-**Problema:** O OKF §5 define dois formatos válidos de cross-link: absoluto bundle-relative (`[texto](/caminho/arquivo.md)`) e relativo (`[texto](./outro.md)`). Nosso vault usa Obsidian wikilinks (`[[path/arquivo.md|texto]]`). Isso é legível no Obsidian, mas não é cross-link OKF — um consumidor OKF genérico não constrói grafo a partir de wikilinks.  
+**Problema:** O OKF §5 define dois formatos válidos de cross-link: absoluto bundle-relative (`[texto](/caminho/arquivo.md)`) e relativo (`[texto](./outro.md)`). Nossa wiki usa Obsidian wikilinks (`[[path/arquivo.md|texto]]`). Isso é legível no Obsidian, mas não é cross-link OKF — um consumidor OKF genérico não constrói grafo a partir de wikilinks.  
 **Impacto:** Agentes não-Obsidian (ex: futuro visualizador de grafo OKF) não reconhecerão os links. A spec toleraria isso (§9 diz "consumidores devem tolerar links quebrados"), mas o valor do grafo se perde.  
 **Decisão a tomar:** Manter wikilinks (prioridade Obsidian) ou migrar para markdown standard (prioridade portabilidade OKF). Não há resposta certa — mas a decisão deve ser documentada no AGENTS.md como escolha intencional.
 
@@ -56,15 +56,15 @@ O que existe agora é **débito técnico acumulado** — inconsistências pequen
   - `vps.md` → `resource: ssh://root@2.24.121.135`
   - `telegram-topicos.md` → `resource: https://t.me/c/...` (quando IDs forem preenchidos)
 
-### 1.5 — Nenhum `log.md` existe no vault
+### 1.5 — Nenhum `log.md` existe na wiki
 
-**Problema:** O OKF §7 define `log.md` como registro cronológico de mudanças — append-only, mais recente primeiro. Atualmente o `diario/` cumpre parte dessa função, mas de forma episódica e não estruturada. Um `log.md` na raiz do vault registraria ingest, lint, reestruturação e marcos importantes de forma parseável.
+**Problema:** O OKF §7 define `log.md` como registro cronológico de mudanças — append-only, mais recente primeiro. Atualmente o `diario/` cumpre parte dessa função, mas de forma episódica e não estruturada. Um `log.md` na raiz da wiki registraria ingest, lint, reestruturação e marcos importantes de forma parseável.
 
 **Implementação detalhada:**
 
-**Localização:** `/root/wiki/log.md` — raiz do vault, ao lado de `index.md` e `AGENTS.md`. Na raiz porque cobre o vault inteiro.
+**Localização:** `/root/wiki/log.md` — raiz da wiki, ao lado de `index.md` e `AGENTS.md`. Na raiz porque cobre a wiki inteira.
 
-**Frontmatter:** nenhum. OKF §3.1 define `log.md` como arquivo reservado sem frontmatter — exceção explícita à regra geral do vault.
+**Frontmatter:** nenhum. OKF §3.1 define `log.md` como arquivo reservado sem frontmatter — exceção explícita à regra geral da wiki.
 
 **Formato:**
 ```markdown
@@ -82,11 +82,11 @@ Grupos de data em ISO 8601, mais recente primeiro. Múltiplas entradas por dia s
 
 | Tipo | Quando usar |
 |---|---|
-| `Creation` | arquivo novo criado no vault |
+| `Creation` | arquivo novo criado na wiki |
 | `Update` | conteúdo significativo alterado em página existente |
 | `Deprecation` | página marcada como `status: deprecated` |
 | `Rename` | arquivo renomeado ou movido para outro diretório |
-| `Deletion` | arquivo deletado do vault |
+| `Deletion` | arquivo deletado da wiki |
 | `Promotion` | entrada do diário promovida a página permanente (custom nosso) |
 
 **O que NÃO registrar** (deve estar explícito no AGENTS.md para evitar ruído):
@@ -98,13 +98,13 @@ Grupos de data em ISO 8601, mais recente primeiro. Múltiplas entradas por dia s
 
 **Quando aciona:** o `log.md` deve ser um passo obrigatório no checklist de Ingest do AGENTS.md — após commitar, antes de encerrar a operação. Toda criação, renomeação, deleção e promoção de página gera entrada. Updates apenas quando o conteúdo mudou de forma substancial.
 
-**Retroativo:** criar o log já com os marcos históricos do vault desde a fundação (2026-06-18), reconstruídos via `git log --oneline`. Não precisa ser exaustivo — só os eventos de criação de páginas e reestruturações relevantes.
+**Retroativo:** criar o log já com os marcos históricos da wiki desde a fundação (2026-06-18), reconstruídos via `git log --oneline`. Não precisa ser exaustivo — só os eventos de criação de páginas e reestruturações relevantes.
 
-**Não confundir com o diário:** o `log.md` é sobre o **vault** (o que foi criado, alterado, removido), não sobre sessões ou conversas. O diário é memória episódica; o log é changelog estrutural.
+**Não confundir com o diário:** o `log.md` é sobre a **wiki** (o que foi criado, alterado, removido), não sobre sessões ou conversas. O diário é memória episódica; o log é changelog estrutural.
 
 ---
 
-## 2. Estrutura do Vault — Links Quebrados e Sync
+## 2. Estrutura da Wiki — Links Quebrados e Sync
 
 ### 2.1 — Link quebrado crítico no index.md
 
@@ -115,7 +115,7 @@ Grupos de data em ISO 8601, mais recente primeiro. Múltiplas entradas por dia s
 ### 2.2 — AGENTS.md e index.md não estão em sync
 
 **Arquivos:** `AGENTS.md` (linhas 85-86), `index.md` (linha 19)  
-**Problema:** O AGENTS.md lista `termux-ssh-claude.md` corretamente na árvore do vault. O `index.md` lista `pendencia-problema-ssh-claude.md` (nome errado). Estão fora de sync — viola a regra do próprio AGENTS.md ("esta seção deve estar sempre sincronizada com `git ls-files`").  
+**Problema:** O AGENTS.md lista `termux-ssh-claude.md` corretamente na árvore da wiki. O `index.md` lista `pendencia-problema-ssh-claude.md` (nome errado). Estão fora de sync — viola a regra do próprio AGENTS.md ("esta seção deve estar sempre sincronizada com `git ls-files`").  
 **Ação:** Corrigir o `index.md` (ver 2.1). Verificar se existem outras discrepâncias com `git ls-files`.
 
 ### 2.3 — wiki/diario/.gitkeep e wiki/raw/.gitkeep desnecessários
@@ -252,7 +252,7 @@ Grupos de data em ISO 8601, mais recente primeiro. Múltiplas entradas por dia s
 ### 5.3 — Sem workflow de promoção de diário no plugin
 
 **Arquivo:** `wiki/automacao/wiki-review.md`  
-**Problema:** O plugin captura insights mas não tem mecanismo de promoção para páginas permanentes. O gap entre "capturar no diário" e "integrar no vault" é manual e não documentado.  
+**Problema:** O plugin captura insights mas não tem mecanismo de promoção para páginas permanentes. O gap entre "capturar no diário" e "integrar na wiki" é manual e não documentado.  
 **Ação:** Criar seção "Limitações conhecidas / Roadmap" na página do wiki-review documentando: (1) escrita concorrente, (2) ausência de promoção automática, (3) prompt só captura, não sintetiza entre sessões.
 
 ### 5.4 — wiki-review-vs-background-review.md com itens ❌ pendentes sem followup
@@ -367,7 +367,7 @@ O Obsidian resolve os dois, mas consumidores OKF ou buscas por path absoluto fal
 
 ### 9.1 — Convenção de nomes de arquivo inconsistente
 
-**Observação:** O vault tem dois padrões coexistindo:
+**Observação:** A wiki tem dois padrões coexistindo:
   - **kebab-case** (maioria): `agent-loop-architectures.md`, `wiki-review-vs-background-review.md`, `proximos-passos.md`
   - **snake_case parcial** (nenhum, eliminado)
   - **Datas**: `YYYY-MM-DD.md` vs `YYYY-MM-DD-HHMM.md` vs `YYYY-MM-DD-YYYYMMDD.md` (ver 4.1)
@@ -400,7 +400,7 @@ Prioridades organizadas por impacto e custo de execução.
 | # | Ação | Arquivo | Custo |
 |---|---|---|---|
 | A1 | Remover frontmatter completo do index.md, manter só `okf_version: "0.1"` | `index.md` | Baixo |
-| A2 | Criar `log.md` na raiz do vault | novo arquivo | Médio |
+| A2 | Criar `log.md` na raiz da wiki | novo arquivo | Médio |
 | A3 | Padronizar idioma de tags (EN → PT-BR) | múltiplos arquivos | Médio |
 | A4 | Criar `wiki/perfil/giovani.md` com perfil canônico | novo arquivo | Médio |
 | A5 | Deletar `/root/hermes-user.backup.md` | arquivo externo | Baixo (requer aprovação) |
@@ -442,7 +442,7 @@ Prioridades organizadas por impacto e custo de execução.
 
 ## Conexões
 
-- [[AGENTS.md]] — schema do vault, regras de escrita e operações
+- [[AGENTS.md]] — schema da wiki, regras de escrita e operações
 - [[index.md]] — catálogo completo
 - [[conhecimento/wiki.md]] — fundação e princípios
 - [[conhecimento/okf.md]] — especificação OKF e conformidade

@@ -209,5 +209,5 @@ Um arquivo por sessão de conversa. Sessão detectada por inatividade (60 min se
 ## Conexões
 
 - [[infraestrutura/hermes.md|Hermes Config]] — stack e arquitetura
-- [[conhecimento/wiki.md|Wiki]] — estrutura do vault e regras de escrita
+- [[conhecimento/wiki.md|Wiki]] — estrutura da wiki e regras de escrita
 - [[pendencias/proximos-passos.md|Próximos passos]]

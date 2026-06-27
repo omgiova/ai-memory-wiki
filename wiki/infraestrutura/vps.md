@@ -28,6 +28,8 @@ status: stable
 
 ## Devices — caminhos do vault Obsidian
 
+> "vault" é o termo do Obsidian para a pasta do repositório — no nosso caso, o mesmo repositório que é a wiki (`/root/wiki`).
+
 | Device | Caminho |
 |---|---|
 | Windows | `C:\Users\omgio\Desktop\hermes\ai-memory-wiki` |

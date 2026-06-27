@@ -14,6 +14,8 @@ status: draft
 ## Premissa fundamental (LEIA ANTES DE QUALQUER FIX)
 
 > **Obsidian é um visualizador read-only do vault. Todas as edições acontecem no servidor via Claude Code / Hermes. O Obsidian nunca edita arquivos `.md` manualmente.**
+>
+> **Nota de terminologia:** "vault" é o nome que o Obsidian usa para a pasta do repositório. No nosso ambiente, vault = wiki (o mesmo repositório em `/root/wiki`).
 
 Isso significa que **o pull nunca deveria ter conflito real**. Quando falha, é porque:
 
@@ -47,7 +49,7 @@ git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" config merge.autostash
 git -C ~/storage/shared/ai-memory-wiki config merge.autostash true
 ```
 
-Isso vai para o `.git/config` local de cada device (não sincronizado). Persiste permanentemente — só some se o vault for deletado e re-clonado. Precisa rodar **uma vez por device**.
+Isso vai para o `.git/config` local de cada device (não sincronizado). Persiste permanentemente — só some se a wiki for deletada e re-clonada. Precisa rodar **uma vez por device**.
 
 **Por que funciona:** antes de qualquer `git merge`, o git faz `git stash` das mudanças locais automaticamente, executa o merge, e descarta o stash. Como o Obsidian é read-only, o stash é sempre descartado e nunca cria conflito.
 
@@ -135,7 +137,7 @@ Se o pull falhar com "would be overwritten by merge":
 
 **Via terminal (Windows PowerShell / Git Bash) se o botão falhar:**
 ```bash
-cd <caminho-do-vault>
+cd <caminho-da-wiki>
 git fetch origin
 git reset --hard origin/main
 ```

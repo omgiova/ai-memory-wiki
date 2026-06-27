@@ -26,7 +26,7 @@ A solução: **wiki Git pura** — markdown puro versionado em Git, sincronizado
 | Acesso | **read_file / search_files** | Hermes lê/escreve direto, sem servidor |
 | Visual | **Obsidian** (Windows/Android) | Navegação e edição visual |
 
-## Estrutura atual do vault
+## Estrutura atual da wiki
 
 Ver [[AGENTS.md]] — fonte da verdade da estrutura, sempre sincronizada com `git ls-files`.
 
@@ -45,13 +45,13 @@ Ver [[AGENTS.md]] — fonte da verdade da estrutura, sempre sincronizada com `gi
 4. **Cross-links** entre páginas relacionadas usando wikilinks (`[[path/to/file.md|display]]`)
 5. **Todo arquivo** tem frontmatter OKF completo
 6. **`status`** indica confiabilidade: `draft` (em construção), `stable` (confiável), `deprecated` (obsoleto)
-7. **Estrutura do vault** em `AGENTS.md` deve refletir `git ls-files` — atualizar junto com qualquer mudança de estrutura
+7. **Estrutura da wiki** em `AGENTS.md` deve refletir `git ls-files` — atualizar junto com qualquer mudança de estrutura
 
 ## Histórico
 
 ### Fundação (2026-06-18)
 
-Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que quebraram n8n e Node-RED (IPVS table corrompida → 502), foi criada a estrutura inicial da wiki — o embrião do que virou este vault.
+Na sessão de 2026-06-18, após uma série de comandos Docker Swarm errados que quebraram n8n e Node-RED (IPVS table corrompida → 502), foi criada a estrutura inicial da wiki — o embrião do que virou esta wiki.
 
 ### 5 Pilares do objetivo final
 
