@@ -13,6 +13,8 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 ## Estrutura
 
 ```
+.gitignore
+.obsidian/
 AGENTS.md
 index.md
 ├── raw/
@@ -56,6 +58,11 @@ index.md
     └── pendencias/
         └── proximos-passos.md
 ```
+
+## raiz/
+
+- [[AGENTS.md|AGENTS.md]] — instruções obrigatórias para agentes que trabalham neste repositório; lido automaticamente por Claude Code e Codex CLI
+- [[index.md|index.md]] — este arquivo; catálogo completo e ponto de entrada único da wiki
 
 ## wiki/
 
