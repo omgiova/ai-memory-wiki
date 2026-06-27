@@ -8,6 +8,8 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 
 ## Estrutura
 
+> Esta seção é a fonte de verdade da estrutura da wiki — deve estar sempre sincronizada com `git ls-files`. Ao criar, renomear ou remover qualquer arquivo ou pasta, atualize aqui.
+
 ```
 .gitignore
 .obsidian/
@@ -19,6 +21,7 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 │       └── styles.css
 AGENTS.md
 index.md
+log.md
 ├── raw/
 │   ├── google-okf/
 │   │   ├── introducing-the-open-knowledge-format.md

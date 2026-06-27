@@ -67,47 +67,7 @@ silenciosa e difícil de rastrear.
 
 ## Estrutura da wiki
 
-> Esta seção deve estar sempre sincronizada com `git ls-files`. Ao criar, renomear ou remover qualquer arquivo ou pasta, atualize aqui.
-
-```
-index.md                          → ponto de entrada único (catálogo)
-log.md                            → changelog estrutural da wiki (append-only, sem frontmatter)
-AGENTS.md                         → este arquivo (schema)
-│
-├── raw/                          → fontes brutas imutáveis
-│   ├── karpathy-llm-wiki-pattern.md → fonte original do padrão LLM Wiki (Karpathy)
-│   └── google-okf/               → documentação oficial do Open Knowledge Format (Google Cloud)
-│       ├── SPEC.md               → especificação OKF v0.1 (baixada do GitHub)
-│       ├── README.md             → intro e agente de referência do repo okf/
-│       └── introducing-the-open-knowledge-format.md → blog post de lançamento (jun/2026)
-│
-└── wiki/                         → páginas geradas e mantidas pelo LLM
-    ├── automacao/
-    │   ├── firecrawl.md          → busca multi-plataforma com sintaxe site:
-    │   ├── wiki-review.md        → agente background que salva insights no diario/ a cada 10 turnos
-    │   └── wiki-review-vs-background-review.md → comparação completa (41 itens) entre wiki_review e background_review nativo
-    │
-    ├── conhecimento/
-    │   ├── wiki.md               → conceito central, regras e histórico da wiki
-    │   ├── okf.md                → Open Knowledge Format: o que é, nossa conformance, repo oficial para referência futura
-    │   └── agent-loop-architectures.md  → comparação de loops entre Hermes, OpenClaw, Claude Code, Codex e Cline
-    │
-    ├── diario/                   → daily notes / memória episódica (YYYY-MM-DD.md)
-    │
-    ├── historico/
-    │   ├── crise-update.md       → recuperação de sessões após /update corromper state.db
-    │   └── 2026-06-22-modelos-nim-elevenlabs.md → sessão: Nvidia NIM, ElevenLabs MCP, Groq e rate limit agêntico
-    │
-    ├── infraestrutura/
-    │   ├── hermes.md             → identidade, regras, stack e preferências do Hermes
-    │   ├── hermes-api.md         → referência completa dos endpoints REST do Hermes Agent (gerada do /openapi.json)
-    │   ├── telegram-topicos.md   → mapa completo de chats, tópicos e IDs do Telegram
-    │   ├── termux-ssh-claude.md  → diagnóstico de sessões travando no Remote Control (Termux/Android) — 2026-06-26
-    │   └── vps.md                → hardware, serviços, Docker Swarm, IPVS
-    │
-    └── pendencias/
-        └── proximos-passos.md    → to-do list ativa
-```
+Ver [[index.md]] — fonte de verdade da estrutura. Ao criar, renomear ou remover qualquer arquivo ou pasta, atualizar o `index.md`.
 
 ---
 
