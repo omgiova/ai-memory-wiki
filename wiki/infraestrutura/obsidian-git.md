@@ -27,27 +27,35 @@ Isso significa que **o pull nunca deveria ter conflito real**. Quando falha, é 
 
 ## Configuração definitiva (por device)
 
-### 1. Git config — `pull.autostash true` (solução real)
+### 1. Git config — `merge.autostash true` (solução real — validada em 2026-06-26)
 
 O plugin obsidian-git v2.38.5 não tem opção de "force pull" ou "stash before pull" na UI. As opções de "Merge strategy" disponíveis (Merge, Rebase, Other sync service) não resolvem o erro "would be overwritten by merge".
+
+**Atenção:** `pull.autostash true` **não funciona** com este plugin porque o plugin não executa `git pull` — ele executa `git fetch` + `git merge` separadamente. O `pull.autostash` só afeta o comando `git pull`. O config correto é `merge.autostash true`.
 
 **A solução é no git nativo**, que o plugin herda automaticamente:
 
 ```bash
 # Windows — rodar no Git Bash ou PowerShell
-git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" config pull.autostash true
+git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" config merge.autostash true
 
 # Verificar se foi aplicado
-git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" config pull.autostash
+git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" config merge.autostash
 # deve retornar: true
 
 # Android — rodar no Termux
-git -C ~/storage/shared/ai-memory-wiki config pull.autostash true
+git -C ~/storage/shared/ai-memory-wiki config merge.autostash true
 ```
 
-Isso vai para o `.git/config` local de cada device (não sincronizado). Precisa rodar **uma vez por device**.
+Isso vai para o `.git/config` local de cada device (não sincronizado). Persiste permanentemente — só some se o vault for deletado e re-clonado. Precisa rodar **uma vez por device**.
 
-**Por que funciona:** antes de qualquer pull, o git faz `git stash` das mudanças locais automaticamente, executa o pull, e descarta o stash. Mudanças do Obsidian em arquivos de config (graph.json, etc.) são stashadas e nunca mais bloqueiam o pull.
+**Por que funciona:** antes de qualquer `git merge`, o git faz `git stash` das mudanças locais automaticamente, executa o merge, e descarta o stash. Como o Obsidian é read-only, o stash é sempre descartado e nunca cria conflito.
+
+**Fix de desbloqueio** (quando o pull está travado com "would be overwritten by merge"):
+```bash
+git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" fetch origin
+git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" reset --hard origin/main
+```
 
 ### 2. Opções do plugin (secundárias)
 
@@ -144,6 +152,7 @@ git reset --hard origin/main
 | 2026-06-26 | "Discard All" obrigatório antes de todo Pull (Windows) | `app.json` e `appearance.json` commitados como `{}` pelo Android; Windows reescrevia ao abrir | Adicionados ao `.gitignore` + `git rm --cached` |
 | 2026-06-26 | Pull bloqueado no Android após fix anterior | Android ainda tinha os arquivos como locais modificados | Discard no Obsidian Android; alternativa: `rm` via Termux |
 | 2026-06-26 | Pull falha no Windows com `graph.json` + `pendencia-problema-ssh-claude.md` | Windows desatualizado por múltiplos commits; renomeação de arquivo causou edge case | Discard All + Pull; documentação reescrita com causa raiz real |
+| 2026-06-26 | `pull.autostash true` configurado mas pull continua falhando com `AGENTS.md`, `index.md`, `orquestrador.md` | Plugin usa `git merge` internamente, não `git pull` — `pull.autostash` não se aplica ao `git merge` | `git config merge.autostash true` no Windows; `reset --hard origin/main` para desbloqueio imediato; aguardando validação a longo prazo |
 
 ---
 
@@ -153,6 +162,9 @@ git reset --hard origin/main
 2. `git clean -fd .obsidian/` sem verificar — apagou plugin instalado no Android
 3. Aplicou fix de `git rm --cached` no servidor sem alertar que o próximo pull em cada device precisaria de atenção especial
 4. Sugeriu "Discard All manual" como solução em vez de configurar o plugin para fazer isso automaticamente
+5. Afirmou que o plugin tem opção "HARD RESET" no Merge Strategy — não existe. As únicas opções são: Merge, Rebase, Other sync service
+6. Afirmou que `pull.autostash true` é a solução — não funciona porque o plugin usa `git merge`, não `git pull`. O config correto é `merge.autostash true`
+7. Assumiu sem evidência que o usuário rodou o comando no VPS em vez do Windows — estava errado
 
 ---
 
