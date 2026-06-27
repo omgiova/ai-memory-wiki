@@ -29,6 +29,8 @@ status: stable
 
 10. **Detecção periódica de processos zumbi do Claude** — criar mecanismo que monitore com certa frequência processos Claude acumulados em background, evitando consumo silencioso de memória sem o usuário saber. Diferente do item 9 (que age só no início de sessão), este deve rodar de forma contínua ou agendada. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
 
+11. **Validar fix do Obsidian Git (merge.autostash)** — `git config merge.autostash true` configurado no Windows em 2026-06-26. Confirmar que Pull funciona consistentemente sem erros de "would be overwritten by merge". Quando validado, mover [[infraestrutura/obsidian-git.md]] de `status: draft` para `status: stable`. *Registrado 2026-06-26.*
+
 ### Concluído
 
 - ~~**Criar `wiki_review.py`**~~ — feito (2026-06-23), arquivo em `/root/.hermes/agent/wiki_review.py`
