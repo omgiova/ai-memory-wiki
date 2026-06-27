@@ -794,6 +794,49 @@ bash /root/curator-teste2.sh
 
 ---
 
+### Tentativa 7 — 2026-06-27 — SUCESSO PARCIAL ⚠️
+
+**Script:** `curator-teste3.sh` (v3 — mesmo da tentativa 6)
+**Ticket gerado:** #005 — daily `2026-06-22-20260622.md`
+**Message-ids:** 813 (daily), 814 (curadoria), 815 (footer)
+
+**Problemas identificados no output via revisão manual com o Giovani:**
+
+| # | Problema | Detalhe |
+|---|---|---|
+| 1 | Destino errado sem verificação | Agente sugeriu `telegram-topicos.md` para conteúdo sobre reações sem ler a página — ela cobre IDs de tópicos, não Bot API |
+| 2 | Conteúdo não validado tratado como fato | Técnica ±5 de IDs vizinhos era aspiração do wiki-review, não procedimento testado — agente sugeriu migrar como se fosse durável |
+| 3 | Não declarou o que leu | Sem rastreabilidade das decisões — impossível saber se o agente realmente verificou as páginas antes de escolher destinos |
+
+**Aprendizados para próxima iteração:**
+1. Agente DEVE ler a página de destino antes de sugerir MIGRAR — não decidir por nome de arquivo
+2. Cada item deve declarar explicitamente o que foi lido e o que foi encontrado (linha `↳`)
+3. Footer deve incluir lista completa de todos os arquivos lidos durante a análise
+
+---
+
+### Tentativa 8 — aguardando execução
+
+**Script:** `curator-teste4.sh` (v4 — novo script)
+**System prompt:** `curator-v4-system.md` (v4 — inclui regra de leitura obrigatória antes de MIGRAR)
+**Mudanças centrais:**
+
+| # | Mudança | Onde |
+|---|---|---|
+| 1 | Regra explícita: ler página antes de sugerir MIGRAR | `curator-v4-system.md` |
+| 2 | Linha `↳` por item: arquivos lidos + o que encontrou | prompt `-p` em `curator-teste4.sh` |
+| 3 | `LIDOS:` ao final do output do agente | prompt `-p` em `curator-teste4.sh` |
+| 4 | Footer inclui lista completa de arquivos lidos | `curator-teste4.sh` — extrai `LIDOS:` e adiciona ao footer |
+
+**O que esta tentativa valida:**
+- Agente declara rastreabilidade de cada decisão via linha `↳`
+- Destinos de MIGRAR são verificados antes de sugeridos
+- Footer com arquivos lidos permite auditoria rápida da análise
+
+**Resultado:** _(a preencher após execução)_
+
+---
+
 ## Conexões
 
 - [[wiki/conhecimento/plano-implementacao-loop.md|Plano de Implementação — Loops]] — contexto técnico e arquitetura de loops agênticos
