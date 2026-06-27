@@ -2,14 +2,43 @@
 type: procedure
 tags: [obsidian, git, plugin, windows, android, sincronizacao, troubleshooting]
 title: Obsidian Git — Configuração e Troubleshooting
-description: Referência consolidada de todos os problemas já encontrados com o plugin obsidian-git, causas raiz e soluções definitivas
+description: Referência consolidada para manter o Obsidian como visualizador read-only do vault — todos os pulls devem funcionar sem interação manual
 timestamp: 2026-06-26T00:00:00-03:00
 status: stable
 ---
 
 # Obsidian Git — Configuração e Troubleshooting
 
-Página única de referência. **Sempre atualize aqui antes de tentar qualquer solução nova.**
+---
+
+## Premissa fundamental (LEIA ANTES DE QUALQUER FIX)
+
+> **Obsidian é um visualizador read-only do vault. Todas as edições acontecem no servidor via Claude Code / Hermes. O Obsidian nunca edita arquivos `.md` manualmente.**
+
+Isso significa que **o pull nunca deveria ter conflito real**. Quando falha, é porque:
+
+1. O Obsidian auto-escreve arquivos em `.obsidian/` (graph.json, workspace.json, etc.) que às vezes ainda estão rastreados pelo git
+2. Renomeações ou deleções no servidor geram edge cases onde o git interpreta o arquivo local como "modificado localmente" — mesmo sem o usuário ter tocado nele
+3. O device ficou com versão antiga do `.gitignore` e ainda rastreia arquivos que já foram removidos do rastreamento no servidor
+
+**A solução definitiva não é "Discard All manual" a cada pull — é configurar o pull para sempre vencer o estado local.**
+
+---
+
+## Configuração ideal do obsidian-git (por device)
+
+O `data.json` é gitignored e local por device — cada um precisa configurar o seu.
+
+**Configurações recomendadas no plugin (Settings → Community Plugins → obsidian-git):**
+
+| Configuração | Valor | Motivo |
+|---|---|---|
+| Merge strategy | `ours` ou `theirs` (remoto) | sempre aceitar o que veio do servidor |
+| Stash before pulling | ✅ ativado | descarta mudanças locais automaticamente antes do pull |
+| Commit all changes before pulling | ❌ desativado | não há nada para commitar (obsidian é read-only) |
+| Pull interval | 0 (manual) ou 5 min | evitar conflitos silenciosos em auto-pull |
+
+> Se o plugin não tiver "Stash before pulling", usar o **Pull (with stash)** manual quando o pull normal falhar.
 
 ---
 
@@ -17,27 +46,26 @@ Página única de referência. **Sempre atualize aqui antes de tentar qualquer s
 
 | Item | Desktop (Windows) | Android |
 |---|---|---|
-| Vault path | onde o Obsidian apontar | `~/storage/shared/ai-memory-wiki` = `/storage/emulated/0/ai-memory-wiki` |
+| Vault path | (onde o Obsidian apontar) | `~/storage/shared/ai-memory-wiki` |
 | Plugin instalado | ✅ | ✅ |
-| Credenciais | Windows Credential Manager (automático) | `data.json` local (gitignored, precisa configurar 1x por device) |
-| `data.json` | ❌ gitignored (correto) | ❌ gitignored (correto) |
+| Credenciais | Windows Credential Manager | `data.json` local — configurar 1x por device |
+| `data.json` no git | ❌ gitignored | ❌ gitignored |
 
-**Remote atual:** `https://github.com/omgiova/wiki.git`
-(repo foi renomeado de `ai-memory-wiki` para `wiki` — o redirect funciona, mas atualizar o remote é recomendado via `git remote set-url origin https://github.com/omgiova/wiki.git`)
+**Remote:** `https://github.com/omgiova/wiki.git`
 
 ---
 
 ## .gitignore — o que está ignorado e por quê
 
 ```gitignore
-# Estado local da janela — não sincronizar
+# Estado local da janela — regenerado automaticamente pelo Obsidian
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 
 # Token do GitHub — NUNCA commitar
 .obsidian/plugins/obsidian-git/data.json
 
-# Preferências locais por dispositivo (cada device tem as suas)
+# Preferências locais por dispositivo — Obsidian reescreve a cada abertura
 .obsidian/app.json
 .obsidian/appearance.json
 .obsidian/graph.json
@@ -46,133 +74,77 @@ Página única de referência. **Sempre atualize aqui antes de tentar qualquer s
 .trash/
 ```
 
-> `app.json`, `appearance.json` e `graph.json` foram adicionados ao gitignore em 2026-06-26 e removidos do rastreamento com `git rm --cached`. Antes disso estavam commitados como `{}` vindos do Android, causando diff imediato no Windows a cada abertura.
+**Atenção:** `community-plugins.json` e `core-plugins.json` ainda são rastreados. Se divergirem entre devices, podem causar conflito. Se isso acontecer, adicionar ao `.gitignore` também.
 
 ---
 
-## Problemas já encontrados e soluções
+## Por que o pull falha mesmo sem editar nada
 
-### Problema 1 — Plugin sumia a cada abertura (Windows e Android)
+### Caso 1 — arquivo ainda rastreado apesar do gitignore
 
-**Sintoma:** plugin obsidian-git desaparecia após abrir o Obsidian. Precisava reinstalar e reconfigurar manualmente.
+O `.gitignore` ignora arquivos **não rastreados**. Se o arquivo já estava commitado (antes de entrar no gitignore), ele continua sendo rastreado. O `git rm --cached` remove do rastreamento — mas o device que não puxou esse commit ainda o vê como rastreado.
 
-**Causa raiz:** a pasta `.obsidian/` nunca foi commitada. Qualquer operação git que tocasse a pasta apagava os arquivos do plugin.
+**Resultado:** quando o device desatualizado tenta puxar o commit do `git rm --cached`, o git detecta que o arquivo local tem conteúdo diferente do que o commit quer deletar → erro "would be overwritten by merge".
 
-**Solução aplicada (2026-06-24):**
-1. Commitou `.obsidian/` completo a partir do Android (plugin já estava instalado lá)
-2. Windows fez `git pull` — restaurou os arquivos
-3. Plugin passou a persistir em ambos os devices
+**Fix permanente:** configurar "Stash before pulling" no obsidian-git. O stash guarda o estado local, o pull acontece, o stash é descartado (como o arquivo agora está ignorado, não volta).
 
----
+### Caso 2 — renomeação no servidor
 
-### Problema 2 — "Discard All" obrigatório antes de cada Pull (Windows)
+Um arquivo é renomeado no servidor (`pendencia-X.md` → `termux-ssh-claude.md`). O device local ainda tem o arquivo com o nome antigo. O git tenta deletar o arquivo antigo, mas o local tem "mudanças" (mesmo que sejam só a existência do arquivo). Falha com "would be overwritten by merge".
 
-**Sintoma:** toda vez que o Obsidian era aberto no Windows, era necessário dar "Discard All" antes de conseguir Pull.
+**Fix permanente:** mesma solução — "Stash before pulling" descarta o arquivo antigo, o pull traz o novo nome.
 
-**Causa raiz:** `app.json` e `appearance.json` estavam commitados como `{}` (vindos do Android). Ao abrir no Windows, o Obsidian populava esses arquivos com preferências locais — gerando diff imediato.
+### Caso 3 — Obsidian escreveu em arquivo rastreado
 
-**Solução aplicada (2026-06-26):**
-1. `app.json`, `appearance.json` e `graph.json` adicionados ao `.gitignore`
-2. `git rm --cached .obsidian/app.json .obsidian/appearance.json .obsidian/graph.json`
-3. Commit + push do fix
+O Obsidian abre e escreve em `graph.json`, `app.json`, etc. Se esses arquivos ainda estiverem rastreados (situação de transição), o git vê mudança local → pull falha.
+
+**Fix permanente:** garantir que todos esses arquivos estejam no `.gitignore` E tenham sido removidos com `git rm --cached`.
 
 ---
 
-### Problema 3 — Pull bloqueado no Android após o fix do Problema 2
+## Fix de emergência quando o pull falha (Windows)
 
-**Sintoma:**
-```
-Your local changes to the following files would be overwritten by checkout:
-.obsidian/graph.json
-```
+Se o pull falhar com "would be overwritten by merge":
 
-**Causa:** Android ainda tinha `graph.json` como arquivo local modificado. O pull tentou deletar o arquivo do rastreamento, mas o git se recusou a sobrescrever arquivo com mudanças locais.
+1. **Verificar os arquivos listados no erro**
+   - São todos `.obsidian/*`? → pode descartar sem risco
+   - Tem algum `.md` do vault? → confirmar que não há edições locais (não deveria ter)
 
-**Solução (2026-06-26):**
-- Usar o botão "Discard" no Source Control do Obsidian Android para descartar `graph.json`
-- Alternativa via Termux se o botão não aparecer:
-  ```bash
-  rm ~/storage/shared/ai-memory-wiki/.obsidian/app.json \
-     ~/storage/shared/ai-memory-wiki/.obsidian/appearance.json \
-     ~/storage/shared/ai-memory-wiki/.obsidian/graph.json
-  ```
-- Depois Pull no Obsidian. O Obsidian recria os arquivos automaticamente e o git os ignora.
+2. **Source Control → Discard All → Pull**
 
----
+3. **Depois:** verificar se "Stash before pulling" está ativado nas configurações do plugin para não precisar fazer isso manualmente da próxima vez.
 
-### Problema 4 — Pull falha no Windows com dois arquivos (2026-06-26)
-
-**Sintoma:**
-```
-Pull failed (merge): Updating 466631f..4702b5e
-error: Your local changes to the following files would be overwritten by merge:
-  .obsidian/graph.json
-  wiki/infraestrutura/pendencia-problema-ssh-claude.md
-Please commit your changes or stash them before you merge. Aborting
+**Fix via terminal (Windows PowerShell / Git Bash) se o botão falhar:**
+```bash
+cd <caminho-do-vault>
+git checkout -- .
+git pull
 ```
 
-**Causa raiz (dois problemas distintos):**
-1. **`graph.json`** — ainda estava sendo rastreado no Windows porque o Windows nunca tinha puxado o commit do `git rm --cached` (fix do Problema 2). O Windows ficou desatualizado por vários commits.
-2. **`pendencia-problema-ssh-claude.md`** — o arquivo foi **renomeado** para `termux-ssh-claude.md` no servidor (commit `d099004`), mas o Windows ainda tinha o arquivo com o nome antigo e com edições locais não commitadas.
-
-**Solução:**
-1. No Obsidian Windows → Source Control → verificar se `pendencia-problema-ssh-claude.md` tem conteúdo valioso localmente
-2. Se não tiver (ou já estiver no servidor): **Discard All** → **Pull**
-3. O pull vai apagar `pendencia-problema-ssh-claude.md` e trazer `termux-ssh-claude.md` (versão final) + desrastrear `graph.json`
-
-**Por que o Windows ficou tão desatualizado?** O problema 2 foi corrigido no servidor, mas o Windows não fez Pull depois. Os pulls subsequentes falhavam por causa do `graph.json` local, criando um ciclo.
-
 ---
 
-## Padrão de erro — quando ver "would be overwritten by merge"
+## Histórico de incidentes
 
-Este erro sempre significa: **git quer sobrescrever um arquivo que você tem localmente modificado, mas não commitado**.
-
-**Diagnóstico rápido:**
-1. Quais arquivos estão listados no erro?
-2. São arquivos de configuração do Obsidian (`.obsidian/`)? → pode descartar com segurança
-3. São arquivos `.md` do vault? → verificar se têm conteúdo local valioso antes de descartar
-4. Commitar o que for valioso → Pull
-
-**Fix genérico (quando não há nada valioso para salvar):**
-Source Control → **Discard All** → **Pull**
-
----
-
-## Configuração recomendada do obsidian-git (data.json — local, não commitado)
-
-Para evitar que pulls falhem por mudanças locais não commitadas, configurar no plugin:
-- **"Commit all changes before pulling"** → ativado
-- **"Pull interval"** → 0 (pull manual, não automático — evita conflitos inesperados)
-
-> `data.json` é gitignored — cada device configura o seu. Esta recomendação vale para todos os devices.
+| Data | Problema | Causa raiz | Fix aplicado |
+|---|---|---|---|
+| 2026-06-24 | Plugin sumia a cada abertura | `.obsidian/` nunca commitado | Commitou `.obsidian/` do Android; desktop fez pull |
+| 2026-06-26 | "Discard All" obrigatório antes de todo Pull (Windows) | `app.json` e `appearance.json` commitados como `{}` pelo Android; Windows reescrevia ao abrir | Adicionados ao `.gitignore` + `git rm --cached` |
+| 2026-06-26 | Pull bloqueado no Android após fix anterior | Android ainda tinha os arquivos como locais modificados | Discard no Obsidian Android; alternativa: `rm` via Termux |
+| 2026-06-26 | Pull falha no Windows com `graph.json` + `pendencia-problema-ssh-claude.md` | Windows desatualizado por múltiplos commits; renomeação de arquivo causou edge case | Discard All + Pull; documentação reescrita com causa raiz real |
 
 ---
 
 ## Erros históricos do agente (para não repetir)
 
-1. **`git clean -fd .obsidian/`** sem verificar o que estava na pasta — apagou o plugin instalado no Android
-2. Não commitar imediatamente após editar arquivos (violação do AGENTS.md)
-3. Afirmar que não haveria conflito entre devices sem verificar — contradição na mesma sessão
-4. Fazer `git rm --cached` no servidor sem alertar que o Windows precisaria de atenção especial no próximo pull
-
----
-
-## Pontos de atenção contínuos
-
-- **`core-plugins.json` ainda é rastreado** — se divergir entre PC e Android (plugin ativado num e não no outro), pode gerar conflito. Monitorar.
-- **`data.json` precisa ser configurado 1x por device novo** — não está no git
-- **Nunca rodar `git clean -fd .obsidian/`** sem confirmar que os arquivos estão commitados
-- **Remote URL:** repo foi renomeado. Redirect funciona mas atualizar é recomendado:
-  ```bash
-  git remote set-url origin https://github.com/omgiova/wiki.git
-  ```
-- **Quando um fix é aplicado no servidor**, sempre alertar que o próximo pull em cada device pode precisar de atenção (especialmente se o fix mexeu com arquivos gitignored ou renomeações)
+1. Documentou o problema como "conflito entre devices" — causa real é que Obsidian é read-only e o pull deveria sempre vencer
+2. `git clean -fd .obsidian/` sem verificar — apagou plugin instalado no Android
+3. Aplicou fix de `git rm --cached` no servidor sem alertar que o próximo pull em cada device precisaria de atenção especial
+4. Sugeriu "Discard All manual" como solução em vez de configurar o plugin para fazer isso automaticamente
 
 ---
 
 ## Conexões
 
-- [[wiki/diario/2026-06-24-obsidian-git-setup.md]] — registro detalhado da sessão de setup inicial e erros cometidos
-- [[wiki/infraestrutura/vps.md]] — caminho do vault no Android documentado aqui
+- [[wiki/diario/2026-06-24-obsidian-git-setup.md]] — sessão detalhada de setup inicial
+- [[wiki/infraestrutura/vps.md]] — caminho do vault no Android
 - [[wiki/infraestrutura/termux-ssh-claude.md]] — arquivo renomeado de pendencia-problema-ssh-claude.md
