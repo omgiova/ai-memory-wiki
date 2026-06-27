@@ -178,3 +178,4 @@ Agent Runtime (`src/agents/piembeddedrunner.ts`) — a cada turno:
 
 - [[infraestrutura/hermes.md|Hermes]] — identidade, regras e stack do Hermes Agent
 - [[pendencias/proximos-passos.md|Próximos Passos]] — to-do list ativa
+- [[automacao/curador-wiki.md|Curador da Wiki — Teste 1]] — primeiro loop implementado a partir deste plano; MVP de curadoria de daily notes
