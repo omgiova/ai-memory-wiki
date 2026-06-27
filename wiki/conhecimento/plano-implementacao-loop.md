@@ -2,54 +2,18 @@
 type: concept
 tags: [agentes, loops, arquitetura, loop-engineering, planejamento]
 title: Plano — Loop Engineering
-description: Plano centralizado para entender, testar e aplicar loops agênticos. Agnóstico de modelo e ambiente. Inclui referências, testes e o que já foi validado.
+description: Registro técnico de pesquisa sobre loops agênticos. O que foi lido, o que foi testado, o que está validado e o que ainda é hipótese.
 timestamp: 2026-06-27T02:10:00-03:00
 status: draft
 ---
 
 # Plano — Loop Engineering
 
-## Tese
-
-> *"You shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents."*
-> — Peter Steinberger (@steipete), criador do OpenClaw
-> Fonte: https://x.com/steipete/status/2063697162748260627
-
-> *"I don't prompt Claude anymore. I have loops running that prompt Claude and figuring out what to do. My job is to write loops."*
-> — Boris Cherny, head of Claude Code na Anthropic
-> Fonte: https://www.youtube.com/watch?v=SlGRN8jh2RI
-
-O ponto de alavancagem mudou: não é mais escrever o prompt certo — é escrever o sistema que dispara os prompts.
+Registro técnico de pesquisa sobre sistemas de loop agêntico. Agnóstico de modelo e ambiente — qualquer agente deve conseguir executar. Distingue o que foi **validado** do que ainda é **hipótese**.
 
 ---
 
-## Princípios (agnósticos de modelo e ambiente)
-
-Baseado em: Addy Osmani, *"Loop Engineering"* — https://addyosmani.com/blog/loop-engineering/
-
-> *"Replacing yourself as the person who prompts the agent. You design the system that does it instead."*
-
-**Os 6 componentes de um loop:**
-
-| # | Componente | O que é |
-|---|---|---|
-| 1 | **Automations** | o que dispara o loop (cron, evento, condição) |
-| 2 | **Worktrees** | ambiente isolado onde o agente opera |
-| 3 | **Skills** | capacidades específicas disponíveis ao agente |
-| 4 | **Plugins/connectors** | integrações com sistemas externos |
-| 5 | **Subagents** | agentes especializados para tarefas específicas |
-| 6 | **Memory/state** | o que persiste entre execuções |
-
-**Princípios fundamentais:**
-
-- **Maker/checker** — o modelo que produziu algo não deve revisar o próprio trabalho. Um segundo agente com instruções diferentes (e às vezes modelo diferente) pega o que o primeiro se convenceu a ignorar.
-- **Memória em disco, não em contexto** — o agente esquece tudo entre execuções. O estado fica em arquivo, não no histórico.
-- **Condição de parada verificada por agente separado** — maker e checker são distintos, inclusive para decidir quando parar.
-- **Loop sem supervisão = erro sem supervisão** — autonomia exige circuit breaker explícito.
-
----
-
-## O que já foi validado ✅
+## ✅ Validado
 
 ### Loop externo com Claude Code CLI na VPS
 
@@ -75,7 +39,7 @@ O binário `claude` pode ser acionado pelo cron do sistema sem sessão interativ
 | Tarefa sem bloquear sessão atual | subagente `background: true` em `.claude/agents/` |
 | Pipeline com hooks programáticos | Agent SDK Python |
 
-**Boas práticas validadas:**
+**Boas práticas observadas (não testadas exaustivamente):**
 - Circuit breaker explícito: `MAX` iterações no script ou `maxTurns: N` no frontmatter do subagente
 - Estado em arquivo — prompt autocontido, sem histórico de conversa
 - `--allowedTools` — restringir ao mínimo necessário
@@ -84,59 +48,70 @@ O binário `claude` pode ser acionado pelo cron do sistema sem sessão interativ
 
 ---
 
-## Sistemas para testar
+## 🔬 Hipóteses (não testadas)
+
+Padrões descritos em fontes públicas, ainda não verificados na prática.
+
+**Memória em disco, não em contexto**
+O agente começa cada execução sem contexto. Estado persistente fica em arquivo (ex: `.tsv`, `.json`, `.md`), não no histórico de conversa.
+
+**Supressão de output do contexto**
+Redirecionar output de processos longos para arquivo e extrair só o sinal necessário evita poluir o contexto e degradar a qualidade das próximas iterações.
+
+**Condição de parada externa**
+O agente não decide quando parar — a condição de parada é definida pelo humano no design do loop (número máximo de iterações, threshold de métrica, interrupção manual).
+
+**Maker/checker**
+O agente que produz algo não deve revisar o próprio trabalho. Um segundo agente com instruções diferentes revisa.
+
+**Git como máquina de estados**
+Usar commit/reset como lógica de decisão do loop (keep = commit, discard = reset) em vez de lógica aplicacional separada.
+
+---
+
+## 🧪 Sistemas pesquisados — a testar
 
 ### Teste 1: karpathy/autoresearch
 
 **Repositório:** https://github.com/karpathy/autoresearch  
 **Autor:** Andrej Karpathy  
-**Stars:** 88.8k  
-**Stack:** Python + uv  
-**Status:** ativo (último commit mar/2026)
+**Stars:** 88.8k | **Stack:** Python + uv | **Último commit:** mar/2026
 
-**O que é:**  
-Loop de pesquisa autônoma em ML. O agente modifica `train.py`, treina por 5 minutos, verifica se o resultado melhorou, mantém ou descarta, e repete indefinidamente. O humano não toca no código — edita o `program.md` (as instruções do agente) e vai dormir.
+**O que é:**
+Loop de pesquisa autônoma em ML. O agente modifica `train.py`, treina por 5 minutos, verifica se o resultado melhorou, mantém ou descarta, e repete indefinidamente. O humano edita `program.md` (instruções do agente) e não toca no código.
 
-**Arquitetura do loop:**
+**Arquitetura:**
 
 ```
-program.md          → skill/contexto do agente (editado pelo humano)
-train.py            → único arquivo que o agente modifica
-prepare.py          → imutável (avaliação, dados, tokenizer)
-results.tsv         → memória em disco, não commitada, não vai pro contexto
+program.md    → instruções do agente (editado pelo humano)
+train.py      → único arquivo que o agente modifica
+prepare.py    → imutável (avaliação, dados, tokenizer)
+results.tsv   → memória em disco, não commitada
 ```
 
-**Lógica de decisão via git:**
-```
-val_bpb melhorou? → git commit (keep — avança o branch)
-val_bpb piorou?   → git reset  (discard — volta ao estado anterior)
-```
-O git não é só versionamento — é a máquina de estados do loop.
-
-**Supressão de output do contexto (padrão explícito):**
+**Lógica do loop:**
 ```bash
-uv run train.py > run.log 2>&1        # output nunca vai pro contexto
-grep "^val_bpb:\|^peak_vram_mb:" run.log  # só o sinal, sem ruído
+# cada iteração:
+uv run train.py > run.log 2>&1
+grep "^val_bpb:" run.log
+
+# decisão:
+val_bpb melhorou? → git commit   (keep)
+val_bpb piorou?   → git reset    (discard)
 ```
 
-**Condição de parada:**  
-Externa — o humano interrompe. O agente não pergunta se deve continuar. `program.md` instrui explicitamente: *"NEVER STOP. Do NOT pause to ask the human."*
-
-**Critério de sucesso do experimento (simplicity criterion):**  
+**Critério de aceitação de mudança:**
 Não é só "o score melhorou?" — é "o ganho justifica a complexidade adicionada?":
-- Ganho de 0.001 + 20 linhas novas → discard
+- Ganho pequeno + código novo → discard
 - Remoção de código com ganho igual → keep
 - Ganho zero + código mais simples → keep
 
-**Pré-requisitos:**
-- GPU NVIDIA (testado em H100) — ⚠️ **VPS atual não tem GPU NVIDIA**
-- Python 3.10+, uv
-- Forks disponíveis para MacOS MLX e outros ambientes
+**Pré-requisito bloqueante:** GPU NVIDIA — ⚠️ VPS atual não tem.
 
-**Opções para rodar:**
-- Máquina com GPU NVIDIA
+**Opções para executar:**
+- Máquina local com GPU NVIDIA
 - Instância cloud com GPU (Vast.ai, RunPod)
-- Fork para outro hardware
+- Fork para outro hardware (MacOS MLX: https://github.com/trevin-creator/autoresearch-mlx)
 - Adaptar o loop para tarefa sem GPU (substituir `train.py` por outra tarefa mensurável)
 
 ---
@@ -145,15 +120,10 @@ Não é só "o score melhorou?" — é "o ganho justifica a complexidade adicion
 
 **Repositório:** https://github.com/openclaw/openclaw  
 **Autor:** Peter Steinberger + comunidade  
-**Stars:** 381k  
-**Stack:** TypeScript/Node.js  
-**Status:** ativo (último commit 27 jun 2026)
+**Stars:** 381k | **Stack:** TypeScript/Node.js | **Último commit:** 27 jun 2026
 
-> *"OpenClaw treats AI as an infrastructure problem: sessions, memory, tool sandboxing, access control, and orchestration. The LLM provides intelligence; OpenClaw provides the execution environment."*  
-> — Paolo Perazzo, https://ppaolo.substack.com/p/openclaw-system-architecture-overview
-
-**O que é:**  
-Loop agêntico avançado com gateway central em WebSocket (`127.0.0.1:18789`). Todos os canais (WhatsApp, Telegram, Discord, CLI, Web UI) conectam no mesmo control plane.
+**O que é:**
+Gateway agêntico com control plane central em WebSocket (`127.0.0.1:18789`). Todos os canais (WhatsApp, Telegram, Discord, CLI, Web UI) conectam no mesmo hub.
 
 **Arquitetura (hub-and-spoke):**
 
@@ -163,41 +133,38 @@ Agent Runtime (`src/agents/piembeddedrunner.ts`) — a cada turno:
 3. Streama resposta e executa tool calls
 4. Persiste estado
 
-**Decisões de design relevantes:**
-- System prompt como **stack de arquivos** — composição de múltiplas configs, não string única
-- **Idempotency key obrigatório** em toda operação com efeito colateral — retry seguro sem duplicação
-- **Cron jobs escopados por agente** — cada agente tem os seus próprios (commit #96883)
-- **Session isolation** — sessão `main` roda tools no host; `dm`/`group` têm sandbox restrito
-- **Plugin system** — 4 tipos (channel, memory, tool, provider), discovery via `package.json`
+**Decisões de design documentadas:**
+- System prompt como stack de arquivos — composição de múltiplas configs, não string única
+- Idempotency key obrigatório em toda operação com efeito colateral
+- Cron jobs escopados por agente, não compartilhados (commit #96883)
+- Session isolation — sessão `main` roda tools no host; `dm`/`group` têm sandbox restrito
+- Plugin system — 4 tipos (channel, memory, tool, provider), discovery via `package.json`
 
-**Sistema de detecção de loop infinito (issue #57263):**
+**Sistema de detecção de loop infinito (documentado em issue #57263):**
 
 | Detector | O que detecta | Warning | Bloqueio |
 |---|---|---|---|
 | `generic_repeat` | mesma tool + args + resultado idêntico | 10 calls | 20 calls |
 | `unknown_tool_repeat` | tool inexistente chamada repetidamente | — | 10 calls |
 | `known_poll_no_progress` | poll/log sem progresso real | 10 calls | 20 calls |
-| `global_circuit_breaker` | qualquer tool 30+ vezes sem progresso | — | 30 calls (hard block) |
+| `global_circuit_breaker` | qualquer tool 30+ vezes sem progresso | — | 30 calls |
 | `ping_pong` | alternância A→B→A→B sem resultado novo | 10 calls | 20 calls |
 
-**Tool Outcome Hashing:** `sha256(args_sem_volatile + resultado)` — campos voláteis (`timestamp`, `messageId`, `runId`) removidos antes do hash. Só é loop se o **resultado também não mudou**.
+**Tool Outcome Hashing:** `sha256(args_sem_volatile + resultado)` — campos voláteis (`timestamp`, `messageId`, `runId`) removidos antes do hash. Só é loop se o resultado também não mudou.
 
-Arquivos relevantes (não acessíveis sem autenticação GitHub):
-- `src/agents/tool-loop-detection.ts`
-- `src/agents/embedded-agent-runner/run.ts`
-- `src/agents/post-compaction-loop-guard.ts`
+**Limitação de acesso:** código-fonte de `src/agents/` não acessível publicamente sem autenticação GitHub. Informações acima vêm de documentação pública e issues.
 
 ---
 
-## Gaps — o que ainda precisamos entender
+## ❓ Gaps — o que ainda não sabemos
 
-- [ ] Como o OpenClaw implementa maker/checker na prática (sem acesso ao código-fonte)
-- [ ] O padrão `/goal` do Claude Code — como funciona o checker de condição de parada
+- [ ] Como o OpenClaw implementa maker/checker na prática
+- [ ] Como funciona o checker de condição de parada do `/goal` do Claude Code
 - [ ] Como implementar idempotency key sem redesenhar APIs existentes
 
 ---
 
-## Leituras pendentes
+## 📚 Leituras pendentes
 
 - **Agent Harness Engineering:** https://addyosmani.com/blog/agent-harness-engineering/
 - **Long-Running Agents:** https://addyosmani.com/blog/long-running-agents/
