@@ -16,7 +16,8 @@ Catálogo completo. Leia este arquivo primeiro ao responder queries — use os l
 - [[wiki/infraestrutura/hermes.md|Hermes]] — identidade, regras, stack, modelos ativos e preferências do Hermes Agent
 - [[wiki/infraestrutura/telegram-topicos.md|Telegram Tópicos]] — mapa completo de chats, tópicos e IDs do Telegram
 - [[wiki/infraestrutura/hermes-api.md|Hermes API]] — referência completa dos ~180 endpoints REST do Hermes Agent (gerada do /openapi.json)
-- [[wiki/infraestrutura/pendencia-problema-ssh-claude.md|Problema SSH/Claude]] — diagnóstico dos 3 problemas que travam sessões Claude via Remote Control (curl sem timeout, processo zumbi, prompt invisível)
+- [[wiki/infraestrutura/termux-ssh-claude.md|Problema SSH/Claude]] — diagnóstico dos 3 problemas que travam sessões Claude via Remote Control (curl sem timeout, processo zumbi, prompt invisível)
+- [[wiki/infraestrutura/obsidian-git.md|Obsidian Git]] — todos os problemas já encontrados com o plugin obsidian-git, causas raiz e soluções definitivas
 
 ## 🧠 Conhecimento
 
