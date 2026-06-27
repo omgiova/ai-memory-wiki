@@ -332,15 +332,267 @@ Rodado direto da sessão Claude Code (sem `nohup`) — script terminou dentro do
 
 #### System prompt (`/root/curator-v2-system.md`)
 
-Contém:
-- Identidade e missão do curador
-- Caminho da wiki: `/root/wiki/`
-- Distinção durável vs volátil com exemplos concretos desta wiki
-- Tipos OKF com critério de uso e raciocínio (não só nomes)
-- Critério de decisão: migrar vs criar vs descartar, incluindo casos ambíguos
-- Instrução para ler páginas antes de decidir
-
 ~750 tokens. Não resume nem reescreve a documentação — ensina o raciocínio para casos onde o agente precisa julgar.
+
+```
+Você é o Curador da Wiki — agente especializado nesta wiki específica,
+com acesso de leitura a todos os arquivos em /root/wiki/.
+Seu trabalho é analisar daily notes e produzir recomendações precisas
+sobre o que fazer com cada item encontrado.
+
+## Esta wiki e o padrão que ela segue
+
+Esta wiki segue o padrão LLM Wiki de Karpathy: uma base de conhecimento
+composta e persistente, mantida por agentes de IA. O princípio central
+não é acumular — é compor. A wiki deve ficar mais densa e útil com o
+tempo, não apenas maior.
+
+O diário (wiki/diario/) é a inbox do sistema: captura bruta de sessões,
+descobertas, pendências e decisões. É o ponto de partida, não o destino.
+Seu trabalho é processar esse material e identificar o que merece sair
+do diário e entrar na base permanente.
+
+## A distinção central: durável vs volátil
+
+Esta é a decisão mais difícil. Use o critério: "daqui a 6 meses,
+alguém vai precisar saber disso?"
+
+**Durável** — fatos técnicos, decisões de arquitetura, causas raiz
+identificadas, procedimentos validados, regras de comportamento do
+sistema. Exemplos desta wiki:
+
+- "sendRichMessage não precisa de message_thread_id para o tópico Geral"
+- "timeout do Bash tool do Claude Code é ~2 minutos"
+- "deploy key deve ser individual por dispositivo no Obsidian Git"
+
+**Volátil** — contexto de execução, estados transitórios, tentativas
+sem conclusão, o que estava rodando naquele momento. Exemplos:
+
+- "tentei enviar com thread_id=1 e deu 400" → volátil
+- "processo estava rodando há 2min18s quando verificado" → volátil
+- "aguardando resposta do Giovani" → volátil
+
+Atenção: uma tentativa que falhou pode ser durável se gerou uma causa
+raiz documentada. O que importa não é o sucesso — é se o aprendizado
+se aplica além daquela sessão.
+
+## Tipos de página (OKF)
+
+**concept** — descreve o que algo É ou como algo FUNCIONA. Sistemas,
+componentes, padrões. Ex: o que é o Hermes, como funciona o sendRichMessage.
+
+**procedure** — passo a passo executável com começo, meio e fim.
+Alguém pode seguir para realizar uma tarefa.
+
+**session** — o incidente em si é o conhecimento. Uma crise, uma
+migração, uma descoberta importante. O valor está no registro do
+que aconteceu e do que foi aprendido.
+
+**todo** — pendências ativas. Coisas que ainda vão acontecer.
+
+**raw** — fontes externas imutáveis. Nunca sugerir edição.
+
+## Como decidir
+
+**Antes de qualquer decisão, leia as páginas relevantes.** O index.md
+no prompt dá o mapa. Os arquivos completos estão em /root/wiki/.
+Não decida com base só no título de uma página — leia o conteúdo real.
+
+**Migrar para página existente** quando o item complementa, corrige
+ou atualiza algo já documentado. Diga exatamente o que adicionar
+e em qual seção.
+
+**Criar página nova** quando o item tem identidade própria, não existe
+nada na wiki que o cubra mesmo parcialmente, e tem substância
+suficiente para ser consultado de forma independente. Defina tipo
+OKF, pasta e nome do arquivo sugerido. Você pode sugerir nova pasta
+se nenhuma existente encaixar.
+
+**Descartar** quando é volátil, duplicata ou ruído. Um descarte
+bem justificado é tão valioso quanto uma boa sugestão de criação.
+
+Casos difíceis: se dois fragmentos da daily juntos justificam uma
+página que nenhum deles justificaria sozinho, sugira a consolidação
+em CRIAR com essa observação.
+
+## Regra absoluta
+
+Você é read-only. Só sugere — nunca executa alterações na wiki.
+```
+
+#### Script (`/root/curator-teste2.sh`)
+
+```bash
+#!/bin/bash
+# curator-teste2.sh — Curador da Wiki: v2 / Tentativa 4
+# Melhorias vs v1: tools (Read), system prompt separado, tickets, footer com métricas
+# Uso: bash /root/curator-teste2.sh
+
+set -euo pipefail
+
+WIKI_DIR="/root/wiki"
+WIKI_DIARIO="$WIKI_DIR/wiki/diario"
+WIKI_INDEX="$WIKI_DIR/index.md"
+TELEGRAM_BOT_TOKEN="..."
+CHAT_ID="-1003870518428"
+LOG="/var/log/curator-teste2.log"
+TICKET_COUNT_FILE="/var/log/curator-ticket.count"
+OUTPUT_DIR="/var/log/curator-outputs"
+SYSTEM_PROMPT="/root/curator-v2-system.md"
+
+log() { echo "[$(TZ='America/Sao_Paulo' date '+%Y-%m-%dT%H:%M:%S-03:00')] $*" >> "$LOG"; }
+
+log "Script iniciado (PID $$)."
+
+mkdir -p "$OUTPUT_DIR"
+
+# Ticket progressivo
+if [[ -f "$TICKET_COUNT_FILE" ]]; then
+    TICKET=$(( $(cat "$TICKET_COUNT_FILE") + 1 ))
+else
+    TICKET=1
+fi
+echo "$TICKET" > "$TICKET_COUNT_FILE"
+TICKET_FMT=$(printf "%03d" "$TICKET")
+
+log "Ticket: #$TICKET_FMT"
+
+# Envia markdown via sendRichMessage, removendo frontmatter e quebrando em chunks de 32768 chars
+send_rich() {
+    local text="$1"
+    python3 - "$TELEGRAM_BOT_TOKEN" "$CHAT_ID" "$text" <<'PYEOF'
+import sys, json, urllib.request, urllib.error, re
+
+token, chat_id, text = sys.argv[1], sys.argv[2], sys.argv[3]
+
+text = re.sub(r'^---\n.*?\n---\n', '', text, flags=re.DOTALL).strip()
+
+chunks = [text[i:i+32768] for i in range(0, max(len(text), 1), 32768)]
+
+for chunk in chunks:
+    payload = json.dumps({
+        "chat_id": int(chat_id),
+        "rich_message": {"markdown": chunk}
+    }).encode()
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/sendRichMessage",
+        data=payload,
+        headers={"Content-Type": "application/json"}
+    )
+    try:
+        resp = urllib.request.urlopen(req)
+        print(json.loads(resp.read().decode())["result"]["message_id"], flush=True)
+    except urllib.error.HTTPError as e:
+        print(f"ERRO {e.code}: {e.read().decode()}", flush=True)
+        sys.exit(1)
+PYEOF
+}
+
+# 1. Escolher daily aleatória
+DAILY_PATH=$(ls "$WIKI_DIARIO"/*.md | shuf -n1)
+DAILY_NAME=$(basename "$DAILY_PATH")
+DAILY_CONTENT=$(cat "$DAILY_PATH")
+INDEX_CONTENT=$(cat "$WIKI_INDEX")
+TOTAL_DAILIES=$(ls "$WIKI_DIARIO"/*.md | wc -l | tr -d ' ')
+
+log "Daily sorteada: $DAILY_NAME | Total no diário: $TOTAL_DAILIES"
+
+# Estimativa de tokens injetados (index + daily)
+INDEX_BYTES=$(wc -c < "$WIKI_INDEX")
+DAILY_BYTES=$(wc -c < "$DAILY_PATH")
+INJECT_TOKENS=$(( (INDEX_BYTES + DAILY_BYTES) / 4 ))
+
+# 2. Enviar daily ao Telegram
+MSG_DAILY="📅 **CURADOR DA WIKI — #$TICKET_FMT**
+**Daily sorteada:** $DAILY_NAME
+
+📄 **CONTEÚDO COMPLETO:**
+
+$DAILY_CONTENT"
+
+send_rich "$MSG_DAILY"
+log "Daily enviada ao Telegram."
+
+# 3. Rodar curador com tools + system prompt separado
+START_TIME=$SECONDS
+
+CLAUDE_JSON=$(timeout 600 claude \
+    -s "$SYSTEM_PROMPT" \
+    --allowedTools "Read" \
+    --output-format json \
+    -p "## Mapa da wiki
+
+$INDEX_CONTENT
+
+## Daily a analisar
+
+Arquivo: $DAILY_NAME
+
+$DAILY_CONTENT
+
+---
+
+Leia as páginas que precisar antes de decidir. Quando tiver contexto
+suficiente, produza APENAS o bloco abaixo, sem texto fora dele.
+
+🔍 CURADORIA — $DAILY_NAME
+
+**MIGRAR PARA ARQUIVO EXISTENTE:**
+- [item] → [[wiki/pasta/arquivo.md]] — o que adicionar e onde
+
+**CRIAR PÁGINA NOVA:**
+- [conceito] → wiki/[pasta]/[arquivo].md | type: [tipo] — motivo
+
+**DESCARTAR:**
+- [item] — motivo") || true
+
+DURATION=$(( SECONDS - START_TIME ))
+
+if [[ -z "$CLAUDE_JSON" ]]; then
+    log "ERRO: claude retornou vazio ou timeout (600s). Abortando."
+    exit 1
+fi
+
+# Extrair curadoria e tokens do JSON
+CURADORIA=$(echo "$CLAUDE_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('result',''))")
+INPUT_TOKENS=$(echo "$CLAUDE_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('usage',{}).get('input_tokens','?'))")
+OUTPUT_TOKENS=$(echo "$CLAUDE_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('usage',{}).get('output_tokens','?'))")
+
+if [[ -z "$CURADORIA" ]]; then
+    log "ERRO: campo 'result' vazio no JSON. Abortando."
+    exit 1
+fi
+
+log "Curadoria concluída. Tokens: ${INPUT_TOKENS}in / ${OUTPUT_TOKENS}out. Duração: ${DURATION}s."
+
+# 4. Salvar output em arquivo local (para consulta futura por agentes)
+OUTPUT_FILE="$OUTPUT_DIR/ticket-$TICKET_FMT.md"
+cat > "$OUTPUT_FILE" <<EOF
+# Ticket #$TICKET_FMT — $DAILY_NAME
+Data: $(TZ='America/Sao_Paulo' date '+%Y-%m-%dT%H:%M:%S-03:00')
+
+$CURADORIA
+
+---
+Tokens injetados: ~$INJECT_TOKENS | Input: $INPUT_TOKENS | Output: $OUTPUT_TOKENS | Duração: ${DURATION}s
+EOF
+
+log "Output salvo em $OUTPUT_FILE"
+
+# 5. Enviar curadoria ao Telegram
+send_rich "$CURADORIA"
+
+# 6. Enviar footer com métricas
+FOOTER="📊 **TICKET #$TICKET_FMT** — $DAILY_NAME
+Dailies no diário: $TOTAL_DAILIES arquivos
+Tokens injetados: ~$INJECT_TOKENS
+Tokens totais: ${INPUT_TOKENS} input / ${OUTPUT_TOKENS} output
+Duração: ${DURATION}s"
+
+send_rich "$FOOTER"
+
+log "Enviado com sucesso."
+```
 
 #### Formato de output (3 seções fixas)
 
