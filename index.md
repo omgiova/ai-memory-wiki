@@ -44,7 +44,6 @@ log.md
     │   ├── 2026-06-20.md
     │   ├── 2026-06-22-20260621.md
     │   ├── 2026-06-22-20260622.md
-    │   ├── 2026-06-22-descoberta-id-mensagem.md
     │   ├── 2026-06-22-reacoes-telegram.md
     │   ├── 2026-06-23-20260623.md
     │   ├── 2026-06-24-1710.md
@@ -58,6 +57,8 @@ log.md
     │   ├── hermes-api.md
     │   ├── hermes.md
     │   ├── obsidian-git.md
+    │   ├── telegram-bot-api.md
+    │   ├── telegram-reacoes.md
     │   ├── telegram-send-rich-message.md
     │   ├── telegram-topicos.md
     │   ├── termux-ssh-claude.md
@@ -84,6 +85,7 @@ log.md
 - [[wiki/infraestrutura/obsidian-git.md|Obsidian Git]] — todos os problemas já encontrados com o plugin obsidian-git, causas raiz e soluções definitivas
 - [[wiki/infraestrutura/telegram-bot-api.md|Telegram Hub]] — ponto de entrada único para tudo sobre Telegram: Bot API, tópicos, reações, HERMES_SESSION_MESSAGE_ID, integrações
 - [[wiki/infraestrutura/telegram-send-rich-message.md|Telegram sendRichMessage]] — documentação do endpoint Bot API 10.1: parâmetros, payload, limites e exemplo validado
+- [[wiki/infraestrutura/telegram-reacoes.md|Telegram Reações]] — procedimento para setMessageReaction via HERMES_SESSION_MESSAGE_ID; status: não validado de ponta a ponta até 2026-06-27
 
 ### conhecimento/
 
@@ -116,7 +118,6 @@ Inbox da wiki — captura bruta automática por sessão (wiki-review). Contém p
 - [[wiki/diario/2026-06-22-20260622.md|2026-06-22]] — reações Telegram, protocolo test-then-act, Crawlee/Apify
 - [[wiki/diario/2026-06-22-20260621.md|2026-06-21]] — sessão anterior (ver arquivo para detalhes)
 - [[wiki/diario/2026-06-22-reacoes-telegram.md|2026-06-22 reações]] — testes de reação no Telegram, descoberta de message-id
-- [[wiki/diario/2026-06-22-descoberta-id-mensagem.md|2026-06-22 message-id]] — técnica de descoberta sequencial de IDs
 - [[wiki/diario/2026-06-20.md|2026-06-20]] — fix do /update destruindo dados; migração para wiki Karpathy
 - [[wiki/diario/2026-06-19.md|2026-06-19]] — otimizações estruturais da wiki
 
