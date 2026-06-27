@@ -30,6 +30,7 @@ log.md
 │   └── karpathy-llm-wiki-pattern.md
 └── wiki/
     ├── automacao/
+    │   ├── curador-wiki.md
     │   ├── firecrawl.md
     │   ├── wiki-review-vs-background-review.md
     │   └── wiki-review.md
@@ -92,6 +93,7 @@ log.md
 
 - [[wiki/automacao/firecrawl.md|Firecrawl]] — busca com sintaxe site: para plataformas específicas; quando usar e não usar
 - [[wiki/automacao/wiki-review.md|Wiki Review]] — agente background que roda a cada 10 turnos e salva insights no diario/
+- [[wiki/automacao/curador-wiki.md|Curador da Wiki]] — agente read-only MVP que sorteia uma daily, roda curadoria com claude -p e envia ao Telegram Geral
 
 ### historico/
 
