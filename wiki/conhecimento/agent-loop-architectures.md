@@ -3,7 +3,7 @@ type: concept
 tags: [agentes, loops, arquitetura, harness]
 title: Arquiteturas de Loop em Agentes
 description: Comparação de como diferentes frameworks de agente (Hermes, OpenClaw, Claude Code, Codex, Cline) implementam detecção de loop, aprovação, circuit breaker e verificação cruzada.
-timestamp: 2026-06-23T21:00:00-03:00
+timestamp: 2026-06-27T00:00:00-03:00
 status: draft
 ---
 
@@ -64,13 +64,15 @@ Casos especiais tratados:
 - `max_turns` (default 90) — hard stop global
 
 ### O que não tem
-- ❌ Loop detector com hash de args + resultado
+- ❌ Loop detector com hash de args + resultado ← implementação mapeada, ver seção abaixo
 - ❌ Fast-path de aprovação curta ("ok do it" → executa direto)
-- ❌ Strict-agentic guard (travar se só planejar)
+- ❌ Strict-agentic guard (travar se só planejar) ← contornável via `tool_choice: any` + tool sentinela
 - ❌ Retry com escalation (falhou → tenta X → avisa)
 - ❌ Verificação cruzada (agente A faz, agente B verifica)
 - ❌ Post-compaction loop guard
 - ❌ Async approval followup
+- ❌ Prompt caching (`cache_control`) ← não relacionado a loop, mas reduz 85–90% dos input tokens
+- ❌ Circuit breaker com sliding window ← substituto mais granular para `max_turns`
 
 ## Claude Code (Anthropic)
 
@@ -109,6 +111,62 @@ Casos especiais tratados:
 | Post-compaction guard | ❌ | ✅ | ❌ | ❌ | ❌ |
 | Subagente fresh context | ✅ delegate_task | ✅ Ralph loop | ✅ fork | ❌ | ❌ |
 | Async approval followup | ❌ | ✅ idempotent | ❌ | ❌ | ❌ |
+
+## Implementação no Hermes — caminhos mapeados
+
+> Pesquisa realizada em 2026-06-27. Ordenado por ROI vs esforço.
+
+### 1. Prompt Caching (`cache_control`) — 1–2h, 85–90% de economia em input tokens
+
+System prompt e definição de tools não mudam entre turns — candidatos ideais. Requer que o system seja array de blocos, não string simples. TTL padrão 5min; TTL de 1h disponível com custo de write 2× e read 0,1×.
+
+```python
+system=[{
+    "type": "text",
+    "text": SYSTEM_PROMPT,
+    "cache_control": {"type": "ephemeral"}
+}]
+```
+
+**Gotcha crítico:** qualquer campo dinâmico (timestamp, UUID) injetado no prompt invalida o cache. Verificar se o Hermes injeta isso no system. Mínimo 1.024 tokens para Sonnet cachear.
+
+### 2. `tool_choice: any` + tool sentinela — 30min
+
+Replica 80% do `execution-contract.ts` do OpenClaw. Força o modelo a chamar pelo menos uma tool a cada turno, eliminando turns de "só texto, sem ação".
+
+Complementar: adicionar tool `task_complete(result: str)` como saída explícita — o modelo tem saída clara em vez de texto livre.
+
+### 3. Exact-match request dedup — 30min
+
+Hash do último user message + model antes de encaminhar ao Claude. TTL de 30s é suficiente para duplos de reconexão do Telegram/WA sem colidir com conversa normal.
+
+### 4. Token counting pre-flight — 1h
+
+`client.messages.count_tokens(...)` antes de cada request real. Permite truncagem inteligente do histórico antes de estourar o contexto (e pagar o erro).
+
+### 5. Hash loop detector — 4–8h
+
+Replicação do OpenClaw para o Hermes. Pontos-chave:
+- `sha256(tool_name + args_sem_volatile + resultado)[:16]` como fingerprint
+- Strip de campos voláteis (`timestamp`, `messageId`, `runId`, `id`) antes de hashear
+- Sliding window de 20 calls; warn em 5 repetições, block em 10
+- Ao bloquear: injetar `tool_result` de erro artificial no loop — modelo recebe feedback sem consumir turno de LLM
+- 3 padrões em paralelo: `generic_repeat`, `no_progress` (resultado idêntico), `ping_pong` (A→B→A→B)
+
+### 6. Circuit breaker com sliding window — 2h
+
+Substituto mais granular para `max_turns`. Janela de 60s, abre após N erros. Distinção por tipo:
+- 429 rate-limit → exponential backoff com jitter, **não** conta para o breaker
+- 5xx / timeout → conta
+- 400 validation error → não conta
+
+### 7. Semantic cache CPU — 1–2 dias (baixa prioridade)
+
+**Atenção:** paper de 2026 mostra que caching de resposta em agentes multi-turn falha — o contexto muda entre turns mesmo com query idêntica. Só é seguro cachear **tool results determinísticos**. Útil apenas para queries informacionais isoladas (usuário pergunta algo ao Hermes fora de um loop de agente).
+
+Stack viável sem GPU: `all-MiniLM-L6-v2` (22M params) + FAISS + Redis.
+
+---
 
 ## Conexões
 
