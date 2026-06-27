@@ -48,9 +48,11 @@ O binário `claude` pode ser acionado pelo cron do sistema sem sessão interativ
 
 ---
 
-### Curador da Wiki — Teste 1 (primeiro loop implementado)
+## 🚧 Em teste (implementado, aguardando validação)
 
-> Implementado em 2026-06-27. Aguardando validação do output pelo Giovani.
+### Curador da Wiki — Teste 1
+
+> Implementado em 2026-06-27. Aguardando avaliação do output pelo Giovani.
 
 Primeiro loop concreto construído a partir deste plano. Valida a hipótese central: um único `claude -p` com contexto distilado consegue curar uma daily note corretamente?
 
@@ -67,7 +69,7 @@ bash curator-teste1.sh
         msg 2: bloco de curadoria estruturado
 ```
 
-**Decisões de design validadas nesta implementação:**
+**Decisões de design adotadas:**
 
 | Decisão | Motivo |
 |---|---|
