@@ -3,7 +3,7 @@ type: concept
 tags: [agentes, loops, arquitetura, harness]
 title: Arquiteturas de Loop em Agentes
 description: Comparação de como diferentes frameworks de agente (Hermes, OpenClaw, Claude Code, Codex, Cline) implementam detecção de loop, aprovação, circuit breaker e verificação cruzada.
-timestamp: 2026-06-27T00:00:00-03:00
+timestamp: 2026-06-27T01:55:00-03:00
 status: draft
 ---
 
@@ -165,6 +165,64 @@ Substituto mais granular para `max_turns`. Janela de 60s, abre após N erros. Di
 **Atenção:** paper de 2026 mostra que caching de resposta em agentes multi-turn falha — o contexto muda entre turns mesmo com query idêntica. Só é seguro cachear **tool results determinísticos**. Útil apenas para queries informacionais isoladas (usuário pergunta algo ao Hermes fora de um loop de agente).
 
 Stack viável sem GPU: `all-MiniLM-L6-v2` (22M params) + FAISS + Redis.
+
+---
+
+## Loop externo com Claude Code CLI na VPS
+
+> Testado e validado em 2026-06-27 na VPS (Claude Code v2.1.183, autenticação OAuth).
+
+Além do Hermes, o Claude Code instalado na VPS pode ser acionado como processo headless — via cron do sistema, shell scripts ou systemd — sem nenhuma sessão interativa aberta.
+
+### Como funciona
+
+O binário `claude` é um processo comum. Quando chamado, lê o prompt, faz requisição HTTP à API da Anthropic, executa tool calls na VPS e termina. O cron (daemon do sistema, sempre ativo desde o boot) aciona esse processo no horário configurado.
+
+### Autenticação no cron — o que foi testado
+
+A autenticação OAuth é salva em `~/.claude/.credentials.json`. O cron rodando como root acessa `/root/.claude/.credentials.json` automaticamente — **não é necessário configurar variáveis de ambiente**.
+
+| Comando | Ambiente mínimo (cron) | Resultado |
+|---|---|---|
+| `claude --bare -p "..."` | env -i HOME=/root PATH=... | ❌ "Not logged in" |
+| `claude -p "..."` | env -i HOME=/root PATH=... | ✅ funciona |
+
+**`--bare` é incompatível com OAuth** — quebra a leitura do credentials file. A documentação recomenda `--bare` para scripts, mas assume autenticação via `ANTHROPIC_API_KEY` como env var. Com OAuth, usar `claude -p` sem `--bare`.
+
+### Exemplo de crontab
+
+```bash
+# crontab -e (root)
+0 * * * * claude -p "verifica se todos os containers do swarm estão healthy. Se algum down, registra em /tmp/swarm-health.log com timestamp BRT" --allowedTools "Bash,Write" --output-format text >> /var/log/claude-cron.log 2>&1
+```
+
+### Quando usar cada abordagem de loop externo
+
+| Objetivo | Melhor opção |
+|---|---|
+| Tarefa recorrente, horário fixo, sem contexto anterior | cron + `claude -p` |
+| Tarefa recorrente que preserva contexto entre execuções | cron + `claude -p --resume <session_id>` |
+| Loop condicional ("roda até X acontecer") | shell script com `while` + `claude -p` |
+| Loop orientado a evento (arquivo novo, webhook) | `inotifywait` / systemd `.path` + `claude -p` |
+| Tarefa dentro da sessão atual sem bloquear | subagente com `background: true` em `.claude/agents/` |
+| Pipeline complexo com hooks programáticos | Agent SDK Python |
+
+### Outros flags relevantes (documentação oficial)
+
+- `--resume <session_id>` — continua sessão específica com contexto preservado entre invocações
+- `--output-format json` — output estruturado (capturável por `jq`)
+- `--json-schema '{...}'` — força output a seguir um JSON Schema
+- `--allowedTools "Bash,Read,Write"` — limita tools disponíveis (reduz blast radius em automações)
+- `--append-system-prompt "..."` — adiciona instrução ao system prompt sem substituir
+
+### Boas práticas validadas
+
+- **Circuit breaker explícito** — sempre definir `MAX` de iterações no shell script; `maxTurns: N` no frontmatter de subagentes
+- **Estado em arquivo** — entre invocações o Claude começa sem contexto; o que precisa persistir vai em arquivo referenciado no prompt
+- **Prompt autocontido** — em modo `-p`, sem histórico de conversa; o prompt precisa incluir todo o contexto necessário
+- **`--allowedTools`** — em loops automatizados, restringir ao mínimo necessário
+- **Logging** — redirecionar stdout/stderr para arquivo (`>> /var/log/claude-cron.log 2>&1`)
+- **Idempotência** — verificar se a operação pode rodar N vezes sem efeito colateral acumulado
 
 ---
 
