@@ -359,11 +359,44 @@ Contém:
 
 Sugestões estruturais (nova pasta, mudança de status, consolidações) entram dentro das seções relevantes — CRIAR ou MIGRAR — sem seção separada.
 
+#### Sistema de tickets
+
+Cada execução gera um número de ticket progressivo começando em `#001`.
+
+**Armazenamento do contador:** `/var/log/curator-ticket.count` — arquivo com um inteiro, incrementado a cada run.
+
+**Por que ticket é útil:** permite referenciar um output específico em qualquer ambiente ou sessão futura. "Me fala sobre o ticket 5" é suficiente para um agente localizar o arquivo.
+
+**Persistência do output:** o output de curadoria é salvo em dois lugares:
+1. **Telegram** — entrega em tempo real para o Giovani
+2. **Arquivo local** — `/var/log/curator-outputs/ticket-NNN.md` — registro permanente consultável por qualquer agente via `Read`
+
+O ticket aparece no header da daily enviada ao Telegram e no nome do arquivo salvo.
+
+#### Footer de execução
+
+Enviado ao Telegram após o output de curadoria, em mensagem separada:
+
+```
+📊 TICKET #NNN — {DAILY_NAME}
+Dailies no diário:  XX arquivos
+Tokens injetados:   ~XXXX  (index.md + daily)
+Tokens totais:      XXXX input / XXXX output
+Duração:            Xs
+```
+
+- **Dailies no diário:** `ls wiki/diario/*.md | wc -l` — total de arquivos no momento da execução
+- **Tokens injetados:** estimativa por contagem de caracteres (`len / 4`)
+- **Tokens totais:** via `--output-format json` no `claude -p`, que retorna `usage.input_tokens` e `usage.output_tokens`
+- **Duração:** `$SECONDS` do bash, calculado entre início e fim da chamada ao agente
+
 #### O que esta tentativa valida
 
 - Agente com leitura real da wiki produz curadoria mais precisa que agente cego
 - System prompt com raciocínio (não bullet points) é suficiente para decisões ambíguas
 - Formato de 3 seções é claro e completo sem campos extras
+- Sistema de tickets permite rastreamento e consulta futura de outputs
+- Footer dá visibilidade de custo e performance por execução
 
 ---
 
