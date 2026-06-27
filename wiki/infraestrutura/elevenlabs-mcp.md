@@ -1,15 +1,37 @@
 ---
 type: concept
-tags: [elevenlabs, mcp, infraestrutura, tts, sfx, limites]
+tags: [elevenlabs, mcp, infraestrutura, tts, sfx, limites, vps]
 title: ElevenLabs MCP — Capabilities e Limites
-description: Capacidades e limitações do MCP ElevenLabs no free tier — o que funciona, o que não funciona e o que evitar
+description: Servidor MCP do ElevenLabs instalado na VPS — independente do Hermes, utilizável por qualquer cliente MCP
 timestamp: 2026-06-27T18:29:00-03:00
 status: stable
 ---
 
 # ElevenLabs MCP — Capabilities e Limites
 
-MCP instalado via `uvx elevenlabs-mcp`, habilitado no Hermes. API key em `.env` como `ELEVENLABS_API_KEY`.
+## Instalação e arquitetura
+
+O `elevenlabs-mcp` é um **servidor MCP (Model Context Protocol) instalado na VPS** via `uvx`. Não é exclusivo do Hermes — qualquer cliente MCP pode utilizá-lo diretamente.
+
+**Como funciona:** o servidor roda como processo stdio (spawned on demand, sem porta HTTP). Requer `ELEVENLABS_API_KEY` no ambiente.
+
+**Invocar diretamente:**
+```bash
+ELEVENLABS_API_KEY=<key> uvx elevenlabs-mcp
+```
+
+**Configuração no Hermes** (`~/.hermes/config.yaml`):
+```yaml
+mcp_servers:
+  elevenlabs:
+    command: /root/.local/bin/uvx
+    args:
+      - elevenlabs-mcp
+    env:
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY}
+```
+
+O Hermes spawna o processo automaticamente quando necessário. Claude Code e outros clientes MCP podem fazer o mesmo de forma independente.
 
 ## O que funciona no free tier
 
