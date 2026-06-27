@@ -127,28 +127,47 @@ Chamar `claude -p` como subprocesso dentro de uma sessão Claude Code ativa é i
 **O que ainda não foi feito:**
 Nenhum fix foi aplicado ao script. A documentação deste erro vem antes de qualquer alteração no código — conforme solicitado pelo Giovani.
 
-### Tentativa 2 — planejada — aguardando execução
+### Tentativa 2 — 2026-06-27T13:34-03:00 — FALHA PARCIAL
 
 **Aprendizado da tentativa 1:** o problema não foi chamar o script de dentro de uma sessão Claude Code ativa — isso faz parte do teste e está validado no [[wiki/conhecimento/plano-implementacao-loop.md|Plano de Loops]]. O problema foi o **bloqueio**: o Claude Code ficou esperando o script terminar, o timeout de 2 minutos do Bash tool estourou com o processo ainda rodando, e o kill subsequente derrubou a sessão.
 
-**Correção identificada:** manter o script sendo chamado da sessão ativa, mas desacoplar o processo com `nohup ... &` para que o Claude Code dispare e não fique bloqueado esperando. O script roda por conta própria e o Telegram sinaliza o fim.
+**Correção aplicada:** manter o script sendo chamado da sessão ativa, mas desacoplar o processo com `nohup ... &`.
 
-**Fixes a aplicar no script antes da execução:**
-
-1. **Mover o primeiro `log()` para antes de qualquer execução** — atualmente a primeira linha de log vem depois de `ls` e `shuf`, o que significa que uma falha cedo deixa o log vazio sem diagnóstico.
-2. **Adicionar `timeout 300` no `claude -p`** — se o modelo demorar mais de 5 minutos, o script mata o processo e registra o erro em vez de ficar preso indefinidamente. Valor escolhido com margem: na tentativa 1 o processo já estava em 2min18s quando verificado e provavelmente ainda não havia terminado.
-3. **Tratar `CURADORIA` vazia sem abortar** — com `set -euo pipefail`, se o `claude -p` for interrompido ou retornar vazio, o script aborta silenciosamente. Precisa de tratamento explícito para registrar o erro e encerrar com mensagem de falha no log.
+**Fixes aplicados no script antes da execução:**
+1. `log "Script iniciado (PID $$)."` movido para antes de qualquer execução
+2. `timeout 300` adicionado ao `claude -p`
+3. `|| true` + verificação de `CURADORIA` vazia para não abortar silenciosamente
 
 **Forma de chamada:**
 ```bash
 nohup bash /root/curator-teste1.sh > /var/log/curator-teste1.log 2>&1 &
 ```
-Chamado de dentro de uma sessão Claude Code ativa. O `nohup &` desacopla o processo — a sessão fica livre, o script roda independente, o Telegram confirma o fim.
 
-**O que esta tentativa valida (além da tentativa 1):**
-- O padrão `nohup &` dentro de sessão Claude Code ativa resolve o problema de bloqueio
-- O `timeout 300` é suficiente para o `claude -p` com prompt grande terminar com sucesso
-- O log registra corretamente início, progresso e fim da execução
+**O que aconteceu:**
+
+| Etapa | Resultado |
+|---|---|
+| Sessão Claude Code derrubada | ✅ Não aconteceu — `nohup &` resolveu o bloqueio |
+| Log gravado desde o início | ✅ Confirmado: duas linhas de log em 13:34:47 |
+| `claude -p` executou | ✅ Confirmado: script chegou até o `telegram_send`, não abortou por CURADORIA vazia |
+| Daily sorteada | `2026-06-23-20260623.md` |
+| PID do processo | 3709792 |
+| Envio ao Telegram | ❌ `HTTP Error 400: Bad Request` |
+| Processo encerrou | ✅ Não há processo ativo após a falha |
+
+**O que funcionou nesta tentativa:**
+- `nohup &` desacoplou corretamente — a sessão Claude Code não caiu
+- Log gravou corretamente desde o início (fix 1 validado)
+- `claude -p` com `timeout 300` executou e retornou curadoria (fix 2 validado — o modelo processou o prompt grande sem timeout)
+- Tratamento de `CURADORIA` vazia funcionou por omissão — não foi necessário (fix 3 validado preventivamente)
+
+**O que falhou:**
+O `telegram_send` retornou `HTTP 400: Bad Request` ao tentar enviar uma das duas mensagens. Causa exata ainda não identificada — o log completo não foi lido ainda. Hipóteses em ordem de probabilidade:
+1. Texto da curadoria ou da daily contém caracteres que a API do Telegram rejeita (ex: `[[wikilinks]]`, caracteres de controle, encoding inesperado)
+2. `message_thread_id=1` inválido para o estado atual do grupo
+3. Texto passado via argumento de shell corrompeu o encoding antes de chegar ao Python
+
+**Próximo passo:** ler o log completo para identificar qual das duas mensagens falhou e a causa exata antes de aplicar qualquer fix.
 
 ---
 
