@@ -691,6 +691,37 @@ error: unknown option '-s'
 
 ---
 
+### Tentativa 5 — 2026-06-27 — aguardando execução
+
+**Script:** `curator-teste2.sh` (v2 — mesmo script da tentativa 4)
+**Mudança central:** correção de comportamento no system prompt — agente proibido de ler `diario/` e `historico/`, e instruído sobre a natureza temporária das dailies.
+
+**Problema identificado na tentativa 4:** o agente leu a daily sorteada e sugeriu migrar conteúdo para outra daily — destino proibido. Dailies são imutáveis, temporárias e serão apagadas pelo usuário após revisão. O agente não deve ler outras dailies nem sugerir dailies como destino de migração.
+
+**Fixes aplicados no `curator-v2-system.md` antes desta tentativa:**
+
+| # | Fix | Motivo |
+|---|---|---|
+| 1 | Seção "Natureza das daily notes" adicionada | Agente não entendia que dailies são temporárias e serão apagadas |
+| 2 | Seção "Pastas proibidas para leitura" adicionada | Proibição explícita de ler `wiki/diario/` e `wiki/historico/` |
+| 3 | Destino de MIGRAR definido explicitamente | Só páginas permanentes: `automacao/`, `conhecimento/`, `infraestrutura/`, `pendencias/` |
+| 4 | Instrução: a daily já está no prompt | Agente não precisa ler outras dailies — o conteúdo a analisar já é fornecido |
+
+**O que esta tentativa valida:**
+- Agente respeita a proibição de ler `diario/` e `historico/`
+- Agente nunca sugere outra daily como destino de MIGRAR
+- Agente entende o papel da daily como inbox temporária
+- System prompt com restrições explícitas de pasta é suficiente (sem whitelist técnica no `--allowedTools`)
+
+**Forma de execução:**
+```bash
+bash /root/curator-teste2.sh
+```
+
+**Resultado:** _(a preencher após execução)_
+
+---
+
 ## Conexões
 
 - [[wiki/conhecimento/plano-implementacao-loop.md|Plano de Implementação — Loops]] — contexto técnico e arquitetura de loops agênticos
