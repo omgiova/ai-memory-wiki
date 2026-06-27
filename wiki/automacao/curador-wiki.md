@@ -837,6 +837,22 @@ bash /root/curator-teste2.sh
 
 ---
 
+## Pendências de curadoria (estado em 2026-06-27)
+
+Duas dailies ainda sem ticket:
+
+- `wiki/diario/2026-06-22-reacoes-telegram.md`
+- `wiki/diario/2026-06-23-20260623.md`
+
+**Comando para processar as duas com intervalo de 5 minutos:**
+```bash
+bash /root/curator-teste4.sh && sleep 300 && bash /root/curator-teste4.sh
+```
+
+Rodar do terminal ou de uma sessão Claude Code. Após cada execução, avaliar a curadoria no Telegram e aplicar/descartar conforme revisão do Giovani.
+
+---
+
 ## Conexões
 
 - [[wiki/conhecimento/plano-implementacao-loop.md|Plano de Implementação — Loops]] — contexto técnico e arquitetura de loops agênticos
