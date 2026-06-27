@@ -11,7 +11,31 @@ status: draft
 
 Agente MVP que valida a hipótese central do sistema de curadoria: um único `claude -p` com contexto distilado consegue identificar corretamente o que tem valor numa daily note?
 
-## Arquitetura (MVP)
+## Regras gerais do teste
+
+- **Formato de entrega:** todas as mensagens ao Telegram usam `sendRichMessage` (Bot API 10.1) com `rich_message.markdown`. Ver [[infraestrutura/telegram-send-rich-message.md]]
+- **Frontmatter:** sempre removido antes do envio — nunca incluir o bloco `---` YAML nas mensagens
+- **Thread Geral:** omitir `message_thread_id` no payload (ver [[infraestrutura/telegram-topicos.md]])
+- **Agente é read-only:** o `claude -p` só produz curadoria — nunca entrega a daily. A daily é enviada pelo script diretamente, antes de chamar o agente
+- **Execução:** sempre via `nohup bash /root/curator-teste1.sh > /var/log/curator-teste1.nohup.log 2>&1 &` — o `$LOG` é exclusivo das chamadas `log()` do script; o nohup redireciona para arquivo separado `.nohup.log`
+
+## Arquitetura (a partir da tentativa 3)
+
+```
+[bash curator-teste1.sh]
+        │
+        ├── sorteia daily aleatória de wiki/diario/
+        ├── envia daily via sendRichMessage (script, sem agente)  ← novo
+        ├── embute index.md + daily no prompt do claude -p
+        ├── claude -p → curadoria estruturada
+        └── envia curadoria via sendRichMessage
+```
+
+**Agente:** único `claude -p`, sem ferramentas (`--allowedTools ""`).
+**Contexto no prompt:** critério Karpathy distilado + OKF + index.md dinâmico + daily completa.
+**Permissões na wiki:** nenhuma — read-only via variáveis de shell, sem tool calls.
+
+## Arquitetura original (tentativas 1 e 2) — descontinuada
 
 ```
 [bash curator-teste1.sh]
@@ -20,13 +44,11 @@ Agente MVP que valida a hipótese central do sistema de curadoria: um único `cl
         ├── embute index.md + daily no prompt (sem tool calls)
         ├── claude -p → curadoria estruturada
         └── envia 2 mensagens ao Telegram Geral
-              msg 1: conteúdo completo da daily
+              msg 1: conteúdo completo da daily  ← era responsabilidade do agente
               msg 2: bloco de curadoria
 ```
 
-**Agente:** único `claude -p`, sem ferramentas (`--allowedTools ""`).
-**Contexto no prompt:** critério Karpathy distilado + OKF + index.md dinâmico + daily completa.
-**Permissões na wiki:** nenhuma — read-only via variáveis de shell, sem tool calls.
+**Motivo da mudança:** não faz sentido passar a daily pelo agente para entregá-la ao Telegram. A daily é selecionada pelo script, que já tem o conteúdo — o envio deve acontecer diretamente, sem intermediário.
 
 ## Script
 
@@ -228,6 +250,30 @@ O `sendRichMessage` (Bot API 10.1) aceita markdown raw e renderiza nativamente n
 O frontmatter YAML (`---`) é removido antes do envio — não faz parte do conteúdo legível.
 
 Documentação completa do endpoint: [[infraestrutura/telegram-send-rich-message.md]]
+
+### Tentativa 3 — planejada — aguardando execução
+
+**Fixes acumulados das tentativas 1 e 2 + novo insight:**
+
+| # | Fix | Origem |
+|---|---|---|
+| 1 | `nohup` redireciona para `.nohup.log` separado; `$LOG` é exclusivo do `log()` | Bug tentativa 2: traceback sobrescrevia log |
+| 2 | `message_thread_id` removido do payload do Telegram | Bug tentativa 2: `400 message thread not found` |
+| 3 | Python captura `e.read().decode()` no `except HTTPError` | Diagnóstico: erro 400 sem corpo não ajuda |
+| 4 | Daily enviada via `sendRichMessage` diretamente pelo script, antes do agente | Insight: agente não deve ser intermediário da daily |
+| 5 | Curadoria (msg 2) também enviada via `sendRichMessage` | Validação: formato aprovado na sessão 2026-06-27 |
+| 6 | Frontmatter YAML removido antes do envio da daily | Regra: `---` não é markdown válido para renderização |
+
+**Forma de chamada:**
+```bash
+nohup bash /root/curator-teste1.sh > /var/log/curator-teste1.nohup.log 2>&1 &
+```
+
+**O que esta tentativa valida:**
+- Pipeline completo: sorteia daily → envia daily como rich message → agente gera curadoria → envia curadoria como rich message
+- Separação correta de responsabilidades: script entrega a daily, agente entrega só a análise
+- Logs sem colisão entre `nohup` e `log()`
+- Formatação rich message aprovada pelo Giovani em ambas as mensagens
 
 ---
 
