@@ -32,6 +32,30 @@ telegram:<chat_id>:<thread_id>
 
 Omitir `:thread_id` para o tópico padrão (Geral). Omitir tudo para DM (home).
 
+## Como enviar para cada destino — comandos validados
+
+### Geral (via curl / Python urllib direto na VPS)
+
+Validado em 2026-06-27 com 4 testes (message_ids 793–796). Enviar para `chat_id` **sem** `message_thread_id`:
+
+```bash
+curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+  -H "Content-Type: application/json" \
+  -d "{\"chat_id\":\"-1003870518428\",\"text\":\"mensagem aqui\"}"
+```
+
+### Outros tópicos (Substack, Skills, wiki_review)
+
+Usar `chat_id` + `message_thread_id` com o ID correspondente da tabela acima:
+
+```bash
+curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" \
+  -H "Content-Type: application/json" \
+  -d "{\"chat_id\":\"-1003870518428\",\"message_thread_id\":112,\"text\":\"mensagem aqui\"}"
+```
+
+---
+
 ## Observações por contexto
 
 ### Geral (thread_id=1) — comportamento via Python urllib / curl direto na VPS
