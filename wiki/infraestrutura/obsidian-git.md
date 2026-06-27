@@ -55,8 +55,13 @@ Isso vai para o `.git/config` local de cada device (não sincronizado). Persiste
 
 **Fix de desbloqueio** (quando o pull está travado com "would be overwritten by merge"):
 ```bash
+# Windows — rodar no Git Bash ou PowerShell
 git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" fetch origin
 git -C "C:\Users\omgio\Desktop\hermes\ai-memory-wiki" reset --hard origin/main
+
+# Android — rodar no Termux
+git -C ~/storage/shared/ai-memory-wiki fetch origin
+git -C ~/storage/shared/ai-memory-wiki reset --hard origin/main
 ```
 
 ### 2. Opções do plugin (secundárias)
