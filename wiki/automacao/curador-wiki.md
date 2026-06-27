@@ -251,9 +251,13 @@ O frontmatter YAML (`---`) é removido antes do envio — não faz parte do cont
 
 Documentação completa do endpoint: [[infraestrutura/telegram-send-rich-message.md]]
 
-### Tentativa 3 — planejada — aguardando execução
+### Tentativa 3 — 2026-06-27 — SUCESSO ✅
 
-**Fixes acumulados das tentativas 1 e 2 + novo insight:**
+**Primeira execução bem-sucedida. Pipeline completo funcionou como configurado.**
+
+**Feedback do Giovani:** "foi a primeira que funcionou e chegou o output como configurado."
+
+**Fixes aplicados (acumulados das tentativas 1 e 2 + novo insight):**
 
 | # | Fix | Origem |
 |---|---|---|
@@ -266,14 +270,30 @@ Documentação completa do endpoint: [[infraestrutura/telegram-send-rich-message
 
 **Forma de chamada:**
 ```bash
-nohup bash /root/curator-teste1.sh > /var/log/curator-teste1.nohup.log 2>&1 &
+bash /root/curator-teste1.sh
 ```
 
-**O que esta tentativa valida:**
+Rodado direto da sessão Claude Code (sem `nohup`) — script terminou dentro do timeout de 360s configurado na ferramenta Bash.
+
+**O que aconteceu:**
+
+| Etapa | Resultado |
+|---|---|
+| Sessão Claude Code derrubada | ✅ Não aconteceu |
+| Daily sorteada | aleatória — via `shuf -n1` |
+| Daily enviada via `sendRichMessage` | ✅ message_id: 800 |
+| `claude -p` executou e retornou curadoria | ✅ sem timeout, sem vazio |
+| Curadoria enviada via `sendRichMessage` | ✅ message_id: 801 |
+| Mensagens chegaram ao Telegram Geral | ✅ confirmado pelo Giovani |
+
+**O que esta tentativa validou:**
 - Pipeline completo: sorteia daily → envia daily como rich message → agente gera curadoria → envia curadoria como rich message
 - Separação correta de responsabilidades: script entrega a daily, agente entrega só a análise
 - Logs sem colisão entre `nohup` e `log()`
 - Formatação rich message aprovada pelo Giovani em ambas as mensagens
+- `claude -p` com timeout 300 e prompt grande (index.md + daily completa) funciona dentro do limite
+
+**Próximos ajustes (a definir com o Giovani):** pipeline validado — próxima fase é avaliar a qualidade da curadoria e decidir ajustes no prompt ou na seleção de dailies.
 
 ---
 
