@@ -207,6 +207,28 @@ A wiki em [[infraestrutura/telegram-topicos.md]] documenta `thread_id=1` para Ge
 
 **Próximo passo:** documentar, depois aplicar os fixes no script, depois rodar tentativa 3.
 
+**Validação adicional — formato de saída (2026-06-27T14:02-03:00):**
+
+Antes de alterar o script, foi validado o formato de entrega da daily ao Telegram. Três formatos testados:
+
+| Formato | Método | Resultado |
+|---|---|---|
+| Texto puro | `sendMessage` sem parse_mode | ✅ chegou, mas markdown visível em texto puro (##, **, etc.) |
+| HTML | `sendMessage` com `parse_mode: HTML` | ✅ chegou, mas formatação parcial e inconsistente |
+| Rich Message | `sendRichMessage` com `rich_message.markdown` | ✅ chegou com formatação nativa completa — aprovado |
+
+O `sendRichMessage` (Bot API 10.1) aceita markdown raw e renderiza nativamente no Telegram. Payload correto:
+```json
+{
+  "chat_id": -1003870518428,
+  "rich_message": {"markdown": "conteúdo markdown aqui"}
+}
+```
+
+O frontmatter YAML (`---`) é removido antes do envio — não faz parte do conteúdo legível.
+
+Documentação completa do endpoint: [[infraestrutura/telegram-send-rich-message.md]]
+
 ---
 
 ## Conexões
