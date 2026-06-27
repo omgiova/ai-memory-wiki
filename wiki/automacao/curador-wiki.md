@@ -718,6 +718,71 @@ error: unknown option '-s'
 bash /root/curator-teste2.sh
 ```
 
+**Resultado:** SUCESSO ✅ — pipeline completo, message_ids 806 (daily), 807 (curadoria), 808 (footer).
+
+**O que foi validado:**
+- Agente não leu `diario/` nem `historico/`
+- Agente não sugeriu outra daily como destino de MIGRAR
+- Proibições explícitas no system prompt foram respeitadas
+
+**Problemas identificados no output para a próxima iteração:**
+- Numeração reinicia em cada bloco (1 no MIGRAR, 1 no CRIAR, 1 no DESCARTAR) — deveria ser contínua
+- Sem tags de prioridade nos itens
+- Formato pouco legível — falta estrutura visual por item
+
+---
+
+### Tentativa 6 — 2026-06-27 — aguardando execução
+
+**Script:** `curator-teste2.sh` (v2 — mesmo script)
+**Mudanças:** formato de output redesenhado — numeração contínua, tags de prioridade, estrutura por item mais legível.
+
+**Problemas da tentativa 5 a corrigir:**
+
+| # | Problema | Fix |
+|---|---|---|
+| 1 | Numeração reinicia em cada bloco | Numeração contínua através dos 3 blocos |
+| 2 | Sem indicação de prioridade | Tag `[ALTA]`, `[MÉDIA]` ou `[BAIXA]` em cada item |
+| 3 | Formato compacto dificulta leitura | Estrutura expandida por item com linhas `→` separadas |
+
+**Novo formato de output:**
+
+```
+🔍 CURADORIA — {DAILY_NAME}
+
+**MIGRAR PARA ARQUIVO EXISTENTE:**
+1. [ALTA] [nome do conceito/item]
+→ inserir em [[wiki/pasta/arquivo.md]]
+→ [explicação detalhada de onde inserir e por quê]
+
+2. [MÉDIA] [nome do conceito/item]
+→ inserir em [[wiki/pasta/arquivo.md]]
+→ [explicação detalhada]
+
+**CRIAR PÁGINA NOVA:**
+3. [ALTA] [nome do conceito]
+→ wiki/pasta/arquivo.md | type: [tipo]
+→ [motivo e o que a página deve conter]
+
+**DESCARTAR:**
+4. [BAIXA] [item]
+→ [motivo do descarte]
+```
+
+**Critério de prioridade:**
+- `[ALTA]` — conhecimento durável que pode ser perdido se não registrado agora; afeta decisões futuras
+- `[MÉDIA]` — útil, mas existe em outro lugar ou pode ser reconstruído
+- `[BAIXA]` — complementar, contexto de apoio, baixo risco de perda
+
+**Onde aplicar os fixes:**
+- Formato de output no `-p` do `curator-teste2.sh`
+- Critério de prioridade no `curator-v2-system.md`
+
+**O que esta tentativa valida:**
+- Numeração contínua funciona com o modelo
+- Tags de prioridade são aplicadas de forma consistente e útil
+- Novo formato é mais legível para o Giovani
+
 **Resultado:** _(a preencher após execução)_
 
 ---
