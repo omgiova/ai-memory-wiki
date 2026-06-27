@@ -48,3 +48,4 @@ status: stable
 - [[wiki/historico/crise-update.md|2026-06-18-crise-update]]
 - [[wiki/conhecimento/wiki.md|wiki (histórico + conceito)]]
 - [[wiki/infraestrutura/vps.md|vps (IPVS, hardware, stack)]]
+- [[wiki/conhecimento/orquestrador.md|orquestrador — panorama de saúde do vault e débito técnico]]
