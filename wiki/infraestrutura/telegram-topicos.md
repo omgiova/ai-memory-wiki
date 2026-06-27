@@ -15,7 +15,7 @@ Supergrupo com fórum (`is_forum=true`): `-1003870518428`
 
 | Nome | thread_id | Target |
 |---|---|---|
-| Geral | 1 | `telegram:-1003870518428:1` |
+| Geral | *(omitir)* | `telegram:-1003870518428` — **não usar thread_id=1**, causa "message thread not found" |
 | Substack | 112 | `telegram:-1003870518428:112` |
 | Skills | 282 | `telegram:-1003870518428:282` |
 | wiki_review | 749 | `telegram:-1003870518428:749` |

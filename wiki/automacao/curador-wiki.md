@@ -167,7 +167,45 @@ O `telegram_send` retornou `HTTP 400: Bad Request` ao tentar enviar uma das duas
 2. `message_thread_id=1` inválido para o estado atual do grupo
 3. Texto passado via argumento de shell corrompeu o encoding antes de chegar ao Python
 
-**Próximo passo:** ler o log completo para identificar qual das duas mensagens falhou e a causa exata antes de aplicar qualquer fix.
+**Diagnóstico pós-falha — sessão 2026-06-27T13:47-03:00:**
+
+O log completo foi lido. O arquivo `/var/log/curator-teste1.log` continha apenas o traceback Python — as linhas do `log()` não estavam visíveis. Causa: `nohup bash script > logfile 2>&1` abre o arquivo na posição 0 para fd1/fd2 do bash; quando o Python escreve o traceback via stderr (fd2), escreve a partir da posição 0, sobrescrevendo as linhas gravadas pelo `log()` via `>>` (O_APPEND). Os dois mecanismos escrevem no mesmo arquivo por caminhos diferentes e colidem. Isso é um bug de arquitetura do script que precisa ser corrigido na próxima tentativa: ou o `nohup` redireciona para um arquivo separado, ou o script não usa `nohup > $LOG`.
+
+Traceback completo registrado no log:
+```
+File "<stdin>", line 17, in <module>  ← urlopen
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+```
+
+A linha 17 do Python inline é o `urllib.request.urlopen(req)`. O script não capturava o corpo da resposta de erro do Telegram, então só havia "400: Bad Request" sem descrição.
+
+**5 testes curl realizados para isolar a causa do 400:**
+
+| # | Método | `message_thread_id` | Resultado |
+|---|---|---|---|
+| 1 | JSON inline (`-H Content-Type + -d`) | `1` | ❌ `Bad Request: message thread not found` |
+| 2 | JSON inline | sem | ✅ OK — message_id: 793 |
+| 3 | form-encoded (`--data-urlencode`) | sem | ✅ OK — message_id: 794 |
+| 4 | JSON via arquivo temp (`--data @file`) | sem | ✅ OK — message_id: 795 |
+| 5 | multipart form (`-F`) | sem | ✅ OK — message_id: 796 |
+
+**Causa raiz confirmada:** `message_thread_id=1` está errado para este grupo. O erro retornado pelo Telegram é "message thread not found".
+
+**Investigação do thread_id:**
+
+O grupo foi consultado via `getChat`: `is_forum: True`, `type: supergroup`, `title: HERMES & GIONATO`. O grupo tem fórum habilitado, mas `thread_id=1` não existe como thread separado — o Telegram trata o tópico Geral como o chat principal, não como um tópico com ID próprio.
+
+A wiki em [[infraestrutura/telegram-topicos.md]] documenta `thread_id=1` para Geral, mas o próprio campo "Como usar" da mesma página contradiz isso: *"Omitir `:thread_id` para o tópico padrão (Geral)."* Os 4 testes sem `message_thread_id` confirmaram que sem o campo as mensagens chegam ao Geral sem erro (message_ids 793–796 entregues).
+
+**Conclusão:** o `telegram_send` do script deve enviar sem `message_thread_id` quando o destino for o tópico Geral. O formato JSON inline (teste 2) é o mais simples e funciona.
+
+**Fixes identificados para a próxima tentativa:**
+1. Remover `message_thread_id` do payload quando o destino for Geral
+2. Capturar o corpo do erro HTTP no Python (`e.read().decode()`) para diagnóstico futuro
+3. Separar o destino do `nohup` do `$LOG` para evitar sobrescrita das linhas de log
+4. Atualizar [[infraestrutura/telegram-topicos.md]] — a nota sobre `thread_id=1` para Geral está incorreta na prática; o comportamento correto é omitir o campo
+
+**Próximo passo:** documentar, depois aplicar os fixes no script, depois rodar tentativa 3.
 
 ---
 
