@@ -49,7 +49,6 @@ log.md
     │   ├── 2026-06-24-1710.md
     │   ├── 2026-06-24-20260623.md
     │   ├── 2026-06-24-20260624.md
-    │   └── 2026-06-24-obsidian-git-setup.md
     ├── historico/
     │   ├── 2026-06-22-modelos-nim-elevenlabs.md
     │   └── crise-update.md
