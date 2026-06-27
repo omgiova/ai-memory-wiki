@@ -26,14 +26,6 @@ Compatível com: Claude Code, OpenAI Codex CLI, Manus, Cursor, Windsurf, Gemini 
 **Tipos de commit:** `docs`, `chore`, `fix`, `feat`  
 **Escopo:** nome da pasta ou arquivo principal afetado (ex: `vps`, `wiki`, `firecrawl`)
 
-**Exemplos:**
-```
-docs(vps): adiciona seção de troubleshooting de rede overlay
-chore(wiki): atualiza estrutura da wiki após criação de diario/
-fix(crise-update): corrige typo na tag sessoes
-feat(diario): adiciona daily note 2026-06-19
-```
-
 **Branches:** trabalhar em `main` por padrão. Feature branch só se explicitamente solicitado.
 
 ---
@@ -48,20 +40,7 @@ feat(diario): adiciona daily note 2026-06-19
 
 ## Autorização — antes de qualquer ação
 
-Criar, editar, renomear, mover ou excluir qualquer arquivo ou conteúdo
-desta wiki requer autorização **explícita e específica** do usuário.
-
-**Regras:**
-- A autorização é válida apenas para o escopo pedido. "Edite X" não
-  autoriza alterar Y.
-- Ao encontrar inconsistência, erro ou dado desatualizado: **não corrigir.**
-  Reportar ao usuário antes de agir:
-  `"Encontrei [problema] em [arquivo/seção]. Devo corrigir?"`
-- Aguardar confirmação. Só então executar.
-
-**Princípio:** cada dado nesta wiki — caminho, comando, ID, decisão — foi
-validado. Edições não solicitadas corrompem a fonte de verdade de forma
-silenciosa e difícil de rastrear.
+Toda edição requer autorização explícita do usuário. A autorização vale só para o escopo pedido. Ao encontrar inconsistência: reportar, não corrigir. `"Encontrei [problema] em [arquivo]. Devo corrigir?"`
 
 ---
 
@@ -129,9 +108,8 @@ Checklist obrigatório. Executar **nesta ordem** a cada novo arquivo criado:
 1. **Criar o arquivo** no diretório correto (`wiki/automacao/`, `wiki/infraestrutura/`, `wiki/historico/`, `raw/`, etc.)
 2. **Adicionar frontmatter OKF completo** — `type`, `tags`, `title`, `description`, `timestamp`, `status`
 3. **Adicionar wikilinks** para páginas relacionadas (e atualizar as páginas relacionadas para linkar de volta)
-4. **Atualizar `index.md`** — nova entrada com link + descrição de uma linha na seção correta
-5. **Atualizar a estrutura da wiki** em `AGENTS.md` — deve bater com `git ls-files`
-6. **Commitar tudo junto** — um commit por operação de ingest
+4. **Atualizar `index.md`** — nova entrada com link + descrição na seção correta; árvore sincronizada com `git ls-files`
+5. **Commitar tudo junto** — um commit por operação de ingest
 
 ### Query — responder a uma pergunta com base na wiki
 
@@ -148,7 +126,6 @@ Executar quando solicitado pelo usuário:
 - Contradições entre páginas (`status: stable` conflitando com info mais recente)
 - Conceitos mencionados em várias páginas mas sem página própria
 - Entradas no `index.md` sem correspondente em `git ls-files` (e vice-versa)
-- Árvore da wiki em `AGENTS.md` fora de sync com `git ls-files`
 
 ---
 
@@ -166,15 +143,9 @@ AGENTS.md          ← só o humano edita este arquivo
 
 | Agente | Acesso | Uso típico |
 |---|---|---|
-| **Hermes** | MCP tools (`memory_query`, `memory_read_page`, `memory_write`) | consultar e escrever conhecimento durante sessões |
+| **Hermes** | `read_file`, `search_files` | consultar e escrever conhecimento durante sessões |
 | **Claude Code** | lê este arquivo automaticamente na raiz | editar wiki, estruturar conhecimento, commits |
 | **Manus** | lê AGENTS.md como schema | pesquisar, sintetizar e registrar novos conhecimentos |
 | **Codex CLI** | lê AGENTS.md automaticamente | tarefas de escrita e refatoração de páginas |
 
 ---
-
-## Referências internas
-
-- [[conhecimento/wiki.md]] — visão geral do sistema, histórico e pilares
-- [[infraestrutura/hermes.md]] — identidade e preferências do Hermes
-- [[pendencias/proximos-passos.md]] — o que está pendente agora
