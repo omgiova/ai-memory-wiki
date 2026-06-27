@@ -7,7 +7,7 @@ Compatível com: Claude Code, OpenAI Codex CLI, Manus, Cursor, Windsurf, Gemini 
 
 ## Git e commits
 
-> ⚠️ **OBRIGATÓRIO:** após criar ou modificar **qualquer** arquivo, executar imediatamente:
+> ⚠️ **OBRIGATÓRIO:** após criar, editar, renomear, mover ou excluir **qualquer** arquivo, executar imediatamente:
 > ```bash
 > git -C /root/wiki add -A
 > git -C /root/wiki commit -m "<tipo>(<escopo>): <descrição>"
@@ -43,6 +43,25 @@ feat(diario): adiciona daily note 2026-06-19
 **Hermes AI Memory Wiki** — base de conhecimento persistente do agente Hermes (assistente pessoal do Giovani). Segue o padrão **LLM Wiki de Karpathy**: Markdown puro como fonte da verdade, versionado por Git, indexado por SQLite + FTS5, visualizado no Obsidian.
 
 **Princípio central:** conhecimento durável vai para a wiki. A `memory()` do Hermes (2.200 chars, volátil) é cache de sessão, não fonte da verdade.
+
+---
+
+## Autorização — antes de qualquer ação
+
+Criar, editar, renomear, mover ou excluir qualquer arquivo ou conteúdo
+desta wiki requer autorização **explícita e específica** do usuário.
+
+**Regras:**
+- A autorização é válida apenas para o escopo pedido. "Edite X" não
+  autoriza alterar Y.
+- Ao encontrar inconsistência, erro ou dado desatualizado: **não corrigir.**
+  Reportar ao usuário antes de agir:
+  `"Encontrei [problema] em [arquivo/seção]. Devo corrigir?"`
+- Aguardar confirmação. Só então executar.
+
+**Princípio:** cada dado nesta wiki — caminho, comando, ID, decisão — foi
+validado. Edições não solicitadas corrompem a fonte de verdade de forma
+silenciosa e difícil de rastrear.
 
 ---
 
