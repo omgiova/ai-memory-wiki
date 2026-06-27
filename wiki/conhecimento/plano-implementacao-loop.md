@@ -48,6 +48,49 @@ O binário `claude` pode ser acionado pelo cron do sistema sem sessão interativ
 
 ---
 
+### Curador da Wiki — Teste 1 (primeiro loop implementado)
+
+> Implementado em 2026-06-27. Aguardando validação do output pelo Giovani.
+
+Primeiro loop concreto construído a partir deste plano. Valida a hipótese central: um único `claude -p` com contexto distilado consegue curar uma daily note corretamente?
+
+**Script:** `/root/curator-teste1.sh`
+
+**Arquitetura:**
+```
+bash curator-teste1.sh
+  ├── sorteia daily aleatória de wiki/diario/
+  ├── embute index.md + conteúdo da daily no prompt (sem tool calls)
+  ├── claude --allowedTools "" -p "..."
+  └── envia 2 mensagens ao Telegram Geral (thread_id=1)
+        msg 1: conteúdo completo da daily
+        msg 2: bloco de curadoria estruturado
+```
+
+**Decisões de design validadas nesta implementação:**
+
+| Decisão | Motivo |
+|---|---|
+| Contexto embutido no prompt (não via Read tools) | Mais simples e previsível para MVP |
+| `index.md` dinâmico no prompt | Reflete estado real da wiki sem reconfiguração |
+| Daily aleatória | Evita viés de validação com amostras fáceis |
+| `--allowedTools ""` | Agente read-only por construção, não por confiança |
+| Um agente único | Valida o critério antes de separar responsabilidades |
+
+**O que este teste valida:**
+- Prompt com critério Karpathy + OKF distilado é suficiente para raciocinar sobre valor
+- `index.md` como único mapa de navegação da wiki funciona para o agente
+- Pipeline shell → `claude -p` → Telegram funciona de ponta a ponta
+
+**O que ainda não está validado (próximos passos após aprovação):**
+- Qualidade real da curadoria (o Giovani avalia o output)
+- Comportamento com dailies longas (561 linhas)
+- Se um agente único escala ou se precisará ser dividido em 4
+
+Ver documentação completa: [[automacao/curador-wiki.md|Curador da Wiki]]
+
+---
+
 ## 🔬 Hipóteses (não testadas)
 
 Padrões descritos em fontes públicas, ainda não verificados na prática.
