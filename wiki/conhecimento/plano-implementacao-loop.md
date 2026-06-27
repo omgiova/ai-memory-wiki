@@ -48,7 +48,7 @@ O binário `claude` pode ser acionado pelo cron do sistema sem sessão interativ
 
 ---
 
-## 🚧 Em teste (implementado, aguardando validação)
+## 🚧 A validar
 
 ### Curador da Wiki — Teste 1
 
