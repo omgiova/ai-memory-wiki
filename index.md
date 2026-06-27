@@ -10,6 +10,53 @@ status: stable
 
 Catálogo completo. Leia este arquivo primeiro ao responder queries — use os links para navegar às páginas relevantes.
 
+## Estrutura
+
+```
+AGENTS.md
+index.md
+├── raw/
+│   ├── google-okf/
+│   │   ├── introducing-the-open-knowledge-format.md
+│   │   ├── README.md
+│   │   └── SPEC.md
+│   └── karpathy-llm-wiki-pattern.md
+└── wiki/
+    ├── automacao/
+    │   ├── firecrawl.md
+    │   ├── wiki-review-vs-background-review.md
+    │   └── wiki-review.md
+    ├── conhecimento/
+    │   ├── agent-loop-architectures.md
+    │   ├── okf.md
+    │   ├── orquestrador.md
+    │   └── wiki.md
+    ├── diario/
+    │   ├── 2026-06-19.md
+    │   ├── 2026-06-20.md
+    │   ├── 2026-06-22-20260621.md
+    │   ├── 2026-06-22-20260622.md
+    │   ├── 2026-06-22-descoberta-id-mensagem.md
+    │   ├── 2026-06-22-reacoes-telegram.md
+    │   ├── 2026-06-23-20260623.md
+    │   ├── 2026-06-24-1710.md
+    │   ├── 2026-06-24-20260623.md
+    │   ├── 2026-06-24-20260624.md
+    │   └── 2026-06-24-obsidian-git-setup.md
+    ├── historico/
+    │   ├── 2026-06-22-modelos-nim-elevenlabs.md
+    │   └── crise-update.md
+    ├── infraestrutura/
+    │   ├── hermes-api.md
+    │   ├── hermes.md
+    │   ├── obsidian-git.md
+    │   ├── telegram-topicos.md
+    │   ├── termux-ssh-claude.md
+    │   └── vps.md
+    └── pendencias/
+        └── proximos-passos.md
+```
+
 ## wiki/
 
 ### infraestrutura/
