@@ -58,8 +58,49 @@ O que existe agora é **débito técnico acumulado** — inconsistências pequen
 
 ### 1.5 — Nenhum `log.md` existe no vault
 
-**Problema:** O OKF §7 define `log.md` como registro cronológico de mudanças — append-only, mais recente primeiro. Atualmente o `diario/` cumpre parte dessa função, mas de forma episódica e não estruturada. Um `log.md` na raiz do vault registraria ingest, lint, reestruturação e marcos importantes de forma parseável.  
-**Ação:** Criar `wiki/log.md` com formato `## YYYY-MM-DD` + entradas `* **Creation/Update/Deprecation:** ...`. Não confundir com o diário episódico — o log é sobre o **vault** (quando páginas foram criadas, renomeadas, depreciadas), não sobre sessões.
+**Problema:** O OKF §7 define `log.md` como registro cronológico de mudanças — append-only, mais recente primeiro. Atualmente o `diario/` cumpre parte dessa função, mas de forma episódica e não estruturada. Um `log.md` na raiz do vault registraria ingest, lint, reestruturação e marcos importantes de forma parseável.
+
+**Implementação detalhada:**
+
+**Localização:** `/root/wiki/log.md` — raiz do vault, ao lado de `index.md` e `AGENTS.md`. Na raiz porque cobre o vault inteiro.
+
+**Frontmatter:** nenhum. OKF §3.1 define `log.md` como arquivo reservado sem frontmatter — exceção explícita à regra geral do vault.
+
+**Formato:**
+```markdown
+# Wiki Update Log
+
+## YYYY-MM-DD
+* **Tipo:** [Título](/caminho/relativo.md) — uma linha descrevendo a mudança
+
+## YYYY-MM-DD
+* ...
+```
+Grupos de data em ISO 8601, mais recente primeiro. Múltiplas entradas por dia são normais.
+
+**Tipos de entrada (exaustivo — sem ambiguidade):**
+
+| Tipo | Quando usar |
+|---|---|
+| `Creation` | arquivo novo criado no vault |
+| `Update` | conteúdo significativo alterado em página existente |
+| `Deprecation` | página marcada como `status: deprecated` |
+| `Rename` | arquivo renomeado ou movido para outro diretório |
+| `Deletion` | arquivo deletado do vault |
+| `Promotion` | entrada do diário promovida a página permanente (custom nosso) |
+
+**O que NÃO registrar** (deve estar explícito no AGENTS.md para evitar ruído):
+- Correção de typo ou gramática
+- Atualização de `timestamp` no frontmatter
+- Adição ou correção de wikilinks
+- Ajuste de tags
+- Commit de push/sync sem mudança de conteúdo
+
+**Quando aciona:** o `log.md` deve ser um passo obrigatório no checklist de Ingest do AGENTS.md — após commitar, antes de encerrar a operação. Toda criação, renomeação, deleção e promoção de página gera entrada. Updates apenas quando o conteúdo mudou de forma substancial.
+
+**Retroativo:** criar o log já com os marcos históricos do vault desde a fundação (2026-06-18), reconstruídos via `git log --oneline`. Não precisa ser exaustivo — só os eventos de criação de páginas e reestruturações relevantes.
+
+**Não confundir com o diário:** o `log.md` é sobre o **vault** (o que foi criado, alterado, removido), não sobre sessões ou conversas. O diário é memória episódica; o log é changelog estrutural.
 
 ---
 
