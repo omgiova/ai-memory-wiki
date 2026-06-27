@@ -49,6 +49,7 @@ log.md
     │   ├── 2026-06-24-20260624.md
     ├── historico/
     │   ├── 2026-06-22-modelos-nim-elevenlabs.md
+    │   ├── 2026-06-24-20260624.md
     │   └── crise-update.md
     ├── infraestrutura/
     │   ├── hermes-api.md
@@ -101,6 +102,7 @@ log.md
 
 ### historico/
 
+- [[wiki/historico/2026-06-24-20260624.md|Diário 2026-06-24]] — daily longa (64KB); sessão com ElevenLabs SFX, agent loops, OpenClaw, escrita concorrente entre instâncias
 - [[wiki/historico/crise-update.md|Crise update]] — múltiplos /update corromperam state.db; backup salvou; fixes aplicados
 - [[wiki/historico/2026-06-22-modelos-nim-elevenlabs.md|Modelos NIM + ElevenLabs]] — migração para Nvidia NIM, rate limit agêntico, MCP ElevenLabs, tentativa Groq
 
@@ -112,7 +114,6 @@ log.md
 
 Inbox da wiki — captura bruta automática por sessão (wiki-review). Contém preferências reveladas, correções de comportamento, técnicas descobertas e pendências abertas. Não é destino final — insights estáveis devem ser extraídos e integrados em páginas permanentes.
 
-- [[wiki/diario/2026-06-24-20260624.md|2026-06-24]] — .hermes.md unificado com AGENTS.md, correção sobre follow-ups e memory() sem permissão
 - [[wiki/diario/2026-06-23-20260623.md|2026-06-23]] — dashboard basic auth, preferência por ação direta, skill hermes-maintenance
 - [[wiki/diario/2026-06-22-20260622.md|2026-06-22]] — reações Telegram, protocolo test-then-act, Crawlee/Apify
 - [[wiki/diario/2026-06-22-20260621.md|2026-06-21]] — sessão anterior (ver arquivo para detalhes)
