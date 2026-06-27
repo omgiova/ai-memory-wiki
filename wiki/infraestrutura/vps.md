@@ -56,6 +56,7 @@ status: stable
 - **Runtime:** Node.js, Python 3.11
 - **Container:** Docker
 - **Banco:** SQLite (Hermes, ai-memory)
+- **Web scraping:** Crawlee v1.7.2 (`pip install crawlee`) — framework OSS da Apify Technologies; 7 tipos de crawler, integração Playwright/Puppeteer, gerenciamento de sessões. Docs em `/root/.local/share/doc/crawlee`. Instalado 2026-06-21. Giovani também tem conta no Apify (plataforma cloud) e usa para scraping de Instagram.
 
 ## Docker Swarm
 

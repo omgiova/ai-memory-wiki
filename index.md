@@ -82,6 +82,7 @@ log.md
 - [[wiki/infraestrutura/hermes-api.md|Hermes API]] — referência completa dos ~180 endpoints REST do Hermes Agent (gerada do /openapi.json)
 - [[wiki/infraestrutura/termux-ssh-claude.md|Problema SSH/Claude]] — diagnóstico dos 3 problemas que travam sessões Claude via Remote Control (curl sem timeout, processo zumbi, prompt invisível)
 - [[wiki/infraestrutura/obsidian-git.md|Obsidian Git]] — todos os problemas já encontrados com o plugin obsidian-git, causas raiz e soluções definitivas
+- [[wiki/infraestrutura/telegram-bot-api.md|Telegram Hub]] — ponto de entrada único para tudo sobre Telegram: Bot API, tópicos, reações, HERMES_SESSION_MESSAGE_ID, integrações
 - [[wiki/infraestrutura/telegram-send-rich-message.md|Telegram sendRichMessage]] — documentação do endpoint Bot API 10.1: parâmetros, payload, limites e exemplo validado
 
 ### conhecimento/
