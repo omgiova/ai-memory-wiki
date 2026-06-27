@@ -11,25 +11,27 @@ status: stable
 
 ### Pendente
 
-1. **Backup GitHub privado do `.hermes`** — criar repo privado `omgiova/hermes-config` com `agent/`, `skills/`, `plugins/`, `scripts/`, `cron/`, `SOUL.md`, `AGENTS.md`, `config.yaml` (excluindo `.env`, `backups/`, `logs/`, `node_modules/`, `node/`, `venv/`). Configurar auto-push via hook ou cron.
+1. **Executar roadmap do Orquestrador da Memória** — [[conhecimento/orquestrador.md]] contém auditoria completa do vault com todos os pontos de atenção, débito técnico e ações recomendadas. Ver o arquivo para detalhes. *Registrado 2026-06-26.*
 
-2. **Backup geral da VPS** — ativar snapshot automático no painel da Hostinger (KVM 2) ou configurar restic/borg para storage externo. Cobre tudo que o GitHub não cobre (binários, databases, OS).
+2. **Validar fix do Obsidian Git (merge.autostash)** — `git config merge.autostash true` configurado no Windows em 2026-06-26. Confirmar que Pull funciona consistentemente sem erros de "would be overwritten by merge". Quando validado, mudar [[infraestrutura/obsidian-git.md]] de `status: draft` para `status: stable`. *Registrado 2026-06-26.*
 
-3. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário
+3. **Backup GitHub privado do `.hermes`** — criar repo privado `omgiova/hermes-config` com `agent/`, `skills/`, `plugins/`, `scripts/`, `cron/`, `SOUL.md`, `AGENTS.md`, `config.yaml` (excluindo `.env`, `backups/`, `logs/`, `node_modules/`, `node/`, `venv/`). Configurar auto-push via hook ou cron.
+
+4. **Backup geral da VPS** — ativar snapshot automático no painel da Hostinger (KVM 2) ou configurar restic/borg para storage externo. Cobre tudo que o GitHub não cobre (binários, databases, OS).
+
+5. **Migrar conhecimento acumulado** — revisar sessões passadas do Hermes e capturar decisões, gotchas, procedimentos e regras que estão perdidos na memory() ou só na cabeça do usuário.
 
 6. **[RASCUNHO] Unificar skills na wiki** — pesquisar documentação técnica de sistemas existentes (ex: MCP tools + LLM Wiki, skills como páginas `type: procedure`) para que skills do Hermes também vivam na wiki e sejam acessíveis a qualquer agente (Claude Code, Codex, Manus). Não implementar sem validação externa. *Registrado em 2026-06-24.*
 
-5. **Print visual do wiki_review no terminal** — o plugin atualmente só escreve `logger.info`, que não aparece na tela do usuário. Giovani quer um print visível quando o wiki_review dispara e quando termina. Explorar depois que o sistema estiver rodando estável: opções são `on_session_start` hook, gateway callback, ou acesso ao objeto `agent` via algum mecanismo futuro. *Registrado 2026-06-24.*
+7. **Print visual do wiki_review no terminal** — o plugin atualmente só escreve `logger.info`, que não aparece na tela do usuário. Giovani quer um print visível quando o wiki_review dispara e quando termina. Explorar depois que o sistema estiver rodando estável: opções são `on_session_start` hook, gateway callback, ou acesso ao objeto `agent` via algum mecanismo futuro. *Registrado 2026-06-24.*
 
-4. **Limpar source tree do Hermes** — gatilho do wiki_review removido de `agent/turn_finalizer.py` (2026-06-24). Ainda há `AGENTS.md` (redirect) em `/usr/local/lib/hermes-agent/` que pode precisar de limpeza. Confirmar com Giovani antes de marcar como concluído.
+8. **Limpar source tree do Hermes** — gatilho do wiki_review removido de `agent/turn_finalizer.py` (2026-06-24). Ainda há `AGENTS.md` (redirect) em `/usr/local/lib/hermes-agent/` que pode precisar de limpeza. Confirmar com Giovani antes de marcar como concluído.
 
-8. **Resolver prompt de aprovação invisível no Remote Control** — quando Claude pede aprovação de ferramenta, prompt aparece no Termux (pts/0) mas não no app. Sessão fica aparentemente travada. Investigar configurar permissões automáticas para reduzir aprovações manuais. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
+9. **Resolver prompt de aprovação invisível no Remote Control** — quando Claude pede aprovação de ferramenta, prompt aparece no Termux (pts/0) mas não no app. Sessão fica aparentemente travada. Investigar configurar permissões automáticas para reduzir aprovações manuais. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
 
-9. **Cleanup automático de processos zumbi do Claude** — sessões canceladas pelo app deixam processo Claude vivo no Termux. Implementar script que mata processos órfãos ao iniciar nova sessão. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
+10. **Cleanup automático de processos zumbi do Claude** — sessões canceladas pelo app deixam processo Claude vivo no Termux. Implementar script que mata processos órfãos ao iniciar nova sessão. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
 
-10. **Detecção periódica de processos zumbi do Claude** — criar mecanismo que monitore com certa frequência processos Claude acumulados em background, evitando consumo silencioso de memória sem o usuário saber. Diferente do item 9 (que age só no início de sessão), este deve rodar de forma contínua ou agendada. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
-
-11. **Validar fix do Obsidian Git (merge.autostash)** — `git config merge.autostash true` configurado no Windows em 2026-06-26. Confirmar que Pull funciona consistentemente sem erros de "would be overwritten by merge". Quando validado, mover [[infraestrutura/obsidian-git.md]] de `status: draft` para `status: stable`. *Registrado 2026-06-26.*
+11. **Detecção periódica de processos zumbi do Claude** — criar mecanismo que monitore com certa frequência processos Claude acumulados em background, evitando consumo silencioso de memória sem o usuário saber. Diferente do item 10 (que age só no início de sessão), este deve rodar de forma contínua ou agendada. Ver [[infraestrutura/termux-ssh-claude.md]]. *Registrado 2026-06-26.*
 
 ### Concluído
 
