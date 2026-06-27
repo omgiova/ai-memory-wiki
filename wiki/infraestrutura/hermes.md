@@ -81,7 +81,7 @@ NIM free tier funciona bem em slots auxiliares (1 chamada por ativação), mas n
 ## MCP Servers
 
 - **n8n** — `/root/.hermes/mcp-installs/n8n/` (enabled)
-- **ElevenLabs** — `uvx elevenlabs-mcp` (enabled)
+- **ElevenLabs** — `uvx elevenlabs-mcp` (enabled) — ver [[infraestrutura/elevenlabs-mcp.md]]
 - **ai-memory** — `http://127.0.0.1:49374/mcp` (disabled — não usar)
 
 ## Conexões

@@ -300,10 +300,9 @@ Grupos de data em ISO 8601, mais recente primeiro. Múltiplas entradas por dia s
   - Stack pessoal (Hermes, Telegram, VPS, n8n, Node-RED, ElevenLabs)
   - Projetos ativos
 
-### 7.2 — Descobertas de ElevenLabs SFX sem página permanente
+### 7.2 — Descobertas de ElevenLabs SFX sem página permanente ✅
 
-**Gap:** As descobertas extensas sobre ElevenLabs SFX (loop=true, duration_seconds, créditos, prompt PT vs EN) estão apenas no diário de 24/06 e em updates de skill. A skill não é a wiki.  
-**Ação:** Criar `wiki/conhecimento/elevenlabs-sfx.md` ou `wiki/automacao/elevenlabs-sfx.md` com as descobertas estáveis. Linkar do hermes.md (seção MCP Servers/APIs).
+**Resolvido em 2026-06-27:** criada `wiki/infraestrutura/elevenlabs-mcp.md` com capabilities, limites do free tier, comportamento de `duration_seconds`, `loop=true`, créditos e prompt language. Linkada de `hermes.md` (MCP Servers) e `hermes-api.md`.
 
 ### 7.3 — Técnica de message-id do Telegram sem página consolidada
 
@@ -424,7 +423,7 @@ Prioridades organizadas por impacto e custo de execução.
 |---|---|---|---|
 | B1 | Definir idioma de wikilinks (com/sem prefixo `wiki/`) e documentar no AGENTS.md | AGENTS.md | Baixo |
 | B2 | Decidir formato padrão de diário e renomear arquivos legacy | diário/ | Médio |
-| B3 | Criar `wiki/conhecimento/elevenlabs-sfx.md` | novo arquivo | Médio |
+| B3 | ~~Criar `wiki/conhecimento/elevenlabs-sfx.md`~~ ✅ criada como `infraestrutura/elevenlabs-mcp.md` | novo arquivo | Médio |
 | B4 | Adicionar seção "Tipos de busca" (factual vs temática) em firecrawl.md | `firecrawl.md` | Baixo |
 | B5 | Avaliar se `wiki/pendencias/` vale como pasta (só 1 arquivo) | estrutura | Baixo |
 | B6 | Atualizar `user_profile.md` do Claude Code | memória externa | Baixo |
