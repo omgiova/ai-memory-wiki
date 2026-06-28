@@ -889,10 +889,10 @@ bash /root/curator-teste5.sh
 
 ---
 
-### Tentativa 10 — 2026-06-28 — aguardando execução
+### Tentativa 10 — 2026-06-28 — SUCESSO ✅ → versão validada (v1 oficial)
 
-**Script:** `curator-teste6.sh` (v6 — novo script; v5 preservado como baseline estável)
-**System prompt:** `curator-v5-system.md` (v5 — redesenho estrutural)
+**Script:** `curator-teste6.sh` (v6) — renomeado para `curador-wiki-script-v1.sh` após validação
+**System prompt:** `curator-v5-system.md` (v5) — renomeado para `curador-wiki-prompt-v1.md` após validação
 **Mudanças centrais:** output em tabelas por pasta (vs 3 blocos de prosa); pastas proibidas sobem para o topo do prompt; três seções de julgamento fundidas em uma; prioridade restrita a MIGRAR e CRIAR; template de formato removido do `-p` e centralizado no system prompt.
 
 #### System prompt (`/root/curator-v5-system.md`)

@@ -17,10 +17,10 @@ Automação bash que seleciona uma daily note, injeta o `index.md` e a daily em 
 
 ```bash
 # daily específica (recomendado)
-bash /root/curator-teste6.sh 2026-06-23-20260623.md
+bash /root/curador-wiki-script-v1.sh 2026-06-23-20260623.md
 
 # daily aleatória
-bash /root/curator-teste6.sh
+bash /root/curador-wiki-script-v1.sh
 ```
 
 Log de execução: `/var/log/curator-teste6.log`
@@ -29,7 +29,7 @@ Log de execução: `/var/log/curator-teste6.log`
 
 1. Sorteia ou usa a daily passada como argumento
 2. Envia a daily completa ao Telegram Geral via `sendRichMessage` (frontmatter removido)
-3. Chama `claude --system-prompt-file /root/curator-v5-system.md --allowedTools "Read" --output-format json -p "<index.md + daily>"`
+3. Chama `claude --system-prompt-file /root/curador-wiki-prompt-v1.md --allowedTools "Read" --output-format json -p "<index.md + daily>"`
 4. Extrai `result` e `usage` do JSON retornado
 5. Salva output em `/var/log/curator-outputs/ticket-NNN.md`
 6. Envia curadoria ao Telegram
@@ -88,8 +88,8 @@ Duração: Xs
 
 | Arquivo | Papel |
 |---|---|
-| `/root/curator-teste6.sh` | Script principal — versão atual (v6) |
-| `/root/curator-v5-system.md` | System prompt do agente curador — versão atual (v5) |
+| `/root/curador-wiki-script-v1.sh` | Script principal — v1 validada (ex `curator-teste6.sh`) |
+| `/root/curador-wiki-prompt-v1.md` | System prompt do agente curador — v1 validada (ex `curator-v5-system.md`) |
 
 ## Conexões
 
