@@ -209,3 +209,11 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 
 ## [2026-06-28] edit | procedures — removida V18 de auditor-wiki.md
 - V18 era resquício redundante do V9 (já documentado e validado como V9a/V9b/V9c)
+
+## [2026-06-28] query | auditor-wiki — documentado primeiro run real (desastre)
+- Todos os 8 agentes produziram prosa em vez de JSON — findings = []
+- Coordenador recebeu input vazio e falhou com parse error
+- Mensagem Telegram enviada sem conteúdo útil
+- Gastou ~75% do limite Claude free em ~5 minutos (normalmente leva horas para consumir isso)
+- Adicionada seção "Primeira execução real — 2026-06-28 (desastre)" com timeline, falhas, consumo, análise de causa raiz e lições
+- Nenhuma correção aplicada — só documentação

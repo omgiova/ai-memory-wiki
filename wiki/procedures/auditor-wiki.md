@@ -213,6 +213,64 @@ Impacto: mudança no auditor script (`auditor-wiki-v1.sh`) e nos prompts dos age
 **D2 — resolvido pelo V9 (3 scripts)**
 Coberto por V9a/V9b/V9c que testam os 3 tipos de mensagem com os botões reais, incluindo o novo botão 🔄 Recomeçar.
 
+---
+
+## 🔴 Primeira execução real — 2026-06-28 (desastre)
+
+### Timeline
+
+```
+[19:49:37] === Auditoria wiki 2026-06-28 ===
+[19:49:37] Fase 1: análise estrutural
+[19:49:37] Fase 1 concluída: 20 arquivos analisados
+[19:49:37] Fase 2: iniciando agentes em paralelo
+           8 agentes iniciados (concepts, history, procedures, systems, todo, tools, overlap, links)
+[19:54:49] Fase 2 concluída (5 min 12 s)
+           TODOS os 8 agentes produziram prose — findings = []
+[19:54:49] Fase 3: coordenador consolidando relatórios
+           Output inválido: "Expecting value: line 1 column 1 (char 0)"
+           Findings consolidados: 0
+[19:56:47] Fase 3 concluída (1 min 58 s)
+[19:56:47] Fase 4: validação via Telegram
+[19:57:04] === Auditoria concluída ===
+```
+
+**Tempo total:** ~7,5 minutos
+
+### Falhas
+
+**Falha #1 — 8/8 agentes produziram prosa em vez de JSON**
+Nenhum agente (pasta, overlap ou links) retornou JSON válido. O fallback `findings: []` foi acionado para todos. Causa mais provável: o Claude CLI não recebeu (ou ignorou) a instrução de `--output-format json` OU o system prompt não foi carregado corretamente, fazendo o modelo responder em linguagem natural.
+
+**Falha #2 — Coordenador recebeu input vazio e travou**
+Com todos os relatórios vazios, o coordenador recebeu algo inesperado e produziu string vazia — `json.loads()` falhou com "Expecting value: line 1 column 1 (char 0)".
+
+**Falha #3 — Mensagem Telegram sem conteúdo**
+Fase 4 disparou, mas sem findings para apresentar, a mensagem no Telegram veio vazia/inútil.
+
+### Consumo de tokens
+
+- Gastou **~75% do limite do Claude free em ~5 minutos** (limite gira em torno de ~200-300 requests ou tokens equivalentes a cada 5h)
+- Esse mesmo volume (~75%) o usuário gasta com centenas de tools, chamadas e requests em uso normal do Claude Code
+- Proporção sugere que **cada agente consumiu uma quantidade massiva de tokens** — possivelmente por ler arquivos inteiros da wiki sem necessidade ou por gerar respostas longas em prosa (cada prosa = dezenas de milhares de tokens de saída)
+
+### Análise de causa raiz
+
+| Fator | Impacto |
+|---|---|
+| **8 agentes paralelos, cada um lendo múltiplos arquivos** | Cada agente recebeu o conteúdo de uma pasta inteira como contexto. Com 20 arquivos na wiki, agentes como `tools/` (4 arquivos) e `systems/` (4 arquivos) podem ter consumido 10K–20K+ tokens de entrada cada. Multiplicado por 8 = 80K–160K+ tokens de entrada em paralelo. |
+| **Nenhum agente retornou JSON** | Todo o processamento foi desperdiçado — os tokens de saída (prosa longa) foram descartados pelo fallback. Se os agentes tivessem retornado JSON compacto como esperado, o custo de saída seria drasticamente menor. |
+| **Prompt `--output-format json` pode não estar funcionando** | O Claude CLI não tem garantia de que `--output-format json` force o modelo a obedecer — o modelo pode ainda responder em prosa, principalmente se o system prompt não deixar explícito. |
+| **Fallback `findings: []` esconde o erro** | Em vez de travar e alertar que o formato está errado, o script silenciosamente aceita prosa, joga fora e segue com findings vazio. O usuário só descobre o problema no final, depois de pagar o custo. |
+| **Sem dry-run ou modo verboso** | O script não tem um modo de teste que mostre o prompt exato enviado a cada agente antes de disparar a API paga. |
+
+### Lições
+
+1. **Teste de formato primeiro** — V2 (agente isolado) foi planejado mas nunca executado. Rodar um único agente com `--output-format json` antes do run completo teria revelado o problema com 1/8 do custo.
+2. **Prompt precisa ser explícito sobre formato** — A instrução de output em JSON puro precisa estar no corpo do prompt (não só no `--output-format` flag), com exemplo concreto do JSON esperado.
+3. **Fallback deve ALERTAR, não silenciar** — Se um agente produz prosa, o script deveria abortar ou pelo menos logar um WARNING com os primeiros 200 chars do output, não só registrar findings vazio e seguir.
+4. **8 agentes paralelos é excessivo para o free tier** — O limite do Claude free não suporta esse volume. Reduzir para 2-3 agentes por run, ou serializar.
+
 ## Conexões
 
 - [[AGENTS.md]] — taxonomia, templates e checklist de Lint que este script implementa
