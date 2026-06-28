@@ -131,3 +131,7 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - auditor-wiki-overlap-prompt-v1.md: novo — detecta sobreposição semântica cross-folder
 - auditor-wiki-links-prompt-v1.md: novo — valida wikilinks quebrados e labels
 - procedures/auditor-wiki.md: documentação atualizada para refletir arquitetura completa
+
+## [2026-06-28] edit | procedures/auditor-wiki — corrigir numeração de fases (0→1-based) e sugestões de nomes de prompt
+- Fases renumeradas: 0–5 → 1–6 no script e na documentação
+- auditor-wiki.md atualizado para refletir nova numeração
