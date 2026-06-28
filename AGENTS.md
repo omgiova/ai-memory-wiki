@@ -17,7 +17,8 @@
 > ```
 > Nunca deixar o repositório com mudanças não commitadas ou não enviadas ao remoto.
 
-**Tipos:** `edit`, `ingest`, `query`, `lint`, `session`, `chore` — mesmo tipo da entrada do log.  
+**Commit message** — derivado diretamente da entrada do log: `tipo(escopo): descrição`  
+**Tipos:** `edit`, `ingest`, `query`, `lint`, `session`, `chore`  
 **Escopo:** nome da pasta ou arquivo principal afetado (ex: `vps`, `wiki`, `firecrawl`)
 
 **Branches:** trabalhar em `main` por padrão. Feature branch só se explicitamente solicitado.

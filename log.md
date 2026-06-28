@@ -63,3 +63,6 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Tipos de commit: `docs`, `fix`, `feat` substituídos por `edit`, `ingest`, `query`, `lint`, `session`, `chore`
 - Formato do log: `<título>` → `<escopo> — <descrição>` para derivação mecânica do commit message
 - Adicionado `chore` na tabela de tipos do log
+
+## [2026-06-28] edit | AGENTS.md — regra de derivação do commit message explicitada
+- Bloco Tipos/Escopo reescrito com "Commit message — derivado diretamente da entrada do log: tipo(escopo): descrição"
