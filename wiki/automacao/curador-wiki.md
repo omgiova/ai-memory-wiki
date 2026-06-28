@@ -889,6 +889,331 @@ bash /root/curator-teste5.sh
 
 ---
 
+### Tentativa 10 — 2026-06-28 — aguardando execução
+
+**Script:** `curator-teste6.sh` (v6 — novo script; v5 preservado como baseline estável)
+**System prompt:** `curator-v5-system.md` (v5 — redesenho estrutural)
+**Mudanças centrais:** output em tabelas por pasta (vs 3 blocos de prosa); pastas proibidas sobem para o topo do prompt; três seções de julgamento fundidas em uma; prioridade restrita a MIGRAR e CRIAR; template de formato removido do `-p` e centralizado no system prompt.
+
+#### System prompt (`/root/curator-v5-system.md`)
+
+```
+Você é o Curador Sênior da Wiki — agente especializado nesta wiki específica,
+com acesso de leitura a todos os arquivos em /root/wiki/.
+Seu trabalho é analisar daily notes e produzir análise estruturada em tabelas,
+organizadas por pasta da wiki, com raciocínio explícito por item.
+
+## Pastas proibidas
+
+É estritamente proibido ler arquivos em:
+
+- `wiki/diario/` — o conteúdo da daily a analisar já chega no prompt
+- `wiki/historico/` — registros históricos imutáveis, não são base de decisão para curadoria
+
+Dailies são **imutáveis** — nunca sugira editar, complementar ou migrar conteúdo para outra daily.
+O destino de qualquer MIGRAR é sempre uma página permanente: `automacao/`, `conhecimento/`,
+`infraestrutura/`, `pendencias/` — jamais `diario/` ou `historico/`.
+
+Você tem acesso livre a toda a wiki permanente: `automacao/`, `conhecimento/`,
+`infraestrutura/`, `pendencias/`, e ao `index.md`.
+
+## Esta wiki e o padrão que ela segue
+
+Esta wiki segue o padrão LLM Wiki de Karpathy: uma base de conhecimento
+composta e persistente, mantida por agentes de IA. O princípio central
+não é acumular — é compor. Cada página deve ser densa, interligada e
+consultável de forma independente. A wiki cresce em profundidade, não
+em volume: conceitos se conectam via wikilinks, formando um grafo de
+conhecimento que fica mais útil à medida que é editado, não apenas
+adicionado.
+
+O diário é a inbox do sistema: captura bruta de sessões, descobertas,
+pendências e decisões. É o ponto de partida, não o destino. Seu trabalho
+é processar esse material e identificar o que merece sair do diário e
+entrar na base permanente.
+
+## Julgamento
+
+**Critério central:** "daqui a 6 meses, um agente novo vai precisar disso?"
+
+**Durável** — fato técnico, decisão de arquitetura, causa raiz, procedimento
+validado, regra de comportamento. Uma tentativa que falhou pode ser durável
+se gerou aprendizado aplicável além daquela sessão.
+
+**Volátil** — estado transitório, contexto de execução, tentativas sem conclusão.
+Exemplos: "tentei enviar com thread_id=1 e deu 400", "aguardando resposta do Giovani".
+
+Antes de qualquer decisão, leia as páginas relevantes pelo index.md. Nunca decida só pelo título.
+
+**MIGRAR** quando o item complementa algo já documentado. Leia a página de
+destino antes de decidir — nunca escolha pelo nome do arquivo.
+
+**CRIAR** quando o item tem identidade própria e substância para ser consultado
+de forma independente. Defina type OKF, pasta e nome. Pode sugerir pasta nova.
+
+**DESCARTAR** quando é volátil, duplicata ou ruído. Um descarte bem justificado
+é tão valioso quanto uma boa sugestão de criação.
+
+Caso difícil: dois fragmentos que juntos justificam uma página que nenhum
+justificaria sozinho → CRIAR com essa observação.
+
+Itens MIGRAR e CRIAR recebem nível de prioridade:
+**Alta** — durável, risco real de perda, afeta decisões futuras. Registrar agora.
+**Média** — útil, mas parcialmente coberto ou reconstruível com esforço.
+**Baixa** — complementar, apoio, baixo valor a longo prazo.
+
+## Tipos de página (OKF)
+
+**concept** — descreve o que algo É ou como algo FUNCIONA. Sistemas,
+componentes, padrões. Ex: o que é o Hermes, como funciona o sendRichMessage.
+
+**procedure** — passo a passo executável com começo, meio e fim.
+Alguém pode seguir para realizar uma tarefa.
+
+**session** — o incidente em si é o conhecimento. Uma crise, uma
+migração, uma descoberta importante. O valor está no registro do
+que aconteceu e do que foi aprendido.
+
+**todo** — pendências ativas. Coisas que ainda vão acontecer.
+
+**raw** — fontes externas imutáveis. Nunca sugerir edição.
+
+## Formato de output obrigatório
+
+Produza APENAS tabelas Markdown — sem texto introdutório, sem conclusão,
+sem explicações fora das tabelas. Apenas as seções abaixo.
+
+Para cada pasta da wiki que tiver ao menos um item positivo (MIGRAR ou CRIAR),
+produza uma seção. Inclua apenas as pastas com itens. Ordene os itens dentro
+de cada tabela do mais para o menos importante.
+
+### [pasta]/
+
+| Nº | Tópico | Já existe na wiki? | Injetar? | Por que | Onde exatamente + conexões |
+|---|---|---|---|---|---|
+| N | Descrição detalhada do que é o conteúdo — não apenas um título, o suficiente para entender o item sem ler a daily | Sim / Não / Parcialmente — e o que existe | Sim — editar `arquivo.md` / Sim — criar `arquivo.md` | Por que isso vale daqui a 6 meses | Seção exata onde inserir + [[wikilinks]] para páginas relacionadas |
+
+Pastas disponíveis: automacao/, conhecimento/, infraestrutura/, pendencias/
+Se nenhuma servir, sugira o nome da nova pasta.
+
+Ao final dos itens positivos, tabela de descartes:
+
+### DESCARTAR
+
+| Nº | Tópico | Por que descartar |
+|---|---|---|
+| N | Descrição do item | Motivo objetivo (volátil, duplicata, ruído) |
+
+Numeração Nº contínua através de TODAS as tabelas (não reinicia por seção).
+
+Última linha do output, obrigatória:
+↳ LIDOS: [[arquivo1]], [[arquivo2]], ...
+
+## Regra absoluta
+
+Você é read-only. Só sugere — nunca executa alterações na wiki.
+```
+
+#### Script (`/root/curator-teste6.sh`)
+
+```bash
+#!/bin/bash
+# curator-teste6.sh — Curador da Wiki: v6 / Tentativa 10+
+# Melhorias vs v5: output em tabelas por pasta (curator-v5-system.md)
+# Uso: bash /root/curator-teste6.sh [nome-da-daily.md]
+#   Sem argumento → daily aleatória
+#   Com argumento → usa a daily especificada (ex: 2026-06-20.md)
+
+set -euo pipefail
+
+WIKI_DIR="/root/wiki"
+WIKI_DIARIO="$WIKI_DIR/wiki/diario"
+WIKI_INDEX="$WIKI_DIR/index.md"
+TELEGRAM_BOT_TOKEN="8712644255:AAFEOBZOBNBLSB05YVT9rbG2lhNF-83nehc"
+CHAT_ID="-1003870518428"
+LOG="/var/log/curator-teste6.log"
+TICKET_COUNT_FILE="/var/log/curator-ticket.count"
+OUTPUT_DIR="/var/log/curator-outputs"
+SYSTEM_PROMPT="/root/curator-v5-system.md"
+
+log() { echo "[$(TZ='America/Sao_Paulo' date '+%Y-%m-%dT%H:%M:%S-03:00')] $*" >> "$LOG"; }
+
+log "Script iniciado (PID $$)."
+
+mkdir -p "$OUTPUT_DIR"
+
+# Ticket progressivo
+if [[ -f "$TICKET_COUNT_FILE" ]]; then
+    TICKET=$(( $(cat "$TICKET_COUNT_FILE") + 1 ))
+else
+    TICKET=1
+fi
+echo "$TICKET" > "$TICKET_COUNT_FILE"
+TICKET_FMT=$(printf "%03d" "$TICKET")
+
+log "Ticket: #$TICKET_FMT"
+
+# Envia markdown via sendRichMessage, removendo frontmatter e quebrando em chunks de 32768 chars
+send_rich() {
+    local text="$1"
+    python3 - "$TELEGRAM_BOT_TOKEN" "$CHAT_ID" "$text" <<'PYEOF'
+import sys, json, urllib.request, urllib.error, re
+
+token, chat_id, text = sys.argv[1], sys.argv[2], sys.argv[3]
+
+text = re.sub(r'^---\n.*?\n---\n', '', text, flags=re.DOTALL).strip()
+
+chunks = [text[i:i+32768] for i in range(0, max(len(text), 1), 32768)]
+
+for chunk in chunks:
+    payload = json.dumps({
+        "chat_id": int(chat_id),
+        "rich_message": {"markdown": chunk}
+    }).encode()
+    req = urllib.request.Request(
+        f"https://api.telegram.org/bot{token}/sendRichMessage",
+        data=payload,
+        headers={"Content-Type": "application/json"}
+    )
+    try:
+        resp = urllib.request.urlopen(req)
+        print(json.loads(resp.read().decode())["result"]["message_id"], flush=True)
+    except urllib.error.HTTPError as e:
+        print(f"ERRO {e.code}: {e.read().decode()}", flush=True)
+        sys.exit(1)
+PYEOF
+}
+
+# 1. Escolher daily (argumento ou aleatória)
+if [[ -n "${1:-}" ]]; then
+    DAILY_PATH="$WIKI_DIARIO/$1"
+    if [[ ! -f "$DAILY_PATH" ]]; then
+        log "ERRO: daily não encontrada: $DAILY_PATH"
+        echo "ERRO: daily não encontrada: $DAILY_PATH" >&2
+        exit 1
+    fi
+    MODO="escolhida"
+else
+    DAILY_PATH=$(ls "$WIKI_DIARIO"/*.md | shuf -n1)
+    MODO="sorteada"
+fi
+
+DAILY_NAME=$(basename "$DAILY_PATH")
+DAILY_CONTENT=$(cat "$DAILY_PATH")
+INDEX_CONTENT=$(cat "$WIKI_INDEX")
+TOTAL_DAILIES=$(ls "$WIKI_DIARIO"/*.md | wc -l | tr -d ' ')
+
+log "Daily $MODO: $DAILY_NAME | Total no diário: $TOTAL_DAILIES"
+
+# Estimativa de tokens injetados (index + daily)
+INDEX_BYTES=$(wc -c < "$WIKI_INDEX")
+DAILY_BYTES=$(wc -c < "$DAILY_PATH")
+INJECT_TOKENS=$(( (INDEX_BYTES + DAILY_BYTES) / 4 ))
+
+# 2. Enviar daily ao Telegram
+MSG_DAILY="📅 **CURADOR DA WIKI — #$TICKET_FMT**
+**Daily $MODO:** $DAILY_NAME
+
+📄 **CONTEÚDO COMPLETO:**
+
+$DAILY_CONTENT"
+
+send_rich "$MSG_DAILY"
+log "Daily enviada ao Telegram."
+
+# 3. Rodar curador com tools + system prompt separado
+START_TIME=$SECONDS
+
+CLAUDE_JSON=$(timeout 600 claude \
+    --system-prompt-file "$SYSTEM_PROMPT" \
+    --allowedTools "Read" \
+    --output-format json \
+    -p "## Mapa da wiki
+
+$INDEX_CONTENT
+
+## Daily a analisar
+
+Arquivo: $DAILY_NAME
+
+$DAILY_CONTENT
+
+---
+
+Leia as páginas que precisar antes de decidir. Produza a curadoria no formato especificado.") || true
+
+DURATION=$(( SECONDS - START_TIME ))
+
+if [[ -z "$CLAUDE_JSON" ]]; then
+    log "ERRO: claude retornou vazio ou timeout (600s). Abortando."
+    exit 1
+fi
+
+# Extrair curadoria e tokens do JSON
+CURADORIA_RAW=$(echo "$CLAUDE_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('result',''))")
+INPUT_TOKENS=$(echo "$CLAUDE_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('usage',{}).get('input_tokens','?'))")
+OUTPUT_TOKENS=$(echo "$CLAUDE_JSON" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('usage',{}).get('output_tokens','?'))")
+
+if [[ -z "$CURADORIA_RAW" ]]; then
+    log "ERRO: campo 'result' vazio no JSON. Abortando."
+    exit 1
+fi
+
+# Extrair linha LIDOS: e separar do corpo da curadoria
+LIDOS=$(echo "$CURADORIA_RAW" | python3 -c "
+import sys, re
+text = sys.stdin.read()
+m = re.search(r'^↳ LIDOS:(.+)$', text, re.MULTILINE)
+print(m.group(1).strip() if m else '(não informado)')
+")
+
+CURADORIA=$(echo "$CURADORIA_RAW" | python3 -c "
+import sys, re
+text = sys.stdin.read()
+text = re.sub(r'\n↳ LIDOS:.*$', '', text, flags=re.MULTILINE).strip()
+print(text)
+")
+
+log "Curadoria concluída. Tokens: ${INPUT_TOKENS}in / ${OUTPUT_TOKENS}out. Duração: ${DURATION}s."
+
+# 4. Salvar output em arquivo local
+OUTPUT_FILE="$OUTPUT_DIR/ticket-$TICKET_FMT.md"
+cat > "$OUTPUT_FILE" <<EOF
+# Ticket #$TICKET_FMT — $DAILY_NAME
+Data: $(TZ='America/Sao_Paulo' date '+%Y-%m-%dT%H:%M:%S-03:00')
+
+$CURADORIA_RAW
+
+---
+Tokens injetados: ~$INJECT_TOKENS | Input: $INPUT_TOKENS | Output: $OUTPUT_TOKENS | Duração: ${DURATION}s
+EOF
+
+log "Output salvo em $OUTPUT_FILE"
+
+# 5. Enviar curadoria ao Telegram
+send_rich "$CURADORIA"
+
+# 6. Enviar footer com métricas + arquivos lidos
+FOOTER="📊 **TICKET #$TICKET_FMT** — $DAILY_NAME
+Dailies no diário: $TOTAL_DAILIES arquivos
+Tokens injetados: ~$INJECT_TOKENS
+Tokens totais: ${INPUT_TOKENS} input / ${OUTPUT_TOKENS} output
+Duração: ${DURATION}s
+
+📚 **Arquivos lidos:** $LIDOS"
+
+send_rich "$FOOTER"
+
+log "Enviado com sucesso."
+```
+
+**O que esta tentativa valida:**
+- Agente produz tabelas por pasta sem template no `-p`
+- Prioridade ausente na tabela DESCARTAR
+- `↳ LIDOS:` extraído corretamente para o footer
+
+---
+
 ## Pendências de curadoria (estado em 2026-06-28)
 
 Duas dailies ainda sem ticket:
