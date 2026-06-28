@@ -49,10 +49,7 @@ log.md
     │   ├── hermes.md
     │   ├── obsidian-git.md
     │   ├── elevenlabs-mcp.md
-    │   ├── telegram-bot-api.md
-    │   ├── telegram-reacoes.md
-    │   ├── telegram-send-rich-message.md
-    │   ├── telegram-topicos.md
+    │   ├── telegram.md
     │   ├── termux-ssh-claude.md
     │   └── vps.md
     └── pendencias/
@@ -71,14 +68,11 @@ log.md
 
 - [[wiki/infraestrutura/vps.md|VPS]] — Hostinger KVM 2 — hardware, serviços rodando, Docker Swarm, IPVS, problemas conhecidos
 - [[wiki/infraestrutura/hermes.md|Hermes]] — identidade, regras, stack, modelos ativos e preferências do Hermes Agent
-- [[wiki/infraestrutura/telegram-topicos.md|Telegram Tópicos]] — mapa completo de chats, tópicos e IDs do Telegram
+- [[wiki/infraestrutura/telegram.md|Telegram]] — referência completa: IDs, tópicos, HERMES_SESSION_MESSAGE_ID, sendMessage, sendRichMessage, reações e integrações com o Hermes
 - [[wiki/infraestrutura/hermes-api.md|Hermes API]] — referência completa dos ~180 endpoints REST do Hermes Agent (gerada do /openapi.json)
 - [[wiki/infraestrutura/termux-ssh-claude.md|Problema SSH/Claude]] — diagnóstico dos 3 problemas que travam sessões Claude via Remote Control (curl sem timeout, processo zumbi, prompt invisível)
 - [[wiki/infraestrutura/obsidian-git.md|Obsidian Git]] — todos os problemas já encontrados com o plugin obsidian-git, causas raiz e soluções definitivas
 - [[wiki/infraestrutura/elevenlabs-mcp.md|ElevenLabs MCP]] — capabilities e limites do free tier: text_to_sound_effects, compose_music (pago), limitação de duração, créditos
-- [[wiki/infraestrutura/telegram-bot-api.md|Telegram Hub]] — ponto de entrada único para tudo sobre Telegram: Bot API, tópicos, reações, HERMES_SESSION_MESSAGE_ID, integrações
-- [[wiki/infraestrutura/telegram-send-rich-message.md|Telegram sendRichMessage]] — documentação do endpoint Bot API 10.1: parâmetros, payload, limites e exemplo validado
-- [[wiki/infraestrutura/telegram-reacoes.md|Telegram Reações]] — procedimento para setMessageReaction via HERMES_SESSION_MESSAGE_ID; status: não validado de ponta a ponta até 2026-06-27
 
 ### conhecimento/
 

@@ -94,5 +94,4 @@ Duração: Xs
 ## Conexões
 
 - [[wiki/automacao/curador-wiki-historico.md|Histórico de desenvolvimento]] — todas as tentativas, scripts completos e decisões de design
-- [[wiki/infraestrutura/telegram-send-rich-message.md|Telegram sendRichMessage]] — endpoint usado para entrega
-- [[wiki/infraestrutura/telegram-topicos.md|Telegram Tópicos]] — IDs do Telegram
+- [[wiki/infraestrutura/telegram.md|Telegram]] — endpoint sendRichMessage (seção 3.2) e IDs de tópicos (seção 1)

@@ -4,6 +4,13 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 
 ---
 
+## [2026-06-28] edit | infraestrutura/telegram — consolidação de 4 arquivos em página única
+- Criado wiki/infraestrutura/telegram.md com todo o conteúdo migrado literalmente
+- Deletados: telegram-bot-api.md, telegram-topicos.md, telegram-send-rich-message.md, telegram-reacoes.md
+- Atualizado index.md: 4 entradas → 1 (árvore e lista)
+- Atualizado curador-wiki.md: links de conexões apontam para telegram.md
+- Seções: Chats e IDs / HERMES_SESSION_MESSAGE_ID / Envio de Mensagens / Reações / Integrações
+
 ## [2026-06-28] edit | AGENTS.md — reestruturação e adição do log.md
 - Removida linha de compatibilidade do cabeçalho
 - Fundidas seções Autorização e Arquivos NUNCA modificar
