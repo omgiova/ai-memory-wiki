@@ -1,111 +1,98 @@
 ---
-type: concept
+type: procedure
 tags: [curador, automacao, diario, curadoria, wiki]
 title: Curador da Wiki
-description: Agente read-only que analisa daily notes e produz recomendações de curadoria estruturadas, entregues ao Telegram Geral.
+description: Automação bash que processa uma daily note e entrega curadoria estruturada ao Telegram Geral via claude -p com acesso de leitura à wiki.
 timestamp: 2026-06-28T00:00:00-03:00
 status: stable
 ---
 
 # Curador da Wiki
 
-Agente especializado que processa daily notes e recomenda ao Giovani o que fazer com cada item: migrar para página existente, criar página nova ou descartar.
+Automação bash que seleciona uma daily note, injeta o `index.md` e a daily em um `claude -p` com `--allowedTools "Read"`, e entrega três mensagens ao Telegram Geral: a daily completa, a curadoria em tabelas e um footer de métricas.
 
 **Papel no ecossistema da wiki:** o diário é a inbox — captura bruta de sessões. O curador é o filtro: identifica o que tem valor permanente e propõe como integrá-lo à base.
 
-## Comportamento
-
-- **Read-only** — só sugere, nunca executa alterações na wiki
-- **Dailies são temporárias** — nunca sugere outra daily como destino; só páginas permanentes (`automacao/`, `conhecimento/`, `infraestrutura/`, `pendencias/`)
-- **Lê antes de decidir** — lê as páginas de destino a partir do `index.md` antes de sugerir MIGRAR; nunca decide por nome de arquivo
-- **Rastreabilidade** — declara `↳ LIDOS:` ao final de cada análise com todos os arquivos consultados
-
-## Critério de curadoria
-
-Pergunta central: **"daqui a 6 meses, um agente novo vai precisar disso?"**
-
-- **Migrar** — complementa algo já documentado; exige leitura da página de destino antes de decidir
-- **Criar** — identidade própria, substância para consulta independente; define type OKF, pasta e nome do arquivo
-- **Descartar** — volátil, duplicata ou ruído; descarte bem justificado vale tanto quanto uma boa sugestão
-
-## Arquitetura atual (v6 / prompt v5)
-
-```
-[bash curator-teste6.sh]
-        │
-        ├── recebe daily como argumento (ou sorteia aleatória)
-        ├── envia daily ao Telegram via sendRichMessage (script direto)
-        ├── chama claude com:
-        │     --system-prompt-file /root/curator-v5-system.md
-        │     --allowedTools "Read"
-        │     --output-format json
-        │     -p "<index.md + daily>"
-        ├── agente lê páginas relevantes e produz tabelas por pasta
-        └── envia curadoria + footer de métricas ao Telegram
-```
-
-## Como executar
+## Como rodar
 
 ```bash
-# daily específica
+# daily específica (recomendado)
 bash /root/curator-teste6.sh 2026-06-23-20260623.md
 
-# aleatória
+# daily aleatória
 bash /root/curator-teste6.sh
 ```
 
-Log: `/var/log/curator-teste6.log`
+Log de execução: `/var/log/curator-teste6.log`
 
-## Formato de output
+## O que acontece em cada execução
 
-Tabelas Markdown organizadas por pasta da wiki. Para cada pasta com ao menos um item positivo:
+1. Sorteia ou usa a daily passada como argumento
+2. Envia a daily completa ao Telegram Geral via `sendRichMessage` (frontmatter removido)
+3. Chama `claude --system-prompt-file /root/curator-v5-system.md --allowedTools "Read" --output-format json -p "<index.md + daily>"`
+4. Extrai `result` e `usage` do JSON retornado
+5. Salva output em `/var/log/curator-outputs/ticket-NNN.md`
+6. Envia curadoria ao Telegram
+7. Envia footer com métricas (tokens, duração, arquivos lidos)
 
+## Resultado esperado
+
+3 mensagens no Telegram Geral (`chat_id: -1003870518428`, sem `message_thread_id`):
+
+**Msg 1 — Daily:**
 ```
-### automacao/
+📅 CURADOR DA WIKI — #NNN
+Daily escolhida: 2026-06-XX.md
+
+📄 CONTEÚDO COMPLETO:
+[conteúdo sem frontmatter]
+```
+
+**Msg 2 — Curadoria (tabelas por pasta):**
+```
+### infraestrutura/
 
 | Nº | Tópico | Já existe na wiki? | Injetar? | Por que | Onde exatamente + conexões |
 |---|---|---|---|---|---|
-| 1  | ...    | Sim/Não/Parcialmente | Sim — editar arquivo.md | Por que vale a longo prazo | Seção + [[wikilinks]] |
+| 1  | ...    | ...                | ...      | ...     | ...                        |
 
 ### DESCARTAR
 
 | Nº | Tópico | Por que descartar |
 |---|---|---|
-| 2  | ...    | Motivo objetivo |
-
-↳ LIDOS: [[arquivo1]], [[arquivo2]], ...
+| 2  | ...    | ...               |
 ```
 
-Numeração contínua através de todas as tabelas.
+Numeração contínua. Sem texto fora das tabelas.
 
-## Sistema de tickets
+**Msg 3 — Footer:**
+```
+📊 TICKET #NNN — nome-da-daily.md
+Dailies no diário: X arquivos
+Tokens injetados: ~XXXX
+Tokens totais: XXXX input / XXXX output
+Duração: Xs
 
-Cada execução gera um ticket progressivo. Contador em `/var/log/curator-ticket.count`.
+📚 Arquivos lidos: [[arquivo1]], [[arquivo2]], ...
+```
 
-Outputs locais salvos em `/var/log/curator-outputs/ticket-NNN.md` — consultáveis por agentes via `Read`.
+## Outputs locais
 
-## Destino: Telegram Geral
-
-- **Chat ID:** `-1003870518428`
-- **Thread ID:** omitido (Geral = chat principal do fórum; sem `message_thread_id`)
-- **Formato:** `sendRichMessage` com `rich_message.markdown`
-- **Chunking:** 32.768 chars por mensagem
-
-Cada execução envia 3 mensagens: daily completa → curadoria → footer de métricas.
+| Path | Conteúdo |
+|---|---|
+| `/var/log/curator-outputs/ticket-NNN.md` | Output completo de curadoria (inclui `↳ LIDOS:`) |
+| `/var/log/curator-ticket.count` | Contador de tickets (inteiro, incrementado a cada run) |
+| `/var/log/curator-teste6.log` | Log de execução com timestamps BRT |
 
 ## Arquivos do agente
 
 | Arquivo | Papel |
 |---|---|
-| `/root/curator-teste6.sh` | Script principal (v6) |
-| `/root/curator-v5-system.md` | System prompt do agente (v5) |
-| `/var/log/curator-teste6.log` | Log de execução |
-| `/var/log/curator-ticket.count` | Contador de tickets |
-| `/var/log/curator-outputs/` | Outputs locais por ticket |
+| `/root/curator-teste6.sh` | Script principal — versão atual (v6) |
+| `/root/curator-v5-system.md` | System prompt do agente curador — versão atual (v5) |
 
 ## Conexões
 
-- [[wiki/automacao/curador-wiki-historico.md|Histórico de desenvolvimento]] — todas as tentativas, scripts e decisões de design
+- [[wiki/automacao/curador-wiki-historico.md|Histórico de desenvolvimento]] — todas as tentativas, scripts completos e decisões de design
 - [[wiki/infraestrutura/telegram-send-rich-message.md|Telegram sendRichMessage]] — endpoint usado para entrega
 - [[wiki/infraestrutura/telegram-topicos.md|Telegram Tópicos]] — IDs do Telegram
-- [[wiki/conhecimento/plano-implementacao-loop.md|Plano de Loops]] — contexto técnico do pipeline agêntico
