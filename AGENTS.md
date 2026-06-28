@@ -93,7 +93,7 @@ status: <status>     # veja status abaixo
 2. **Wikilinks** para conectar páginas relacionadas: `[[caminho/arquivo.md|texto]]`
 3. **Toda página** tem frontmatter OKF completo + seção de navegação/conexões no final
 4. **`raw/`** é imutável — arquivos ali nunca são editados, apenas adicionados
-5. **`wiki/diario/`** segue o padrão `wiki/diario/YYYY-MM-DD.md` com `type: daily`
+5. **`wiki/diario/`** segue o padrão `wiki/diario/YYYY-MM-DD-sufixo-descritivo.md` com `type: daily`
 6. **Tags** em kebab-case, no plural, sem acentos (ex: `sessoes`, não `sessoe` ou `sessão`)
 7. **`status: draft`** ao criar uma página nova; mudar para `stable` quando revisada
 
