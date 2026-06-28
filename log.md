@@ -232,3 +232,7 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - 5 ocorrências de "free tier" / "Claude free" removidas do auditor-wiki.md
 - Substituídas por linguagem factual: "cota do Claude Code CLI", "consumo em rajada", sem especular sobre plano
 - O usuário é assinante Claude Pro — informação incorreta documentada no log histórico (não editado, append-only)
+
+## [2026-06-28] edit | procedures/auditor-wiki — restaura dado factual de 75% que foi removido por engano
+- O 75% é dado observado pelo usuário, não suposição de plano — foi restaurado como "~75% da cota disponível"
+- O erro anterior foi associar o percentual a "free tier" em vez de mantê-lo como fato

@@ -250,7 +250,7 @@ Fase 4 disparou, mas sem findings para apresentar, a mensagem no Telegram veio v
 
 ### Consumo de tokens
 
-- Gastou **volume equivalente a ~4 horas de uso normal em ~5 minutos** (centenas de tools, chamadas e requests comprimidos em 5 min)
+- Gastou **~75% da cota disponível em ~5 minutos** (~4 horas de uso normal comprimidas em 5 min)
 - Esse volume normalmente é consumido ao longo de horas em uso normal do Claude Code via Hermes
 - Proporção sugere que **cada agente consumiu uma quantidade massiva de tokens** — possivelmente por ler arquivos inteiros da wiki sem necessidade ou por gerar respostas longas em prosa (cada prosa = dezenas de milhares de tokens de saída)
 
