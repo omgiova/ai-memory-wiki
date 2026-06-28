@@ -147,22 +147,24 @@ Passar um finding real e verificar: `old_string` é substring exata do arquivo (
 **V8 — Telegram: token e chat_id**
 Verificar que `TELEGRAM_BOT_TOKEN` está disponível em `~/.hermes/.env` e que `CHAT_ID=-1003870518428` corresponde ao chat correto. Testar com um `sendMessage` simples antes de rodar o script completo.
 
-**⚠️ V9 — Telegram: inline keyboard**
-Verificar que os botões aparecem corretamente no Telegram (o bot precisa ter permissão de enviar mensagens com `reply_markup` no grupo). Testar `answerCallbackQuery` — se não for chamado, o botão fica com loading infinito.
+**V9 — Telegram: interação completa (todos os tipos de mensagem)**
+Verificar todas as interações possíveis entre o usuário e o auditor via Telegram. São 3 tipos de mensagem e 7 interações no total.
 
-*Script de teste:* `/root/test-v9-inline-keyboard.sh`
+*Script de teste:* `/root/test-v9-completo.sh` — executa as 7 interações em sequência, reporta pass/fail individual e placar final.
 
-O script:
-1. Drena updates pendentes para zerar o offset
-2. Envia `sendMessage` com `reply_markup` (inline keyboard com 2 botões)
-3. Aguarda até 120s pelo `callback_query` do usuário via `getUpdates` (long-polling)
-4. Chama `answerCallbackQuery` com `text="✅ Recebido!"` — isso remove o loading do botão
-5. Remove os botões com `editMessageReplyMarkup` (inline_keyboard vazia)
-6. Imprime `✅ V9 PASSOU` com `callback_data` recebido e confirmação do `answerCallbackQuery`, ou `❌ V9 FALHOU` com timeout
+| # | Tipo | Botão clicado | Com texto? |
+|---|---|---|---|
+| 1 | Resumo executivo | ✅ Prosseguir | — |
+| 2 | Finding corrigível | ✅ Aplicar | — |
+| 3 | Finding corrigível | ❌ Pular | — |
+| 4 | Finding corrigível | ✏️ Ajustar | sim — texto livre com `/` na frente |
+| 5 | Finding não-corrigível | ✅ Entendido | — |
+| 6 | Finding não-corrigível | ✏️ Instruir correção | sim — instrução com `/` na frente |
+| 7 | Resumo executivo | ❌ Encerrar | — |
 
-*Resultado esperado:* `status: ok`, `answer_ok: True`, botões sumindo da mensagem após clique.
+*Prefixo `/` para texto livre:* quando o auditor pede texto (interações 4 e 6), o usuário envia a mensagem com `/` na frente (ex: `/corrige o type pra system`). O auditor filtra mensagens sem `/` e faz strip antes de usar. O Hermes trata `/comando-desconhecido` como comando e não aciona o LLM — sem gasto de token.
 
-*Resultado obtido (2026-06-28):* ⚠️ **Parcialmente validado.** Testado com 2 botões — mas o script real envia 3 botões [✅ Aplicar] [❌ Pular] [✏️ Ajustar] para findings corrigíveis. Configuração diferente de `inline_keyboard`. Requer novo teste com 3 botões antes de marcar como validado.
+*Resultado esperado:* 7/7 passam.
 
 **V10 — apply_edit: old_string exato**
 O maior risco do script. O agente corretor copia o trecho do arquivo, mas LLMs às vezes normalizam espaços ou quebras de linha. Verificar na primeira aplicação real se o `old_string` está sendo encontrado ou se cai no erro "old_string não encontrado".
@@ -188,41 +190,9 @@ O auditor invoca `claude` como subprocesso bash, fora do contexto do Hermes gate
 **V17 — Dois findings consecutivos no mesmo arquivo**
 `apply_edit` usa `str.replace(old_string, new_string, 1)`. Se dois findings apontam para o mesmo arquivo e são processados em sequência, o primeiro pode alterar o contexto onde o `old_string` do segundo estava — o segundo finding cai no erro "old_string não encontrado". Verificar se o coordenador pode ser instruído a agrupar edits do mesmo arquivo num único finding, ou confirmar que a Fase 5 sequencial já mitiga o risco.
 
-**V18 — poll_text: conflito com Hermes e filtro por prefixo `!`**
+**V18 — poll_text: prefixo `/` para evitar gasto de token no Hermes** *(preliminar — coberto pelo V9)*
 
-Contexto: o auditor e o Hermes usam o mesmo bot-token com long-polling (`getUpdates`, sem webhook). Quando o auditor aguarda `poll_text` (fluxo "Ajustar" ou "Instruir"), Hermes também está escutando — há corrida para capturar a mensagem do usuário, com resultado não-determinístico. A solução adotada: exigir que respostas ao auditor comecem com `!`; o auditor filtra e faz strip do prefixo; o Hermes deve ignorar silenciosamente.
-
-*Script de teste:* `/root/test-v18-poll-text-prefix.sh`
-
-O script:
-- **Fase 1** — solicita uma mensagem SEM `!` e aguarda 30s. Documenta se o auditor captura (comportamento atual sem filtro) ou não vê nada (Hermes capturou primeiro). Não é pass/fail — é observação do estado atual.
-- **Fase 2** — solicita uma mensagem COM `!` (ex: `! type: system`). `poll_text` com filtro ignora mensagens sem `!` e captura somente a prefixada. Faz strip do `!` e espaço(s), ecoa o texto limpo de volta no Telegram.
-- **Verificação manual obrigatória:** observar se o Hermes responde à mensagem com `!`. Se sim → `!` não é seguro como prefixo, escolher outro (ex: `/adj`). Se não → `!` é seguro.
-
-*Resultado esperado:* Fase 2 captura a mensagem com `!`, strip correto, Hermes não responde.
-
-*Resultado obtido (2026-06-28):* ❌ **Prefixo `!` não é seguro.** O script capturou corretamente (`raw: ! teste...`, `strip: teste...`), mas o Hermes também recebeu e respondeu à mensagem — gastando token. Ambos consumiram o mesmo update simultaneamente. A abordagem de prefixo simples não resolve o conflito; é necessária outra estratégia (ver nota abaixo).
-
-**V18b — poll_text: prefixo `/` como alternativa sem gasto de token**
-
-Hipótese: o Hermes trata mensagens iniciadas com `/` como comandos. Se `/algo` não é um comando reconhecido, ele responde "desconhecido" ou ignora — sem acionar o LLM. Isso evita gasto de token mesmo que ambos recebam o update simultaneamente.
-
-Formato de uso: `/ <texto>` (ex: `/ type: system`) — o auditor captura mensagens iniciando com `/`, faz strip do `/ ` e usa o restante como `new_string`.
-
-*Script de teste:* `/root/test-v18b-slash-prefix.sh`
-
-O script:
-1. Drena offset inicial
-2. Envia instrução no Telegram pedindo mensagem com `/` na frente
-3. `poll_text` com filtro: ignora mensagens sem `/`, captura a primeira com `/`
-4. Strip do `/` e espaço(s), ecoa o resultado limpo no Telegram
-
-*Verificação manual obrigatória após rodar:*
-- Hermes não respondeu → prefixo `/` seguro ✅
-- Hermes respondeu "comando desconhecido" (sem LLM) → sem gasto de token, aceitável ✅
-- Hermes respondeu via LLM → gasta token, prefixo `/` não resolve ❌
-
-*Resultado esperado:* captura e strip corretos; Hermes não aciona LLM.
+Auditor e Hermes usam o mesmo bot-token com long-polling. Quando o auditor aguarda texto do usuário, ambos recebem o update simultaneamente. Prefixo `!` foi testado e descartado (Hermes acionou o LLM e gastou token). Prefixo `/` funciona: Hermes trata como comando desconhecido, sem chamar o LLM. Conclusão incorporada ao V9.
 
 ## Problemas de design identificados nas validações
 
@@ -233,8 +203,8 @@ Solução proposta: ao invés de pedir texto livre, o bot deve enviar um segundo
 
 Impacto: mudança no auditor script (`auditor-wiki-v1.sh`) e nos prompts dos agentes de pasta (que precisam incluir o campo `field` e `valid_values` nos findings corrigíveis).
 
-**D2 — V9 testou 2 botões, script real envia 3**
-O teste V9 enviou `[✅ Botão A] [❌ Botão B]`. O script real envia `[✅ Aplicar] [❌ Pular] [✏️ Ajustar]` para findings corrigíveis e `[✅ Entendido] [✏️ Instruir correção]` para não-corrigíveis. Ambos os casos precisam de teste próprio.
+**D2 — resolvido pelo V9 completo**
+Coberto pelo script `/root/test-v9-completo.sh` que testa os 3 tipos de mensagem e os 7 botões reais.
 
 ## Conexões
 

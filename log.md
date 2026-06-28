@@ -180,3 +180,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - V9: voltou para ⚠️ — testado com 2 botões, script real envia 3
 - D1: fluxo "Ajustar" inviável — usuário não sabe new_string de cabeça; proposta: dropdown com opções válidas + "Outro"
 - D2: V9 precisa ser refeito para 3 botões (findings corrigíveis) e 2 botões (não-corrigíveis)
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V9 consolidado (7 interações); V18/V18b colapsados
+- V9 reescrito com script único test-v9-completo.sh cobrindo todas as 7 interações
+- V18/V18b colapsados em nota histórica (prefixo "/" validado, incorporado ao V9)
+- D2 fechado (coberto pelo V9 completo)
