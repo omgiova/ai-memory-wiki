@@ -16,14 +16,14 @@ Automação bash que seleciona uma daily note, injeta o `index.md` e a daily em 
 ## Como rodar
 
 ```bash
-# daily específica (recomendado)
-bash /root/curador-wiki-script-v1.sh 2026-06-20.md
+# daily específica
+bash /root/curador-wiki-script-v1.sh nome-da-daily.md
 
-# daily aleatória
+# aleatória
 bash /root/curador-wiki-script-v1.sh
 ```
 
-Log de execução: `/var/log/curador-wiki-v1.log`
+Log de execução: `/var/log/curator-teste6.log`
 
 ## O que acontece em cada execução
 
@@ -82,7 +82,7 @@ Duração: Xs
 |---|---|
 | `/var/log/curator-outputs/ticket-NNN.md` | Output completo de curadoria (inclui `↳ LIDOS:`) |
 | `/var/log/curator-ticket.count` | Contador de tickets (inteiro, incrementado a cada run) |
-| `/var/log/curador-wiki-v1.log` | Log de execução com timestamps BRT |
+| `/var/log/curator-teste6.log` | Log de execução com timestamps BRT |
 
 ## Arquivos do agente
 
