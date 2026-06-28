@@ -147,7 +147,7 @@ Passar um finding real e verificar: `old_string` é substring exata do arquivo (
 **V8 — Telegram: token e chat_id**
 Verificar que `TELEGRAM_BOT_TOKEN` está disponível em `~/.hermes/.env` e que `CHAT_ID=-1003870518428` corresponde ao chat correto. Testar com um `sendMessage` simples antes de rodar o script completo.
 
-**✅ V9 — Telegram: inline keyboard**
+**⚠️ V9 — Telegram: inline keyboard**
 Verificar que os botões aparecem corretamente no Telegram (o bot precisa ter permissão de enviar mensagens com `reply_markup` no grupo). Testar `answerCallbackQuery` — se não for chamado, o botão fica com loading infinito.
 
 *Script de teste:* `/root/test-v9-inline-keyboard.sh`
@@ -161,6 +161,8 @@ O script:
 6. Imprime `✅ V9 PASSOU` com `callback_data` recebido e confirmação do `answerCallbackQuery`, ou `❌ V9 FALHOU` com timeout
 
 *Resultado esperado:* `status: ok`, `answer_ok: True`, botões sumindo da mensagem após clique.
+
+*Resultado obtido (2026-06-28):* ⚠️ **Parcialmente validado.** Testado com 2 botões — mas o script real envia 3 botões [✅ Aplicar] [❌ Pular] [✏️ Ajustar] para findings corrigíveis. Configuração diferente de `inline_keyboard`. Requer novo teste com 3 botões antes de marcar como validado.
 
 **V10 — apply_edit: old_string exato**
 O maior risco do script. O agente corretor copia o trecho do arquivo, mas LLMs às vezes normalizam espaços ou quebras de linha. Verificar na primeira aplicação real se o `old_string` está sendo encontrado ou se cai no erro "old_string não encontrado".
@@ -221,6 +223,18 @@ O script:
 - Hermes respondeu via LLM → gasta token, prefixo `/` não resolve ❌
 
 *Resultado esperado:* captura e strip corretos; Hermes não aciona LLM.
+
+## Problemas de design identificados nas validações
+
+**D1 — Fluxo "Ajustar" exige texto exato que o usuário não tem de cabeça**
+O fluxo atual de "Ajustar" pede que o usuário envie o `new_string` literal que substituirá o trecho no arquivo. Na prática isso é inviável: o usuário não sabe de cabeça os valores válidos para campos como `type` ou `status`.
+
+Solução proposta: ao invés de pedir texto livre, o bot deve enviar um segundo teclado inline com as opções válidas para aquele campo (ex: todos os `type` válidos definidos em AGENTS.md) + botão "✏️ Outro" para casos realmente livres. Só ao pressionar "Outro" o bot pede texto livre com prefixo `/`.
+
+Impacto: mudança no auditor script (`auditor-wiki-v1.sh`) e nos prompts dos agentes de pasta (que precisam incluir o campo `field` e `valid_values` nos findings corrigíveis).
+
+**D2 — V9 testou 2 botões, script real envia 3**
+O teste V9 enviou `[✅ Botão A] [❌ Botão B]`. O script real envia `[✅ Aplicar] [❌ Pular] [✏️ Ajustar]` para findings corrigíveis e `[✅ Entendido] [✏️ Instruir correção]` para não-corrigíveis. Ambos os casos precisam de teste próprio.
 
 ## Conexões
 

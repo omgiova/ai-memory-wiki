@@ -175,3 +175,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Hipótese: "/" trata mensagens como comando no Hermes, sem acionar LLM
 - Script criado: /root/test-v18b-slash-prefix.sh
 - Verificação manual: observar se Hermes aciona LLM ou só responde "desconhecido"
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V9 desmarcado (parcial); D1 e D2 documentados
+- V9: voltou para ⚠️ — testado com 2 botões, script real envia 3
+- D1: fluxo "Ajustar" inviável — usuário não sabe new_string de cabeça; proposta: dropdown com opções válidas + "Outro"
+- D2: V9 precisa ser refeito para 3 botões (findings corrigíveis) e 2 botões (não-corrigíveis)
