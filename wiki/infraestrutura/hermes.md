@@ -53,6 +53,36 @@ Detalhes de infra no [[wiki/infraestrutura/vps.md|vps]].
 - `skills/` — skills instaladas
 - `cron/` — jobs agendados
 
+## Dashboard — Autenticação
+
+URL: `http://2.24.121.135:9119`
+
+| Campo | Valor |
+|---|---|
+| Username | `omgiova` |
+| Password | `15071995` |
+| Password hash | scrypt — gerado via `plugins.dashboard_auth.basic.hash_password('15071995')` |
+
+**Configuração no `config.yaml`:**
+```yaml
+plugins:
+  enabled:
+    - dashboard_auth/basic
+  dashboard_auth:
+    basic:
+      username: omgiova
+      password_hash: <hash scrypt>
+```
+
+**4 pitfalls obrigatórios de saber:**
+
+1. **Campo é `password_hash`, não `password`** — gateway recusa bind com erro "Refusing to bind dashboard to 0.0.0.0 — no auth providers registered" se o hash estiver vazio ou o campo errado for usado
+2. **Plugin `dashboard_auth/basic` não carrega automaticamente** — precisa estar declarado em `plugins.enabled` (opt-in); sem isso, nenhuma autenticação é registrada
+3. **`hermes-dashboard.service` não pode ser reiniciado de dentro do gateway** — erro "cannot restart or stop the gateway from inside the gateway process"; reinício deve ser feito via SSH direto no VPS: `systemctl restart hermes-dashboard.service`
+4. **`hermes config set` corrompe arrays** — serializa como string YAML com escapes (`"[\\n  spotify\\n  dashboard_auth/basic\\n]"`); sempre corrigir manualmente via Python para formato YAML válido após usar `hermes config set` em campos de array
+
+Ver [[wiki/infraestrutura/vps.md]] para porta 9119 e acesso SSH ao VPS.
+
 ## Skills — Bundled vs User
 
 | Tipo | Como identificar | Pode editar? |
