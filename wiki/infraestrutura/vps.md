@@ -57,6 +57,9 @@ status: stable
 - **Container:** Docker
 - **Banco:** SQLite (Hermes, ai-memory)
 - **Web scraping:** Crawlee v1.7.2 (`pip install crawlee`) — framework OSS da Apify Technologies; 7 tipos de crawler, integração Playwright/Puppeteer, gerenciamento de sessões. Docs em `/root/.local/share/doc/crawlee`. Instalado 2026-06-21. Giovani também tem conta no Apify (plataforma cloud) e usa para scraping de Instagram.
+- **PDF/docs → markdown:** MarkItDown v0.1.6 (`pip install markitdown`) — converte PDF, Office, HTML para markdown; sem OCR (conteúdo de imagem requer LLM vision). Instalado 2026-06-21.
+- **Metadados de imagem:** Exiftool (`apt install exiftool`) — extrai metadados EXIF/IPTC; complementa MarkItDown.
+- **Browser automation:** Browser-Use (`pip install browser-use`) — AI agent que controla browser. ⚠️ **Conflito potencial com Hermes:** verificar compatibilidade das dependências após instalação; restaurar versões do Hermes se necessário antes de usar.
 
 ## Docker Swarm
 

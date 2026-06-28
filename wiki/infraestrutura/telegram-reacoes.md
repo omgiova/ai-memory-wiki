@@ -68,6 +68,14 @@ Após aplicar, pedir confirmação explícita ao usuário: "Reagi a tal mensagem
 | `reaction` | array | Lista de objetos `{"type": "emoji", "emoji": "🎯"}` |
 | `is_big` | boolean | (opcional) Reação grande — efeito visual diferente |
 
+## Emojis válidos
+
+O Telegram aceita uma lista fechada de ~70 emojis para reações via bot. Usar emoji fora da lista retorna `REACTION_INVALID`.
+
+❤️ 👍 👎 🔥 🥰 👏 😁 🤔 🤯 😱 🤬 😢 🎉 🤩 🤮 💩 🙏 👌 🕊 🤡 🥱 🥴 😍 🐳 ❤‍🔥 🌚 🌭 💯 🤣 ⚡ 🍌 🏆 💔 🤨 😐 🍓 🍾 💋 🖕 😈 😴 😭 🤓 👻 👨‍💻 👀 🎃 🙈 😇 😨 🤝 ✍ 🤗 🫡 🎅 🎄 ☃ 💅 🤪 🗿 🆒 💘 🙉 🦄 😘 💊 🙊 😎 👾 🤷‍♂ 🤷 🤷‍♀ 😡
+
+> ⚠️ **🐙 polvo NÃO está na lista.** Testado em 2026-06-21 — API retorna `REACTION_INVALID`.
+
 ## Status de validação
 
 Este procedimento foi identificado e documentado mas **não foi validado de ponta a ponta** até 2026-06-27. O gargalo atual é a confiabilidade do `HERMES_SESSION_MESSAGE_ID` — sem um ID correto, o `setMessageReaction` falha. Os testes realizados não confirmaram que a variável retorna o ID certo de forma consistente.

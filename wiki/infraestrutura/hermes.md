@@ -53,6 +53,17 @@ Detalhes de infra no [[wiki/infraestrutura/vps.md|vps]].
 - `skills/` — skills instaladas
 - `cron/` — jobs agendados
 
+## Skills — Bundled vs User
+
+| Tipo | Como identificar | Pode editar? |
+|---|---|---|
+| Bundled | `git -C /root/.hermes ls-files skills/<path>` retorna o path | **NÃO** — causa conflito no `/update` |
+| User | `git -C /root/.hermes ls-files skills/<path>` retorna vazio | Sim |
+
+**Regra obrigatória:** sempre verificar com `git ls-files` antes de editar qualquer arquivo em `skills/`. Editar uma skill bundled causa `M` no git status → stash conflict no `/update` → `git reset --hard HEAD` apagando dados do usuário.
+
+**Proteção permanente:** `.git/info/exclude` em `/root/.hermes/.git/info/exclude` exclui arquivos críticos de runtime do stash. É local — nunca commitado, nunca sobrescrito por `hermes update`.
+
 ## Modelos (2026-06-22)
 
 - **Principal:** `moonshotai/kimi-k2.6` via Nvidia NIM
