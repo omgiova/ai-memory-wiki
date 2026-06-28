@@ -163,3 +163,5 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Contexto do conflito Hermes vs auditor documentado (mesmo token, long-polling sem webhook)
 - Script criado: /root/test-v18-poll-text-prefix.sh — duas fases + verificação manual do Hermes
 - Solução proposta: prefixo "!" nas respostas ao auditor; strip antes de usar como new_string
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V9 marcado como validado (✅)

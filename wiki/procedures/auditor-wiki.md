@@ -147,7 +147,7 @@ Passar um finding real e verificar: `old_string` é substring exata do arquivo (
 **V8 — Telegram: token e chat_id**
 Verificar que `TELEGRAM_BOT_TOKEN` está disponível em `~/.hermes/.env` e que `CHAT_ID=-1003870518428` corresponde ao chat correto. Testar com um `sendMessage` simples antes de rodar o script completo.
 
-**V9 — Telegram: inline keyboard**
+**✅ V9 — Telegram: inline keyboard**
 Verificar que os botões aparecem corretamente no Telegram (o bot precisa ter permissão de enviar mensagens com `reply_markup` no grupo). Testar `answerCallbackQuery` — se não for chamado, o botão fica com loading infinito.
 
 *Script de teste:* `/root/test-v9-inline-keyboard.sh`
