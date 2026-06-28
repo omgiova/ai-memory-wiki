@@ -160,7 +160,7 @@ Verificar todas as interações possíveis entre o usuário e o auditor via Tele
 | 2 | 🔄 Recomeçar | `restart` |
 | 3 | ❌ Encerrar | `abort` |
 
-**V9b — Finding corrigível** (`/root/valid-9-corrigivel.sh`)
+**✅ V9b — Finding corrigível** (`/root/valid-9-corrigivel.sh`) — 3/3 passaram (2026-06-28)
 
 | # | Botão | callback_data esperado |
 |---|---|---|

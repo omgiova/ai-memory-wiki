@@ -199,3 +199,5 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Wiki atualizada com novos caminhos
 
 ## [2026-06-28] edit | procedures/auditor-wiki.md — V9a validado (3/3)
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V9b validado (3/3)
