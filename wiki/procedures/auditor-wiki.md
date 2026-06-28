@@ -250,8 +250,8 @@ Fase 4 disparou, mas sem findings para apresentar, a mensagem no Telegram veio v
 
 ### Consumo de tokens
 
-- Gastou **~75% do limite do Claude free em ~5 minutos** (limite gira em torno de ~200-300 requests ou tokens equivalentes a cada 5h)
-- Esse mesmo volume (~75%) o usuário gasta com centenas de tools, chamadas e requests em uso normal do Claude Code
+- Gastou **volume equivalente a ~4 horas de uso normal em ~5 minutos** (centenas de tools, chamadas e requests comprimidos em 5 min)
+- Esse volume normalmente é consumido ao longo de horas em uso normal do Claude Code via Hermes
 - Proporção sugere que **cada agente consumiu uma quantidade massiva de tokens** — possivelmente por ler arquivos inteiros da wiki sem necessidade ou por gerar respostas longas em prosa (cada prosa = dezenas de milhares de tokens de saída)
 
 ### Análise de causa raiz
@@ -269,7 +269,7 @@ Fase 4 disparou, mas sem findings para apresentar, a mensagem no Telegram veio v
 1. **Teste de formato primeiro** — V2 (agente isolado) foi planejado mas nunca executado. Rodar um único agente com `--output-format json` antes do run completo teria revelado o problema com 1/8 do custo.
 2. **Prompt precisa ser explícito sobre formato** — A instrução de output em JSON puro precisa estar no corpo do prompt (não só no `--output-format` flag), com exemplo concreto do JSON esperado.
 3. **Fallback deve ALERTAR, não silenciar** — Se um agente produz prosa, o script deveria abortar ou pelo menos logar um WARNING com os primeiros 200 chars do output, não só registrar findings vazio e seguir.
-4. **8 agentes paralelos é excessivo para o free tier** — O limite do Claude free não suporta esse volume. Reduzir para 2-3 agentes por run, ou serializar.
+4. **8 agentes paralelos drena recursos rapidamente** — O volume de 35-50 requests com contexto crescente em 5 minutos consome o orçamento de forma desproporcional. Reduzir para 2-3 agentes por run, ou serializar.
 
 ---
 
@@ -279,7 +279,7 @@ O gasto massivo não foi acidental — é consequência direta da arquitetura do
 
 #### Mecânica: como Claude Code conta o consumo
 
-O Claude Code free tier tem um **orçamento por janela de ~5h**, medido em requests/tokens combinados. Cada chamada ao `claude` CLI inicia uma **sessão de múltiplos turns** quando `--allowedTools Read` está ativo. Cada turno (tool call) conta como um request separado contra o mesmo orçamento — e a entrada de cada turno inclui **todo o contexto acumulado dos turnos anteriores** (Claude Code não descarta histórico da conversa).
+Cada chamada ao `claude` CLI inicia uma **sessão de múltiplos turns** quando `--allowedTools Read` está ativo. Cada turno (tool call) conta como um request — e a entrada de cada turno inclui **todo o contexto acumulado dos turnos anteriores** (Claude Code não descarta histórico da conversa).
 
 Ou seja: se um agente faz 5 Read calls, são 5 requests, e cada request custa mais que o anterior porque o contexto cresceu.
 
@@ -315,7 +315,7 @@ O problema não é um agente isolado — é o **paralelismo combinado com o cres
 2. Cada processo faz 2 a 5 Read calls (dependendo do número de arquivos na pasta)
 3. Cada Read call adiciona o **arquivo inteiro** ao contexto acumulado
 4. O contexto **cresce a cada turno** — o quinto Read call de um agente tem 5× mais tokens de entrada que o primeiro
-5. **Todos competem pelo mesmo orçamento** do Claude Code free tier
+5. **Todos competem pela mesma cota** do Claude Code CLI
 
 #### Estimativa total
 
@@ -334,7 +334,7 @@ Cada agente recebe o `struct_str` completo (dados de TODOS os 21 arquivos) mesmo
 
 #### Por que no uso normal não gasta isso
 
-No uso normal do Claude Code (via CLI interativa ou via Hermes), o orçamento é consumido de forma **sequencial e espaçada** — uma conversa de cada vez, com pausas entre requests. O auditor lança **8 conversas simultâneas**, cada uma fazendo múltiplos tool calls em RÁPIDA SUCESSÃO. O orçamento do free tier foi desenhado para o primeiro cenário, não para o segundo.
+No uso normal do Claude Code (via CLI interativa ou via Hermes), os requests são feitos de forma **sequencial e espaçada** — uma conversa de cada vez, com pausas entre requests. O auditor lança **8 conversas simultâneas**, cada uma fazendo múltiplos tool calls em RÁPIDA SUCESSÃO. Esse consumo em rajada drena a cota muito mais rápido que o uso sequencial.
 
 ## Conexões
 

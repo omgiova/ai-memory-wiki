@@ -227,3 +227,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Comparação: uso normal = ~5-15 requests/h sequencial; auditor = ~35-50 requests em 5 min paralelo
 - Total estimado: ~700KB-1,5MB tokens de entrada + ~40-160KB saída em 8 sessões simultâneas
 - Claude Code free tier foi desenhado para uso sequencial, não para 8 sessões paralelas em rajada
+
+## [2026-06-28] edit | procedures/auditor-wiki — corrige suposição de "free tier" para Claude Pro
+- 5 ocorrências de "free tier" / "Claude free" removidas do auditor-wiki.md
+- Substituídas por linguagem factual: "cota do Claude Code CLI", "consumo em rajada", sem especular sobre plano
+- O usuário é assinante Claude Pro — informação incorreta documentada no log histórico (não editado, append-only)
