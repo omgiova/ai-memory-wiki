@@ -11,6 +11,10 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Adicionada instrução de leitura completa antes de qualquer ação
 - Incorporado log.md como etapa obrigatória dentro da seção Git e commits
 
+## [2026-06-28] edit | proximos-passos — pendência urgente: gráfico Android com nós fantasma
+- Adicionado item 0 (urgente): gráfico Android mostra viz.html/README do raw/ como nós fantasma
+- PC exibe corretamente; Android não — diferença provavelmente em graph.json (gitignored)
+
 ## [2026-06-28] edit | obsidian-git — removido wikilink quebrado para 2026-06-24-obsidian-git-setup
 - Seção Conexões tinha link para arquivo que nunca existiu
 
