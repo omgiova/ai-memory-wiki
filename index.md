@@ -31,6 +31,7 @@ log.md
 └── wiki/
     ├── automacao/
     │   ├── curador-wiki.md
+    │   ├── curador-wiki-historico.md
     │   ├── firecrawl.md
     │   ├── wiki-review-vs-background-review.md
     │   └── wiki-review.md
@@ -45,7 +46,6 @@ log.md
     │   ├── 2026-06-22-20260621.md
     │   ├── 2026-06-22-20260622.md
     │   ├── 2026-06-22-reacoes-telegram.md
-    │   ├── 2026-06-23-20260623.md
     │   ├── 2026-06-24-20260624.md
     ├── historico/
     │   ├── 2026-06-22-modelos-nim-elevenlabs.md
@@ -98,7 +98,8 @@ log.md
 
 - [[wiki/automacao/firecrawl.md|Firecrawl]] — busca com sintaxe site: para plataformas específicas; quando usar e não usar
 - [[wiki/automacao/wiki-review.md|Wiki Review]] — agente background que roda a cada 10 turnos e salva insights no diario/
-- [[wiki/automacao/curador-wiki.md|Curador da Wiki]] — agente read-only MVP que sorteia uma daily, roda curadoria com claude -p e envia ao Telegram Geral
+- [[wiki/automacao/curador-wiki.md|Curador da Wiki]] — papel, comportamento, arquitetura atual (v6/v5), formato de output e como executar
+- [[wiki/automacao/curador-wiki-historico.md|Curador da Wiki — Histórico]] — registro completo de todas as tentativas, scripts e decisões de design desde a v1
 
 ### historico/
 
@@ -114,7 +115,6 @@ log.md
 
 Inbox da wiki — captura bruta automática por sessão (wiki-review). Contém preferências reveladas, correções de comportamento, técnicas descobertas e pendências abertas. Não é destino final — insights estáveis devem ser extraídos e integrados em páginas permanentes.
 
-- [[wiki/diario/2026-06-23-20260623.md|2026-06-23]] — dashboard basic auth, preferência por ação direta, skill hermes-maintenance
 - [[wiki/diario/2026-06-22-20260622.md|2026-06-22]] — reações Telegram, protocolo test-then-act, Crawlee/Apify
 - [[wiki/diario/2026-06-22-20260621.md|2026-06-21]] — sessão anterior (ver arquivo para detalhes)
 - [[wiki/diario/2026-06-22-reacoes-telegram.md|2026-06-22 reações]] — testes de reação no Telegram, descoberta de message-id
