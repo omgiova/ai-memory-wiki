@@ -101,3 +101,14 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - AGENTS.md: referências a pastas atualizadas (ingest checklist + regra diary/)
 - curador-wiki.md e curador-wiki-historico.md: prompts ativos atualizados com novos nomes de pastas
 - Referências em history/ e orquestrador.md preservadas como registro histórico
+
+## [2026-06-28] chore | wiki — remoção das pastas antigas após refatoração de taxonomia
+- Deletadas: automacao/, conhecimento/, diario/, historico/, infraestrutura/, pendencias/
+- .gitkeep movido de diario/ para diary/ (git mv)
+- wiki/ agora contém apenas as 7 pastas da nova taxonomia: concepts/, diary/, history/, procedures/, systems/, todo/, tools/
+
+## [2026-06-28] ingest | procedures/auditor-wiki — documentação do auditor v1
+- Criado wiki/procedures/auditor-wiki.md: documenta arquitetura 3 fases, escopo dos agentes, 9 pontos de validação
+- Criados /root/auditor-wiki-agent-prompt-v1.md e /root/auditor-wiki-coord-prompt-v1.md
+- Criado /root/auditor-wiki-v1.sh: script principal bash
+- index.md atualizado: entrada adicionada em procedures/

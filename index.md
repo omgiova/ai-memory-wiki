@@ -40,6 +40,7 @@ log.md
     │   ├── 2026-06-24-20260624.md
     │   └── crise-update.md
     ├── procedures/
+    │   ├── auditor-wiki.md
     │   ├── curador-wiki-historico.md
     │   ├── curador-wiki.md
     │   └── wiki-review.md
@@ -81,6 +82,7 @@ log.md
 
 ### procedures/
 
+- [[wiki/procedures/auditor-wiki.md|Auditor da Wiki]] — auditoria completa multi-agente em 3 fases: estrutural, semântica e coordenação; entrega página de findings priorizada
 - [[wiki/procedures/curador-wiki.md|Curador da Wiki]] — papel, comportamento, arquitetura atual (v6/v5), formato de output e como executar
 - [[wiki/procedures/curador-wiki-historico.md|Curador da Wiki — Histórico]] — registro completo de todas as tentativas, scripts e decisões de design desde a v1
 - [[wiki/procedures/wiki-review.md|Wiki Review]] — agente background que roda a cada 10 turnos e salva insights no diary/
