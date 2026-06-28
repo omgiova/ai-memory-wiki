@@ -23,7 +23,7 @@ bash /root/curador-wiki-script-v1.sh nome-da-daily.md
 bash /root/curador-wiki-script-v1.sh
 ```
 
-Log de execução: `/var/log/curator-teste6.log`
+Log de execução: `/var/log/curador-wiki.log`
 
 ## O que acontece em cada execução
 
@@ -82,7 +82,7 @@ Duração: Xs
 |---|---|
 | `/var/log/curator-outputs/ticket-NNN.md` | Output completo de curadoria (inclui `↳ LIDOS:`) |
 | `/var/log/curator-ticket.count` | Contador de tickets (inteiro, incrementado a cada run) |
-| `/var/log/curator-teste6.log` | Log de execução com timestamps BRT |
+| `/var/log/curador-wiki.log` | Log de execução com timestamps BRT — acumula todas as runs |
 
 ## Arquivos do agente
 
