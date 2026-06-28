@@ -339,6 +339,5 @@ Identificar e remover/atualizar os wikilinks quebrados nas notas afetadas. No re
 
 ## Conexões
 
-- [[wiki/diario/2026-06-24-obsidian-git-setup.md]] — sessão detalhada de setup inicial
 - [[wiki/infraestrutura/vps.md]] — caminho do vault no Android
 - [[wiki/infraestrutura/termux-ssh-claude.md]] — arquivo renomeado de pendencia-problema-ssh-claude.md

@@ -11,6 +11,9 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Adicionada instrução de leitura completa antes de qualquer ação
 - Incorporado log.md como etapa obrigatória dentro da seção Git e commits
 
+## [2026-06-28] edit | obsidian-git — removido wikilink quebrado para 2026-06-24-obsidian-git-setup
+- Seção Conexões tinha link para arquivo que nunca existiu
+
 ## [2026-06-28] edit | wikilinks quebrados — removidos de index.md, crise-update.md, 2026-06-24
 - index.md: removidos 5 links para diários deletados da seção diario/ e da árvore
 - crise-update.md: convertido wikilink para 2026-06-20.md em texto plano
