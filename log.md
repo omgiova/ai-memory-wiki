@@ -149,3 +149,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Corrigida referência "Fase 0" → "Fase 1" em V1
 - Corrigido "5 fases" → "6 fases" no parágrafo de abertura
 - Adicionadas V16 (autenticação claude CLI standalone) e V17 (dois findings no mesmo arquivo)
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V9: documentado script de teste inline keyboard
+- Expandido item V9 com descrição do script /root/test-v9-inline-keyboard.sh
+- Script criado: drena offset, sendMessage com reply_markup, poll callback_query, answerCallbackQuery, editMessageReplyMarkup
+- Resultado esperado documentado: status ok, answer_ok True, botões removidos após clique

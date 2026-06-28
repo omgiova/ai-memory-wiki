@@ -141,6 +141,18 @@ Verificar que `TELEGRAM_BOT_TOKEN` está disponível em `~/.hermes/.env` e que `
 **V9 — Telegram: inline keyboard**
 Verificar que os botões aparecem corretamente no Telegram (o bot precisa ter permissão de enviar mensagens com `reply_markup` no grupo). Testar `answerCallbackQuery` — se não for chamado, o botão fica com loading infinito.
 
+*Script de teste:* `/root/test-v9-inline-keyboard.sh`
+
+O script:
+1. Drena updates pendentes para zerar o offset
+2. Envia `sendMessage` com `reply_markup` (inline keyboard com 2 botões)
+3. Aguarda até 120s pelo `callback_query` do usuário via `getUpdates` (long-polling)
+4. Chama `answerCallbackQuery` com `text="✅ Recebido!"` — isso remove o loading do botão
+5. Remove os botões com `editMessageReplyMarkup` (inline_keyboard vazia)
+6. Imprime `✅ V9 PASSOU` com `callback_data` recebido e confirmação do `answerCallbackQuery`, ou `❌ V9 FALHOU` com timeout
+
+*Resultado esperado:* `status: ok`, `answer_ok: True`, botões sumindo da mensagem após clique.
+
 **V10 — apply_edit: old_string exato**
 O maior risco do script. O agente corretor copia o trecho do arquivo, mas LLMs às vezes normalizam espaços ou quebras de linha. Verificar na primeira aplicação real se o `old_string` está sendo encontrado ou se cai no erro "old_string não encontrado".
 
