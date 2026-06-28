@@ -152,7 +152,7 @@ Verificar todas as interações possíveis entre o usuário e o auditor via Tele
 
 *Prefixo `/` para texto livre:* quando o auditor pede texto (Ajustar / Instruir), o usuário envia com `/` na frente. O auditor filtra mensagens sem `/` e faz strip antes de usar. O Hermes trata como comando desconhecido sem acionar o LLM.
 
-**V9a — Resumo executivo** (`/root/valid-9-resumo.sh`)
+**✅ V9a — Resumo executivo** (`/root/valid-9-resumo.sh`) — 3/3 passaram (2026-06-28)
 
 | # | Botão | callback_data esperado |
 |---|---|---|

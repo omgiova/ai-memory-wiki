@@ -197,3 +197,5 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - valid-9-resumo.sh, valid-9-corrigivel.sh, valid-9-nao-corrigivel.sh
 - valid-18-prefixo-exclamacao.sh, valid-18-prefixo-barra.sh (históricos)
 - Wiki atualizada com novos caminhos
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V9a validado (3/3)
