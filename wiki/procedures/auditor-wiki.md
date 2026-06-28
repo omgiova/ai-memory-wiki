@@ -201,10 +201,6 @@ O auditor invoca `claude` como subprocesso bash, fora do contexto do Hermes gate
 **V17 — Dois findings consecutivos no mesmo arquivo**
 `apply_edit` usa `str.replace(old_string, new_string, 1)`. Se dois findings apontam para o mesmo arquivo e são processados em sequência, o primeiro pode alterar o contexto onde o `old_string` do segundo estava — o segundo finding cai no erro "old_string não encontrado". Verificar se o coordenador pode ser instruído a agrupar edits do mesmo arquivo num único finding, ou confirmar que a Fase 5 sequencial já mitiga o risco.
 
-**V18 — poll_text: prefixo `/` para evitar gasto de token no Hermes** *(preliminar — coberto pelo V9)*
-
-Auditor e Hermes usam o mesmo bot-token com long-polling. Quando o auditor aguarda texto do usuário, ambos recebem o update simultaneamente. Prefixo `!` foi testado e descartado (Hermes acionou o LLM e gastou token). Prefixo `/` funciona: Hermes trata como comando desconhecido, sem chamar o LLM. Conclusão incorporada ao V9.
-
 ## Problemas de design identificados nas validações
 
 **D1 — Fluxo "Ajustar" exige texto exato que o usuário não tem de cabeça**

@@ -206,3 +206,6 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - V9c: finding não-corrigível, 2/2 passaram
 - Validação 9 inteira concluída: V9a 3/3, V9b 3/3, V9c 2/2
 - Fix aplicado: botão Recomeçar, poll_text com filtro /, prompts atualizados
+
+## [2026-06-28] edit | procedures — removida V18 de auditor-wiki.md
+- V18 era resquício redundante do V9 (já documentado e validado como V9a/V9b/V9c)
