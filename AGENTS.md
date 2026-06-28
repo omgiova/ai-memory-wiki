@@ -17,15 +17,7 @@
 > ```
 > Nunca deixar o repositório com mudanças não commitadas ou não enviadas ao remoto.
 
-**Formato de commit:**
-```
-<tipo>(<escopo>): <descrição curta>
-
-- detalhe 1
-- detalhe 2
-```
-
-**Tipos de commit:** `docs`, `chore`, `fix`, `feat`  
+**Tipos:** `edit`, `ingest`, `query`, `lint`, `session`, `chore` — mesmo tipo da entrada do log.  
 **Escopo:** nome da pasta ou arquivo principal afetado (ex: `vps`, `wiki`, `firecrawl`)
 
 **Branches:** trabalhar em `main` por padrão. Feature branch só se explicitamente solicitado.
@@ -35,7 +27,7 @@
 `log.md` é append-only e cronológico. Nunca editar entradas existentes.
 
 ```
-## [YYYY-MM-DD] <tipo> | <título>
+## [YYYY-MM-DD] <tipo> | <escopo> — <descrição>
 - <detalhe relevante>
 - <páginas tocadas, se aplicável>
 ```
@@ -47,6 +39,7 @@
 | `lint` | health-check executado |
 | `edit` | edição significativa em página existente |
 | `session` | resumo de encerramento de sessão na wiki |
+| `chore` | tarefa técnica sem mudança de conteúdo (trigger, teste, config) |
 
 ---
 

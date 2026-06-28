@@ -58,3 +58,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 
 ## [2026-06-28] edit | wiki-review — origem como clone do background_review documentada no topo
 - Adicionado parágrafo de abertura explicando que wiki_review nasceu como clone do background_review.py
+
+## [2026-06-28] edit | AGENTS.md — tipos de commit unificados com log e formato do log corrigido
+- Tipos de commit: `docs`, `fix`, `feat` substituídos por `edit`, `ingest`, `query`, `lint`, `session`, `chore`
+- Formato do log: `<título>` → `<escopo> — <descrição>` para derivação mecânica do commit message
+- Adicionado `chore` na tabela de tipos do log
