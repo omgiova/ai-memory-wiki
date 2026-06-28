@@ -163,15 +163,69 @@ git reset --hard origin/main
 
 ---
 
+## Comandos disponíveis na paleta (Android — confirmado 2026-06-28)
+
+Lista completa dos comandos git acessíveis via paleta de comandos no Android:
+
+- Git: Pull
+- Git: Push
+- Git: Fetch
+- Git: Commit
+- Git: Edit remotes
+- Git: Delete branch
+- Git: Remove remote
+- Git: Switch branch
+- Git: Commit-and-sync
+- Git: Edit .gitignore
+- Git: Create new branch
+- Git: Open history view
+- Git: Commit all changes
+- Git: List changed files
+- Git: Set upstream branch
+- Git: Initialize a new repo
+- Git: Switch to remote branch
+- Git: Open source control view
+- Git: CAUTION: Delete repository
+- Git: CAUTION: Discard all changes
+- Git: Commit with specific message
+- Git: Clone an existing remote repo
+- Git: Toggle line author information
+- Git: Pause/Resume automatic routines
+- Git: Commit-and-sync with specific message
+- Git: Commit-and-sync and then close Obsidian
+- Git: Commit all changes with specific message
+
+**Não existe** nenhum comando equivalente a `git clean` (remover arquivos não rastreados). O "CAUTION: Discard all changes" só descarta mudanças em arquivos rastreados — não toca em arquivos fantasma.
+
+---
+
+## Arquivos fantasma (deletados no servidor, sobrando no device)
+
+**Sintoma:** após pull, arquivos que foram deletados no servidor continuam aparecendo no Obsidian. "Discard all changes" não resolve.
+
+**Causa:** quando um arquivo é deletado no servidor via `git rm` + commit, ele deixa de ser rastreado. No device local, passa a ser um arquivo não rastreado. O plugin não tem comando equivalente a `git clean` — portanto não consegue remover esses arquivos pela interface.
+
+**Fix — opção 1 (Termux):**
+```bash
+git -C ~/storage/shared/ai-memory-wiki clean -fd -e '.obsidian'
+```
+
+**Fix — opção 2 (dentro do Obsidian):** deletar manualmente os arquivos velhos pelo file explorer do Obsidian. Como são não rastreados, a deleção não afeta o git.
+
+**Não existe fix pelo plugin sozinho.**
+
+---
+
 ## Erros históricos do agente (para não repetir)
 
 1. Documentou o problema como "conflito entre devices" — causa real é que Obsidian é read-only e o pull deveria sempre vencer
 2. `git clean -fd .obsidian/` sem verificar — apagou plugin instalado no Android
 3. Aplicou fix de `git rm --cached` no servidor sem alertar que o próximo pull em cada device precisaria de atenção especial
 4. Sugeriu "Discard All manual" como solução em vez de configurar o plugin para fazer isso automaticamente
-5. Afirmou que o plugin tem opção "HARD RESET" no Merge Strategy — não existe. As únicas opções são: Merge, Rebase, Other sync service
+5. Afirmou que o plugin tem opção "HARD RESET" no Merge Strategy — não existe
 6. Afirmou que `pull.autostash true` é a solução — não funciona porque o plugin usa `git merge`, não `git pull`. O config correto é `merge.autostash true`
 7. Assumiu sem evidência que o usuário rodou o comando no VPS em vez do Windows — estava errado
+8. Afirmou que existe "Sync Method: Reset" no plugin — **não existe**. Lista completa de comandos confirmada em 2026-06-28 via screenshot do Android (ver seção acima). Não há nenhum equivalente a `git clean` na interface do plugin
 
 ---
 
