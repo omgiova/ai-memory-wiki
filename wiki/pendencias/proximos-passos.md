@@ -39,6 +39,8 @@ status: stable
 
 12. **[ESTUDO] Abstracts nas páginas da wiki para otimizar contexto do curador** — cada página wiki ganharia um campo `abstract` no frontmatter (3–5 linhas) descrevendo o conteúdo real da página, não só o título. Permite ao agente curador tomar decisões sem ler o arquivo completo. Diferente do `description` (que é genérico): o abstract responde "isso já está documentado aqui?". Requer: definir padrão, gerar abstracts para as ~20 páginas existentes, e manter abstract atualizado a cada edição da página (via hook ou disciplina de commit). Estudar antes de implementar — é uma mudança estrutural no OKF da wiki. *Registrado 2026-06-27.*
 
+15. **[CONSIDERAR] Hook PostToolUse no Claude Code para automatizar log.md** — adicionar hook no `settings.json` do Claude Code que detecta edições em `/root/wiki/` e appenda entrada no `log.md` automaticamente, mesmo que o agente esqueça de fazer manualmente. Complementa (não substitui) a regra no AGENTS.md. Avaliar após o formato do log estar estável. *Registrado 2026-06-28.*
+
 13. **[ESTUDO] FTS5 como pré-filtro para o agente curador** — antes de chamar o `claude -p`, extrair keywords da daily e consultar SQLite FTS5 para identificar as páginas mais relevantes. Injetar só essas páginas (com conteúdo completo ou abstract) no prompt. Reduz tokens e aumenta precisão do contexto. Depende de: FTS5 estar indexando o conteúdo das páginas, e abstracts existirem para o restante. Estudar em conjunto com item 12. *Registrado 2026-06-27.*
 
 ### Concluído
