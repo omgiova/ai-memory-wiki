@@ -199,6 +199,8 @@ O script:
 
 *Resultado esperado:* Fase 2 captura a mensagem com `!`, strip correto, Hermes não responde.
 
+*Resultado obtido (2026-06-28):* ❌ **Prefixo `!` não é seguro.** O script capturou corretamente (`raw: ! teste...`, `strip: teste...`), mas o Hermes também recebeu e respondeu à mensagem — gastando token. Ambos consumiram o mesmo update simultaneamente. A abordagem de prefixo simples não resolve o conflito; é necessária outra estratégia (ver nota abaixo).
+
 ## Conexões
 
 - [[AGENTS.md]] — taxonomia, templates e checklist de Lint que este script implementa

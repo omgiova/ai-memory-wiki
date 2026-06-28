@@ -165,3 +165,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Solução proposta: prefixo "!" nas respostas ao auditor; strip antes de usar como new_string
 
 ## [2026-06-28] edit | procedures/auditor-wiki.md — V9 marcado como validado (✅)
+
+## [2026-06-28] edit | procedures/auditor-wiki.md — V18: resultado real documentado (falhou verificação manual)
+- Prefixo "!" não protege: Hermes recebeu e respondeu à mensagem, gastando token
+- Ambos (script e Hermes) consumiram o mesmo update simultaneamente
+- V18 NÃO validado; abordagem de prefixo simples descartada
