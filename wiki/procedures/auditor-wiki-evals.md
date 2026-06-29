@@ -580,43 +580,56 @@ Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1
 
 **Critérios a serem observados:** campo correto identificado? problema detectado? exatamente 1 Read call? tamanho reportado? tokens capturados?
 
-**Prompt exato para a próxima sessão (copiar e colar):**
+**Prompt para a próxima execução (one-shot corrigido — v6):**
 
-> ⚠️ Copiar o bloco abaixo **sem editar nenhum caractere**. Nas execuções 2ª e 3ª o script chegou corrompido porque foi copiado de fonte externa. A versão correta é esta.
+> ⚠️ Copiar o bloco abaixo **sem editar nenhum caractere**. Nas execuções 2ª e 3ª o script chegou corrompido porque foi copiado de fonte externa.
 
 ```
-Eval 2-C — sem subagentes. Execute em sequência sem desviar:
+Eval 2-C — one-shot. Execute em sequência, sem desviar:
 
-Passo 1 — Leia /tmp/eval-2c-test.md (único arquivo permitido). Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção. Informe o tamanho em caracteres do arquivo lido. Nenhum outro arquivo, nenhum outro tool call neste passo.
+Passo 1 — Leia /tmp/eval-2c-test.md (único Read permitido). Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção. Nenhum outro arquivo, nenhum outro tool call neste passo.
 
 Passo 2 — Execute este bash:
 python3 -c "
 import json, glob, os
+size = len(open('/tmp/eval-2c-test.md').read())
+print('chars=' + str(size))
 files = sorted(glob.glob(os.path.expanduser('~/.claude/projects/-root/*.jsonl')), key=os.path.getmtime, reverse=True)
-if not files: print('JSONL nao encontrado'); exit(1)
-entries = []
-for line in open(files[0]):
-    try:
-        e = json.loads(line.strip())
-        u = e.get('message', {}).get('usage')
-        if not u: continue
-        key = (u.get('input_tokens',0), u.get('cache_creation_input_tokens',0), u.get('cache_read_input_tokens',0), u.get('output_tokens',0))
-        if not entries or entries[-1][0] != key:
-            entries.append((key, u))
-    except: pass
-turns = entries[:-1]
-for i, (k, u) in enumerate(turns, 1):
-    print(f'T{i}: in={u.get(\"input_tokens\",0)} cc={u.get(\"cache_creation_input_tokens\",0)} cr={u.get(\"cache_read_input_tokens\",0)} out={u.get(\"output_tokens\",0)}')
+if not files:
+    print('JSONL nao encontrado')
+else:
+    entries = []
+    ks = ['input_tokens', 'cache_creation_input_tokens', 'cache_read_input_tokens', 'output_tokens']
+    for line in open(files[0]):
+        try:
+            e = json.loads(line.strip())
+            u = e.get('message', {}).get('usage')
+            if not u: continue
+            key = tuple(u.get(k, 0) for k in ks)
+            if not entries or entries[-1][0] != key:
+                entries.append((key, u))
+        except: pass
+    if not entries:
+        print('nenhum turno anterior no JSONL')
+    else:
+        for i, (key, u) in enumerate(entries, 1):
+            v = [u.get(k, 0) for k in ks]
+            print('T' + str(i) + ': in=' + str(v[0]) + ' cc=' + str(v[1]) + ' cr=' + str(v[2]) + ' out=' + str(v[3]))
 "
 
-Passo 3 — Compile o resultado final com o checklist do Passo 1 e o output do Passo 2. Encerre com: STATUS: aguardando definição do Giovani
+Passo 3 — Compile o resultado final com o checklist do Passo 1, o tamanho em chars e os tokens por turno do Passo 2. Encerre com: STATUS: aguardando definição do Giovani
 ```
 
+**O que mudou em relação às versões anteriores:**
+- `entries[:-1]` → removido. O turno atual ainda não está no JSONL quando o bash roda — logo não há risco de capturar o próprio turno. `entries` mostra todos os turnos anteriores.
+- f-strings com `\"` → substituídas por concatenação de strings pura. Zero risco de SyntaxError por cópia.
+- Tamanho medido via `len(open(...).read())` no mesmo bash → exato, sem estimativa do modelo.
+- Fallback explícito quando entries vazio: `'nenhum turno anterior no JSONL'`.
+
 **Como executar:**
-1. Fechar terminal completamente → reabrir
-2. `/clear`
-3. Colar o prompt acima
-4. Registrar o resultado aqui antes de qualquer outra ação — status só após confirmação do Giovani
+- Rodar na sessão atual, após AGENTS.md e evals já terem sido lidos (ocorre naturalmente toda sessão pela regra de contexto). Sem /clear, sem reiniciar terminal.
+- O bash captura os turnos anteriores — funciona desde que o eval não seja o primeiro turno da sessão.
+- Registrar o resultado aqui antes de qualquer outra ação — status só após confirmação do Giovani.
 
 **2026-06-29 — 1ª execução — ⚠️ INCOMPLETA (tokens do pai não capturados)**
 
@@ -762,59 +775,7 @@ Status final:         aguardando definição do Giovani
 
 **Causa raiz — tamanho errado:** o modelo estimou 259 chars sem contar via Python. O arquivo tem 311 chars Unicode (316 bytes UTF-8 — 5 caracteres multibyte: é, ç, ã, ú, í). Contagem manual de LLM é imprecisa; a próxima versão deve usar bash para medir o tamanho exato.
 
-**Fix necessário para 6ª execução:** redesign em 2 turnos — T1 faz Read + análise + bash de tamanho; T2 faz bash de JSONL + compilação. Remove `entries[:-1]` do script (T2 não está no JSONL ainda quando o bash de T2 roda, então não há risco de capturar o próprio turno).
-
-**Prompt para 6ª execução — 2 turnos separados:**
-
-> ⚠️ São DOIS prompts distintos. Enviar T1 primeiro, aguardar resposta completa com "T1-CONCLUÍDO", depois enviar T2.
-
-**Turno 1 (colar e enviar):**
-```
-Eval 2-C — Turno 1. Execute em sequência, sem desviar:
-
-1. Leia /tmp/eval-2c-test.md (único Read permitido neste turno). Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção.
-
-2. Execute este bash para obter o tamanho exato:
-python3 -c "print(len(open('/tmp/eval-2c-test.md').read()))"
-
-Encerre com: T1-CONCLUÍDO
-```
-
-**Turno 2 (enviar somente após receber "T1-CONCLUÍDO"):**
-```
-Eval 2-C — Turno 2. Execute o bash abaixo e compile o resultado final:
-
-python3 -c "
-import json, glob, os
-files = sorted(glob.glob(os.path.expanduser('~/.claude/projects/-root/*.jsonl')), key=os.path.getmtime, reverse=True)
-if not files: print('JSONL nao encontrado'); exit(1)
-entries = []
-for line in open(files[0]):
-    try:
-        e = json.loads(line.strip())
-        u = e.get('message', {}).get('usage')
-        if not u: continue
-        key = (u.get('input_tokens',0), u.get('cache_creation_input_tokens',0), u.get('cache_read_input_tokens',0), u.get('output_tokens',0))
-        if not entries or entries[-1][0] != key:
-            entries.append((key, u))
-    except: pass
-for i, (k, u) in enumerate(entries, 1):
-    print(f'T{i}: in={u.get(\"input_tokens\",0)} cc={u.get(\"cache_creation_input_tokens\",0)} cr={u.get(\"cache_read_input_tokens\",0)} out={u.get(\"output_tokens\",0)}')
-"
-
-Compile o resultado final com:
-- checklist de campos do Turno 1
-- tamanho em chars do Turno 1
-- output do bash acima (tokens por turno)
-
-Encerre com: STATUS: aguardando definição do Giovani
-```
-
-**Por que funciona:**
-- T1 usa bash apenas para medir tamanho (sem leitura de outros arquivos — critério satisfeito)
-- T2 roda com T1 já gravado no JSONL → `entries` retorna os dados de T1 e turnos anteriores
-- `entries[:-1]` removido → sem exclusão que apagaria exatamente T1 (o turno que queremos medir)
-- Funciona mesmo em sessão com histórico (mostra todos os turnos anteriores, inclusive contexto)
+**Fix aplicado na 6ª execução (one-shot corrigido):** `entries[:-1]` removido; tamanho medido via bash; f-strings eliminadas. Abordagem 2-turnos foi proposta e rejeitada — regra é one-shot. Prompt atualizado na seção "Prompt para a próxima execução" acima.
 
 ---
 
