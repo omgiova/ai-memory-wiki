@@ -311,14 +311,14 @@ Só inicia após Eval 2-A aprovado. Agora entra o `auditor-pasta` pela primeira 
 ```
 
 **Critérios:**
-- [ ] Agente spawna sem erro
-- [ ] Resposta é JSON válido
-- [ ] Campos presentes: `folder`, `findings`, `agent`, `_meta`
-- [ ] `agent == "auditor-pasta"`
-- [ ] `findings == []`
-- [ ] `_meta.read_calls == 0`
-- [ ] `_meta.limit_reached == false`
-- [ ] Nenhuma prosa fora do JSON
+- [x] Agente spawna sem erro
+- [x] Resposta é JSON válido
+- [x] Campos presentes: `folder`, `findings`, `agent`, `_meta`
+- [x] `agent == "auditor-pasta"`
+- [x] `findings == []`
+- [x] `_meta.read_calls == 0`
+- [x] `_meta.limit_reached == false`
+- [x] Nenhuma prosa fora do JSON
 
 **Critério de reprovação:** JSON inválido | prosa fora do JSON | campo obrigatório ausente | `findings` não vazio | `read_calls != 0` | `agent != "auditor-pasta"`.
 
@@ -366,6 +366,43 @@ Motivo: O agente nomeado 'auditor-pasta' não está registrado no sistema.
 **Decisão para 2ª tentativa:** usar agente genérico (`subagent_type: "claude"`) com o system prompt do `auditor-pasta.md` injetado inline no campo `prompt`. Isso valida o contrato de output (que é o que o 2-B precisa provar), mas **não** valida se o harness carrega o arquivo `.claude/agents/` automaticamente.
 
 **Pendência separada:** investigar se e como o harness mapeia `.claude/agents/<nome>.md` para a ferramenta `Agent` — pode ser que só funcione via `/agents` na UI, que precise de versão diferente do harness, ou que a sintaxe do `subagent_type` seja diferente. Essa investigação fica para depois dos evals 2-B e 2-C aprovados.
+
+**✅ APROVADO — 2026-06-29 (2ª execução — v2 Opção A: system prompt inline)**
+
+**Contexto de invocação:**
+- Sessão iniciada com `/clear` — contexto zerado antes do eval
+- Prompt enviado ao Claude Code (sessão pai):
+  > `leia só /root/eval-2b-runner.md e execute. não leia wiki nem outros arquivos.`
+- Runner lido: `/root/eval-2b-runner.md`
+- Modelo declarado explicitamente via `model: "sonnet"` ✅
+- Mecanismo: agente genérico (`subagent_type` omitido) com system prompt do `auditor-pasta.md` injetado inline no campo `prompt`
+
+```
+=== Eval 2-B — Resultado (v2 — Opção A) ===
+Modelo usado:         claude-sonnet-4-6
+Resposta bruta:       {"folder":"test/","agent":"auditor-pasta","findings":[],"_meta":{"files_read":[],"read_calls":0,"approx_chars_read":0,"limit_reached":false}}
+JSON válido:          ✅
+folder presente:      ✅
+findings == []:       ✅
+agent correto:        ✅
+_meta presente:       ✅
+read_calls == 0:      ✅
+limit_reached false:  ✅
+Sem prosa:            ✅
+tool_uses:            0  (esperado: 0)
+
+=== Estatísticas ===
+subagent_tokens:              12.935
+input_tokens:                 1
+cache_creation_input_tokens:  269
+cache_read_input_tokens:      110.151
+output_tokens:                83
+duration_ms:                  2.468
+
+STATUS: ✅ APROVADO
+```
+
+⚠️ **Lição:** `cache_read_input_tokens` de 110K indica que o system prompt interno do Claude Code estava cacheado da sessão pai (mesmo após `/clear`, o cache de projeto persiste entre sessões). O custo real de input foi praticamente zero — o overhead de base (~12K) foi servido do cache a ~10× menos custo.
 
 ---
 
