@@ -544,7 +544,7 @@ cache_read:           41.850
 output_tokens:        791
 (turno de extração excluído — última entrada do JSONL)
 
-STATUS: ✅ APROVADO
+STATUS: realizado
 ```
 
 **Lições desta execução:**
@@ -552,6 +552,9 @@ STATUS: ✅ APROVADO
 - `cache_read` do pai (41.850) é overhead do harness (deferred tools, skills, MEMORY.md) — inevitável, não é critério de falha.
 - `cache_creation` de apenas 3.042 indica que a maior parte do system prompt já estava cacheada de sessões anteriores.
 - Fluxo final: 3 turnos (spawn + notif/validação inline + extração JSONL), conforme spec v5.
+
+**Questão em aberto — próximo run:**
+`cache_read` do pai (41.850) ainda não tem baseline de mínimo possível. O principal driver são os 3 turnos da sessão pai: a cada turno o harness reinjecta ~14K tokens de contexto (deferred tools, skills, MEMORY.md). Para descobrir o mínimo real, testar uma variante com 2 turnos — mesclar Passos 3+4 em um único turno com 1 tool call (bash) — e comparar o `cache_read` resultante com os 41.850 da v5. Se o `cache_read` cair ~1/3, a redução de turno compensa o custo do tool call extra.
 
 ---
 

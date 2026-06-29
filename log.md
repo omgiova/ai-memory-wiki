@@ -446,3 +446,7 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Eval 1: execução marcada como "realizada — ✅ APROVADA"
 - Eval 2-A: ambas as execuções (1ª e 2ª) marcadas como "realizada — ✅ APROVADA"
 - Evals aprovados agora distinguíveis visualmente dos realizados sem aprovação
+
+## [2026-06-29] edit | procedures — corrige STATUS da 5ª execução e adiciona questão em aberto
+- STATUS da 5ª execução do Eval 2-B: "✅ APROVADO" → "realizado" (critérios do runner satisfeitos, otimização de tokens do pai em aberto)
+- Adicionada questão em aberto: testar variante 2 turnos (Passos 3+4 mesclados) para descobrir o cache_read mínimo possível
