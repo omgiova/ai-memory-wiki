@@ -36,7 +36,18 @@ Hook PreToolUse configurado globalmente em `/root/.claude/settings.json`. Script
 
 ---
 
+---
+
+## V2 — Não atualizar o log.md após editar a wiki
+
+**Regra violada:** log.md deve ser atualizado após qualquer edição na wiki (AGENTS.md)
+
+**Ocorrência 1 — 2026-06-29**
+Após editar `wiki/todo/violacoes-agentes.md` (documentar V1 reincidência + hook), o agente não appendou entrada no log.md. Só foi percebido quando o usuário questionou explicitamente.
+
+---
+
 ## Conexões
 
 - [[AGENTS.md]] — fonte das regras violadas
-- [[log.md]] — arquivo afetado no V1 e V2
+- [[log.md]] — arquivo afetado no V1

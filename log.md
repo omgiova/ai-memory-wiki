@@ -397,3 +397,15 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Adicionado critério formal: subagent_tokens < 15.000
 - Histórico de versões atualizado no arquivo
 - Arquivo: /root/eval-2b-runner.md
+
+## [2026-06-29] config | sistema — hook log-guard configurado
+- Hook PreToolUse adicionado em ~/.claude/settings.json (escopo global)
+- Script: /root/.claude/hooks/log-guard.py
+- Comportamento: bloqueia Edit/Write em log.md que modifique conteúdo existente; permite apenas append
+- Motivação: reincidência de V1 (edição de entrada existente no log.md)
+- Validação pendente: verificar nas próximas sessões se o bloqueio funciona corretamente
+
+## [2026-06-29] edit | todo — violacoes-agentes.md atualizado
+- V1 consolidado: duas ocorrências da mesma violação (edição de log.md) + correção aplicada (hook) + checklist de validação pendente
+- V2 registrado: não atualizar log.md após editar a wiki (ocorrência 1: esta sessão)
+- Arquivos: wiki/todo/violacoes-agentes.md
