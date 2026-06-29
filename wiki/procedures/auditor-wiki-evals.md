@@ -417,7 +417,13 @@ Os 110K `cache_read` são da sessão pai acumulando contexto (system reminders i
 
 **Fix aplicado no runner (v3):** usar `ls -t *.jsonl | head -1 | xargs grep` para capturar TODAS as entradas do JSONL da sessão atual em ordem cronológica, com soma total. Arquivo atualizado: `/root/eval-2b-runner.md`.
 
-**⏳ 3ª execução pendente** com runner v3.
+**Discrepância não explicada entre 2-A e 2-B:**
+Giovani usou o mesmo procedimento nos dois evals (`/clear` + prompt imediato, sem fechar o terminal). O 2-A mostrou `cache_read: 0`; o 2-B mostrou `cache_read: 110K`. Tentei explicar por diferença de turns na sessão pai, por TTL de cache e por qual entrada o `tail -3` capturou — nenhuma explicação resistiu ao contraditório. A causa real permanece desconhecida. O assistente reconheceu que estava especulando incorretamente.
+
+**Procedimento para 3ª execução (acordado com Giovani):**
+Fechar o terminal completamente → reabrir → `/clear` → enviar prompt. Objetivo: garantir sessão nova de verdade (novo JSONL, cache do zero) para eliminar variáveis desconhecidas e obter medição limpa e reproduzível.
+
+**⏳ 3ª execução pendente** com runner v3 e novo procedimento.
 
 ---
 
