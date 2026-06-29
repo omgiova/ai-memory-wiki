@@ -255,3 +255,20 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Nada aplicado ao v3 — documentado para referência futura
 - Criado wiki/history/2026-06-28-libertas-carrossel-7sweeps.md
 - Páginas tocadas: history/2026-06-28-libertas-carrossel-7sweeps.md, index.md, log.md
+
+## [2026-06-29] ingest | raw — akshay-pachaar-karpathy-agentic-engineering-tooling.md
+- Adicionado artigo de Akshay Pachaar publicado em 2026-06-28
+- Título: "Karpathy's Agentic Engineering Finally Has Proper Tooling"
+- Fonte: blog.dailydoseofds.com (cross-post do artigo no X)
+- Conteúdo: Google Agents CLI — scaffolding, eval e deploy de agentes ADK em ambiente unificado
+- Inclui 7 imagens com URLs originais do Substack
+- Páginas tocadas: raw/akshay-pachaar-karpathy-agentic-engineering-tooling.md
+
+## [2026-06-29] ingest | raw — agents-cli-README.md
+- Adicionado README oficial do repositório google/agents-cli (182 linhas)
+- Fonte: https://github.com/google/agents-cli/blob/main/README.md
+- Páginas tocadas: raw/agents-cli-README.md
+
+## [2026-06-29] chore | raw — rename google-okf/README.md → google-okf-README.md
+- Renomeado para padronizar nomenclatura de READMEs na pasta raw/
+- Páginas tocadas: raw/google-okf-README.md
