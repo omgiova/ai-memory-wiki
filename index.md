@@ -24,11 +24,11 @@ index.md
 log.md
 ├── raw/
 │   ├── google-okf/
+│   │   ├── google-okf-README.md
 │   │   ├── introducing-the-open-knowledge-format.md
 │   │   └── SPEC.md
 │   ├── agents-cli-README.md
 │   ├── akshay-pachaar-karpathy-agentic-engineering-tooling.md
-│   ├── google-okf-README.md
 │   ├── karpathy-llm-wiki-pattern.md
 │   └── libertas.md
 └── wiki/
@@ -122,12 +122,11 @@ Inbox da wiki — captura bruta automática por sessão (wiki-review). Contém p
 
 ### google-okf/
 
+- [[raw/google-okf/google-okf-README.md|OKF README.md]] — intro e agente de referência do repo okf/
 - [[raw/google-okf/SPEC.md|OKF SPEC.md]] — especificação oficial OKF v0.1 do Google Cloud
 - [[raw/google-okf/introducing-the-open-knowledge-format.md|Introducing the Open Knowledge Format]] — blog post do Google Cloud (jun/2026)
 
 ### raiz
-
-- [[raw/google-okf-README.md|OKF README.md]] — intro e agente de referência do repo okf/
 - [[raw/karpathy-llm-wiki-pattern.md|LLM Wiki Pattern (Karpathy)]] — documento original do padrão que esta wiki segue; fonte imutável
 - [[raw/libertas.md|Guia de Voz — Libertas Assessoria Financeira]] — documento de referência para copywriter com tom de voz, exemplos aprovados e estrutura de conteúdo
 - [[raw/akshay-pachaar-karpathy-agentic-engineering-tooling.md|Karpathy's Agentic Engineering Finally Has Proper Tooling]] — artigo de Akshay Pachaar sobre Google Agents CLI (jun/2026)

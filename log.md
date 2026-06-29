@@ -288,3 +288,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 ## [2026-06-29] edit | todo — adicionar item prioridade altíssima: corrigir wiki_review pasta diario/
 - Adicionado item 0 no topo das pendências: wiki_review grava em diary/ (errado) em vez de diario/
 - Páginas tocadas: wiki/todo/proximos-passos.md
+
+## [2026-06-29] chore | raw — reverter: google-okf-README.md volta para raw/google-okf/
+- Arquivo movido indevidamente para raw/ raiz; revertido para raw/google-okf/google-okf-README.md
+- Index atualizado: árvore e seção google-okf/ corrigidas
+- Páginas tocadas: raw/google-okf/google-okf-README.md, index.md
