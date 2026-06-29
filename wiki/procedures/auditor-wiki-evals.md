@@ -252,17 +252,7 @@ O maior risco técnico: LLMs normalizam espaços e quebras de linha — se `old_
 
 ---
 
-### Gate 9 — Telegram (já validado ✅)
-
-V9a, V9b e V9c passaram em 2026-06-28. Revalidar apenas se houver mudança no fluxo de interação.
-
-- [x] V9a — Resumo executivo (3 botões) ✅
-- [x] V9b — Finding corrigível (3 botões + Ajustar) ✅
-- [x] V9c — Finding não-corrigível (2 botões + Instruir) ✅
-
----
-
-### Gate 10 — Dry-run completo
+### Gate 9 — Dry-run completo
 
 Fluxo completo de análise e coordenação, sem aplicar nenhuma edição.
 
@@ -275,11 +265,11 @@ Fluxo completo de análise e coordenação, sem aplicar nenhuma edição.
 
 ---
 
-### Gate 11 — Run completo real
+### Gate 10 — Run completo real
 
 Apenas após todos os gates anteriores passarem e com autorização explícita.
 
-- [ ] Gates 1–10 todos aprovados e documentados aqui
+- [ ] Gates 1–9 todos aprovados e documentados aqui
 - [ ] Giovani autorizou este run
 - [ ] `WIKI_DIR` apontando para `/root/wiki`
 - [ ] Log de execução em `/var/log/auditor-wiki.log`
