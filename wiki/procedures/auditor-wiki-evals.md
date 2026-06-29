@@ -596,14 +596,18 @@ python3 -c "
 import json, glob, os
 files = sorted(glob.glob(os.path.expanduser('~/.claude/projects/-root/*.jsonl')), key=os.path.getmtime, reverse=True)
 if not files: print('JSONL nao encontrado'); exit(1)
-lines = [l.strip() for l in open(files[0]) if l.strip()]
-unique = []
-for i in range(0, len(lines), 3):
-    try: unique.append(json.loads(lines[i]))
+entries = []
+for line in open(files[0]):
+    try:
+        e = json.loads(line.strip())
+        u = e.get('message', {}).get('usage')
+        if not u: continue
+        key = (u.get('input_tokens',0), u.get('cache_creation_input_tokens',0), u.get('cache_read_input_tokens',0), u.get('output_tokens',0))
+        if not entries or entries[-1][0] != key:
+            entries.append((key, u))
     except: pass
-turns = unique[:-1]
-for i, e in enumerate(turns, 1):
-    u = e.get('message', {}).get('usage', {})
+turns = entries[:-1]
+for i, (k, u) in enumerate(turns, 1):
     print(f'T{i}: in={u.get(\"input_tokens\",0)} cc={u.get(\"cache_creation_input_tokens\",0)} cr={u.get(\"cache_read_input_tokens\",0)} out={u.get(\"output_tokens\",0)}')
 "
 

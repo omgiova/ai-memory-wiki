@@ -488,3 +488,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Tamanho correto confirmado: 311 chars Unicode (316 bytes UTF-8); 1ª execução tinha 231 (errado)
 - Bug documentado: script JSONL com range(0,n,3) captura linhas sem message.usage → retornou zeros
 - Status aguarda definição do Giovani
+
+## [2026-06-29] edit | procedures — corrige script JSONL do Eval 2-C (range fixo → filtro por usage)
+- Bug: range(0,n,3) capturava linhas sem message.usage — retornava zeros
+- Fix: filtrar linhas com message.usage, deduplicar por chave consecutiva (mesmo padrão v5 do 2-B)
+- Prompt atualizado em "Prompt exato para a próxima sessão"
