@@ -404,6 +404,21 @@ STATUS: ✅ APROVADO
 
 ⚠️ **Lição:** `cache_read_input_tokens` de 110K indica que o system prompt interno do Claude Code estava cacheado da sessão pai (mesmo após `/clear`, o cache de projeto persiste entre sessões). O custo real de input foi praticamente zero — o overhead de base (~12K) foi servido do cache a ~10× menos custo.
 
+**❌ Metodologia de tokens com falha — 3ª execução necessária**
+
+O `tail -3` do Passo 3 capturava entradas misturadas de pai e subagente sem distinção. Evidência:
+
+| Eval | output_tokens das entradas capturadas | O que eram |
+|---|---|---|
+| 2-A | 1 token | chamada do subagente (`{"ok":true}`) |
+| 2-B | 83 / 207 / 287 tokens | chamadas da sessão pai |
+
+Os 110K `cache_read` são da sessão pai acumulando contexto (system reminders injetados pelo harness: deferred tools, skills, agents, MEMORY.md). O subagente em si custou 12.935 tokens — idêntico ao 2-A. Os dois evals tiveram custo de subagente equivalente; o que variou foi qual entrada o `tail -3` capturou por acidente.
+
+**Fix aplicado no runner (v3):** usar `ls -t *.jsonl | head -1 | xargs grep` para capturar TODAS as entradas do JSONL da sessão atual em ordem cronológica, com soma total. Arquivo atualizado: `/root/eval-2b-runner.md`.
+
+**⏳ 3ª execução pendente** com runner v3.
+
 ---
 
 ### Eval 2-C — `auditor-pasta` detecta problema? (conteúdo inline com problema plantado)
