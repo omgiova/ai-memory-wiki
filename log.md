@@ -450,3 +450,10 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 ## [2026-06-29] edit | procedures — corrige STATUS da 5ª execução e adiciona questão em aberto
 - STATUS da 5ª execução do Eval 2-B: "✅ APROVADO" → "realizado" (critérios do runner satisfeitos, otimização de tokens do pai em aberto)
 - Adicionada questão em aberto: testar variante 2 turnos (Passos 3+4 mesclados) para descobrir o cache_read mínimo possível
+
+## [2026-06-29] edit | procedures — encerra 2-B, redefine 2-C para arquitetura sem subagentes
+- Eval 2-B: marcado como ENCERRADO por mudança de arquitetura (subagentes descartados)
+- v4 do Eval 2-B: reforçada invalidação total — ⛔ não citar, não usar como referência
+- Eval 2-C: completamente reescrito para nova arquitetura sem subagentes
+- Arquivo sintético criado: /tmp/eval-2c-test.md (status ausente, problema plantado)
+- Prompt exato para próxima sessão documentado no próprio 2-C

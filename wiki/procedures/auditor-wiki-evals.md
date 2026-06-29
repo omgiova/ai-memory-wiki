@@ -467,8 +467,9 @@ STATUS: ❌ REPROVADO
 - Adicionar critério formal: `subagent_tokens < 15.000`
 - Fluxo final: 2 turnos, 0 tool calls no turno 2
 
-**2026-06-29 — 4ª execução — realizada - INVÁLIDA (v4: validação inline)**
+**2026-06-29 — 4ª execução — ⛔ TOTALMENTE INVALIDADA E DESCONSIDERADA (v4: validação inline)**
 *(invalidado retroativamente: runner v4 omitiu tokens da sessão pai — viola a regra obrigatória de transparência de custos)*
+**⛔ TODO O CONTEÚDO DESTA EXECUÇÃO ESTÁ INVALIDADO. NÃO CITAR. NÃO USAR COMO REFERÊNCIA. NÃO COMPARAR COM OUTRAS EXECUÇÕES. FOI FEITO ERRADO.**
 
 **Contexto de invocação:**
 - Terminal fechado completamente → reaberto → `/clear` → prompt enviado
@@ -556,39 +557,41 @@ STATUS: realizado
 **Questão em aberto — próximo run:**
 `cache_read` do pai (41.850) ainda não tem baseline de mínimo possível. O principal driver são os 3 turnos da sessão pai: a cada turno o harness reinjecta ~14K tokens de contexto (deferred tools, skills, MEMORY.md). Para descobrir o mínimo real, testar uma variante com 2 turnos — mesclar Passos 3+4 em um único turno com 1 tool call (bash) — e comparar o `cache_read` resultante com os 41.850 da v5. Se o `cache_read` cair ~1/3, a redução de turno compensa o custo do tool call extra.
 
+**2026-06-29 — ENCERRADO — arquitetura de subagentes descartada**
+Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1 a v5) testavam o mecanismo Agent tool (subagente). Esse mecanismo foi descartado: o overhead fixo de ~12.8K tokens por spawn é inaceitável. O auditor passa a executar diretamente na sessão principal, sem subagentes. Eval 2-C foi redefinido para a nova arquitetura.
+
 ---
 
-### Eval 2-C — `auditor-pasta` detecta problema? (conteúdo inline com problema plantado)
+### Eval 2-C — Esta sessão detecta problema em arquivo sintético? (nova arquitetura — sem subagentes)
 
-Só inicia após Eval 2-B aprovado. Primeiro teste de lógica de auditoria — conteúdo sintético passado inline, problema conhecido e plantado.
+**Arquitetura:** sem subagentes. O Claude Code da sessão corrente lê o arquivo diretamente e reporta findings. Nenhum Agent tool. Nenhum spawn. Nenhum overhead de harness de subagente.
 
-**Prompt enviado ao subagente:**
-> `Pasta: test/. Arquivo: test/test.md. Conteúdo inline abaixo — não faça Read calls.`
->
-> ```
-> ---
-> type: system
-> title: Arquivo de Teste
-> description: Arquivo mínimo para eval.
-> ---
-> Conteúdo mínimo.
-> ```
+**Por que esta é a arquitetura correta:** o overhead fixo de ~12.8K tokens por spawn (confirmado em Eval 2-A e 2-B) torna subagentes inviáveis. O auditor executa inteiramente na sessão principal.
 
-Problema plantado: campo `status` ausente. O agente deve detectar e retornar finding `critico`.
+**Arquivo sintético:** `/tmp/eval-2c-test.md` — frontmatter com `status` ausente (problema plantado). Criado antes desta sessão encerrar.
 
-**Critérios:**
-- [ ] Resposta é JSON válido
-- [ ] Campos presentes: `folder`, `findings`, `agent`, `_meta`
-- [ ] `_meta.read_calls == 0`
-- [ ] `_meta.limit_reached == false`
-- [ ] Finding F1: `severity: "critico"`, `problem` menciona ausência de `status`
-- [ ] Nenhuma prosa fora do JSON
+**Transparência de custo:** sem subagente, sem JSONL, sem extração. O custo é proporcional ao conteúdo: 1 Read call + 1 resposta. O arquivo informa o tamanho em caracteres lidos — proxy direto do custo de input.
 
-**Critério de reprovação:** `output_tokens > 500` | `read_calls > 0` | JSON inválido | prosa fora do JSON | finding ausente ou severidade errada.
+**Critérios de aprovação:**
+- [ ] 1 Read call — apenas `/tmp/eval-2c-test.md`
+- [ ] `status` identificado como ausente
+- [ ] Severidade `critico` reportada
+- [ ] Tamanho em caracteres do arquivo informado na resposta
+- [ ] Nenhum arquivo extra lido
 
-**Critério de aprovação:** JSON válido com `read_calls == 0` e finding F1 correto.
+**Critério de reprovação:** campo errado reportado | problema não detectado | mais de 1 Read call | nenhum tamanho reportado.
 
-**Estatísticas a registrar:** `input_tokens`, `cache_read_input_tokens`, `output_tokens`.
+**Prompt exato para a próxima sessão (copiar e colar):**
+
+```
+Eval 2-C — sem subagentes. Leia /tmp/eval-2c-test.md. Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção. Informe o tamanho em caracteres do arquivo lido. Não leia mais nenhum arquivo.
+```
+
+**Como executar:**
+1. Fechar terminal completamente → reabrir
+2. `/clear`
+3. Colar o prompt acima
+4. Registrar o resultado aqui antes de qualquer outra ação
 
 ---
 
