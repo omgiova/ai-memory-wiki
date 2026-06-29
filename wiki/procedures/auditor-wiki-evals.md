@@ -126,60 +126,81 @@ Os gates abaixo substituem as validações opcionais V1–V17. A diferença: sã
 
 ## Gates de validação
 
-### Gate 1 — Contrato de output (zero tokens)
+Sequência única e bloqueante — Gate N só inicia se Gate N-1 passou. Nenhum gate pode ser pulado.
 
-Verificação estática antes de qualquer chamada à API.
-
-- [ ] System prompt de cada agente inclui exemplo concreto de JSON com todos os campos
-- [ ] System prompt instrui o caso vazio: `{"findings": []}`
-- [ ] System prompt proíbe prosa explicitamente
-- [ ] Script tem fail-fast: se `json.loads()` falhar, aborta e loga os primeiros 300 chars do output
-- [ ] `--output-format json` presente em todos os subprocessos
-
-**Critério de aprovação:** revisão manual dos prompts + leitura do código do fallback.
+**Modelo para todos os subagentes:** `claude-sonnet-4-6`
 
 ---
 
-### Gate 2 — Agente de pasta isolado
+### Gate 1 — Contrato de output (estático, zero tokens)
 
-Um único agente, uma pasta, dados reais mínimos. Equivale à validação V2 original.
+Verificação antes de qualquer execução — leitura do arquivo de definição do subagente e do system prompt.
 
-```bash
-# Rodar só o agente de uma pasta pequena (ex: todo/)
-# Inspecionar output diretamente
-```
+- [ ] Arquivo `.claude/agents/auditor-pasta.md` existe com frontmatter correto
+- [ ] `model: claude-sonnet-4-6` declarado no frontmatter do subagente
+- [ ] System prompt inclui exemplo concreto do JSON esperado com todos os campos
+- [ ] System prompt instrui caso vazio: `{"findings": []}`
+- [ ] System prompt proíbe prosa explicitamente
 
-- [ ] Output é JSON válido (`json.loads()` não lança exceção)
+**Critério de aprovação:** revisão manual do arquivo do subagente e do system prompt.
+
+---
+
+### Gate 2 — Subagente retorna JSON?
+
+Primeiro teste com tokens. Um subagente, pasta mais pequena (`todo/`), invocado via ferramenta `Agent` pela sessão principal.
+
+- [ ] Sessão principal spawna o subagente via `Agent` sem erro
+- [ ] Resposta que chega de volta é JSON válido (`json.loads()` não lança exceção)
 - [ ] Campos obrigatórios presentes: `folder`, `findings`, `agent`
 - [ ] Cada finding tem: `id`, `severity`, `file`, `problem`, `correctable`, `correction` (se correctable)
 - [ ] Nenhuma prosa fora do JSON
 
-**Critério de aprovação:** um agente, uma pasta, output válido. Parar aqui se falhar — não continuar.
+**Critério de aprovação:** JSON válido recebido na sessão principal. Parar aqui se falhar — não continuar.
 
 **Custo esperado:** 1–3 requests, contexto < 30KB.
 
 ---
 
-### Gate 3 — Agentes de pasta em série (não paralelo)
+### Gate 3 — Erro propaga ou engole silencioso?
 
-Rodar cada agente de pasta individualmente, em sequência, antes de paralelizar. Coleta relatórios reais.
+Provocar falha intencional: invocar subagente sem instrução de formato JSON e verificar se a sessão principal recebe e reage ao erro — o teste que v1 nunca fez.
 
-- [ ] Todos os agentes retornam JSON válido
-- [ ] Nenhum agente retorna findings vazios de forma suspeita (pasta com arquivos que claramente têm problemas)
-- [ ] Log mostra tempo e tokens por agente
+- [ ] Sessão principal detecta que o subagente não retornou JSON válido
+- [ ] Erro não é silenciosamente descartado (equivalente ao fallback `findings: []` do v1)
+- [ ] Sessão principal consegue abortar, logar ou alertar
 
-**Critério de aprovação:** todos os agentes passam no Gate 2 individualmente.
-
-**Custo esperado:** N agentes × (1–3 requests cada), contexto filtrado por pasta.
+**Critério de aprovação:** falha no subagente resulta em erro visível e tratável na sessão principal.
 
 ---
 
-### Gate 4 — Agentes Overlap e Links isolados
+### Gate 4 — Sessão aguenta esperar o Telegram?
 
-Equivale a V3 e V4 originais.
+O ponto mais crítico da arquitetura. Sessão Claude Code envia mensagem com botões e aguarda callback — não pode expirar durante a espera.
 
-- [ ] Agente Overlap recebe inventário real, retorna JSON válido
-- [ ] Agente Overlap não flaga falsos positivos óbvios
+- [ ] Sessão envia mensagem com botões via Bash (curl) pro Telegram
+- [ ] Sessão aguarda callback sem timeout
+- [ ] Resposta do botão é recebida e processada corretamente dentro da sessão
+
+**Critério de aprovação:** loop Telegram completo (envio → espera → recebimento) dentro de uma sessão Claude Code sem interrupção.
+
+---
+
+### Gate 5 — Agentes de pasta em série
+
+Todos os agentes de pasta, um por vez, antes de qualquer paralelismo.
+
+- [ ] Cada agente retorna JSON válido
+- [ ] Nenhum agente retorna `findings: []` de forma suspeita para pasta com problemas óbvios
+- [ ] Tempo e custo por agente registrados
+
+**Critério de aprovação:** todos os agentes passam individualmente.
+
+---
+
+### Gate 6 — Agentes Overlap e Links isolados
+
+- [ ] Agente Overlap retorna JSON válido sem falsos positivos óbvios
 - [ ] Agente Links detecta pelo menos um link quebrado se houver
 - [ ] Ambos retornam JSON válido com campos corretos
 
@@ -187,12 +208,12 @@ Equivale a V3 e V4 originais.
 
 ---
 
-### Gate 5 — Coordenador isolado
+### Gate 7 — Coordenador isolado
 
-Alimentar o coordenador com outputs reais dos Gates 2 e 3. Equivale a V6 original.
+Alimentado com outputs reais dos Gates 5 e 6.
 
 - [ ] Output é JSON válido com `executive_summary` e `findings`
-- [ ] Campo `correctable` está classificado coerentemente
+- [ ] Campo `correctable` classificado coerentemente
 - [ ] Nenhum finding duplicado
 - [ ] Funciona com input misto (pasta com findings + pasta com `findings: []`)
 
@@ -200,22 +221,22 @@ Alimentar o coordenador com outputs reais dos Gates 2 e 3. Equivale a V6 origina
 
 ---
 
-### Gate 6 — Agente Corretor isolado
+### Gate 8 — Agente Corretor isolado
 
-Passar um finding real do Gate 5 e verificar a edição proposta. Equivale a V7 original — o maior risco técnico do script.
+O maior risco técnico: LLMs normalizam espaços e quebras de linha — se `old_string` não bater exato com o arquivo, a edição falha.
 
 - [ ] `old_string` é substring exata do arquivo alvo (verificar com `grep -F`)
 - [ ] `new_string` está correto
 - [ ] Campo `file` usa caminho relativo ao `WIKI_DIR` (ex: `systems/hermes.md`, não absoluto)
-- [ ] Testar com dois findings no mesmo arquivo (risco D2 — ordem de aplicação)
+- [ ] Testar com dois findings no mesmo arquivo (ordem de aplicação)
 
-**Critério de aprovação:** `apply_edit` aplica a edição sem erro de "old_string não encontrado".
+**Critério de aprovação:** edição aplicada sem erro de "old_string não encontrado".
 
 ---
 
-### Gate 7 — Telegram (já validado)
+### Gate 9 — Telegram (já validado ✅)
 
-V9a, V9b e V9c passaram em 2026-06-28 (3/3, 3/3, 2/2). Revalidar apenas se houver mudança no script de interação Telegram.
+V9a, V9b e V9c passaram em 2026-06-28. Revalidar apenas se houver mudança no fluxo de interação.
 
 - [x] V9a — Resumo executivo (3 botões) ✅
 - [x] V9b — Finding corrigível (3 botões + Ajustar) ✅
@@ -223,27 +244,25 @@ V9a, V9b e V9c passaram em 2026-06-28 (3/3, 3/3, 2/2). Revalidar apenas se houve
 
 ---
 
-### Gate 8 — Run completo em dry-run
+### Gate 10 — Dry-run completo
 
-Executar Fase 1 + Fase 2 + Fase 3 completas, mas **sem Fase 5** (sem aplicar nenhuma edição).
+Fluxo completo de análise e coordenação, sem aplicar nenhuma edição.
 
-- [ ] Todos os agentes retornam JSON válido (Gate 2–3 em paralelo agora)
-- [ ] Coordenador consolida sem erro (Gate 5 em condições reais de paralelismo)
-- [ ] Log mostra tempo total e estimativa de tokens consumidos
-- [ ] Mensagem Telegram de resumo executivo chega com conteúdo real
+- [ ] Todos os agentes retornam JSON válido em condições reais de paralelismo
+- [ ] Coordenador consolida sem erro
+- [ ] Custo total de tokens dentro do esperado
+- [ ] Resumo executivo chega no Telegram com findings reais
 
 **Critério de aprovação:** resumo executivo no Telegram com findings reais, nenhum erro de JSON.
 
-**Custo esperado:** equivalente ao run completo de Fase 1–3, mas sem os tokens da Fase 5 (corretor).
-
 ---
 
-### Gate 9 — Run completo real
+### Gate 11 — Run completo real
 
-Apenas após todos os gates anteriores passarem. Este é o run que aplica edições na wiki.
+Apenas após todos os gates anteriores passarem e com autorização explícita.
 
-- [ ] Gates 0–7 todos aprovados e documentados aqui
-- [ ] Giovani deu autorização explícita para este run
+- [ ] Gates 1–10 todos aprovados e documentados aqui
+- [ ] Giovani autorizou este run
 - [ ] `WIKI_DIR` apontando para `/root/wiki`
 - [ ] Log de execução em `/var/log/auditor-wiki.log`
 
@@ -253,23 +272,23 @@ Apenas após todos os gates anteriores passarem. Este é o run que aplica ediç�
 
 | Validação original | Gate correspondente | Status |
 |---|---|---|
-| V1 — Fase 1: descoberta dinâmica | Gate 8 (dry-run) | pendente |
+| V1 — Fase 1: descoberta dinâmica | Gate 10 (dry-run) | pendente |
 | V2 — Agente de pasta isolado | **Gate 2** | pendente |
-| V3 — Agente Overlap isolado | **Gate 4** | pendente |
-| V4 — Agente Links isolado | **Gate 4** | pendente |
-| V5 — Extração JSON (fallback) | **Gate 1** (estático) + Gate 2 | pendente |
-| V6 — Coordenador isolado | **Gate 5** | pendente |
-| V7 — Agente Corretor isolado | **Gate 6** | pendente |
-| V8 — Telegram: token e chat_id | Gate 7 (pré-requisito) | ✅ |
-| V9 — Telegram: interação completa | **Gate 7** | ✅ |
-| V10 — apply_edit: old_string exato | **Gate 6** | pendente |
-| V11 — Commits por finding | pós-Gate 9 (1º run real) | pendente |
-| V12 — Push final + hook conflict | pós-Gate 9 (1º run real) | pendente |
-| V13 — Execução paralela: recursos | **Gate 8** (dry-run paralelo) | pendente |
-| V14 — Pasta diary/ vazia | Gate 3 (cobertura por série) | pendente |
-| V15 — Timeout Telegram | Gate 7 ou Gate 8 | pendente |
-| V16 — claude CLI: autenticação standalone | **Gate 1** (verificar antes de tudo) | pendente |
-| V17 — Dois findings no mesmo arquivo | **Gate 6** | pendente |
+| V3 — Agente Overlap isolado | **Gate 6** | pendente |
+| V4 — Agente Links isolado | **Gate 6** | pendente |
+| V5 — Extração JSON (fallback) | **Gate 1** (estático) + Gate 3 | pendente |
+| V6 — Coordenador isolado | **Gate 7** | pendente |
+| V7 — Agente Corretor isolado | **Gate 8** | pendente |
+| V8 — Telegram: token e chat_id | Gate 9 (pré-requisito) | ✅ |
+| V9 — Telegram: interação completa | **Gate 9** | ✅ |
+| V10 — apply_edit: old_string exato | **Gate 8** | pendente |
+| V11 — Commits por finding | pós-Gate 11 (1º run real) | pendente |
+| V12 — Push final + hook conflict | pós-Gate 11 (1º run real) | pendente |
+| V13 — Execução paralela: recursos | **Gate 10** (dry-run paralelo) | pendente |
+| V14 — Pasta diary/ vazia | Gate 5 (cobertura por série) | pendente |
+| V15 — Timeout Telegram | **Gate 4** | pendente |
+| V16 — claude CLI: autenticação standalone | N/A — nova arquitetura não usa claude CLI como subprocess | — |
+| V17 — Dois findings no mesmo arquivo | **Gate 8** | pendente |
 
 ---
 
@@ -288,17 +307,6 @@ No v1, o bash era o gerente — chamava o `claude` 8 vezes como ferramenta exter
 5. Aguarda resposta do usuário (botão), aplica edição, commita — tudo dentro da mesma sessão
 
 **Modelo:** `claude-sonnet-4-6` para todos os subagentes.
-
-### Evals desta arquitetura (executar antes dos gates principais)
-
-**E1 — O subagente retorna JSON?**
-Criar `.claude/agents/auditor-pasta.md` com o system prompt de pasta e invocar para uma pasta pequena (ex: `todo/`). Verificar se o output que chega de volta na sessão principal é JSON válido com os campos obrigatórios. Equivale ao Gate 2, mas com o mecanismo novo. Parar aqui se falhar.
-
-**E2 — Erro propaga ou engole silencioso?**
-Provocar intencionalmente uma falha (subagente sem instrução de formato JSON) e verificar se a sessão principal recebe o erro e consegue reagir. Em v1, o bash engolia silenciosamente e seguia com `findings: []`. Com subagentes nativos, o runtime deve propagar. Esse é o teste que v1 nunca fez.
-
-**E3 — A sessão aguenta esperar o Telegram?**
-Enviar uma mensagem com botões pro Telegram via Bash (curl) dentro de uma sessão Claude Code e verificar se a sessão consegue ficar em espera pelo callback do usuário sem timeout. É o ponto mais crítico desta arquitetura: se a sessão expirar enquanto aguarda a resposta do botão, o modelo inteiro cai.
 
 ---
 
