@@ -306,3 +306,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - "## Gates de validação" → "## Evals de validação"
 - Gates 1–10 → Evals 1–10; referências internas atualizadas
 - Páginas tocadas: wiki/procedures/auditor-wiki-evals.md
+
+## [2026-06-29] edit | procedures — complemento Eval 4 com mecanismo de polling
+- Eval 4: esclarecido que "aguardar callback" requer polling ativo (curl getUpdates com sleep)
+- Claude Code não suspende sessão passivamente; critério de aprovação atualizado
+- Páginas tocadas: wiki/procedures/auditor-wiki-evals.md

@@ -197,10 +197,10 @@ Provocar falha intencional: invocar subagente sem instrução de formato JSON e 
 O ponto mais crítico da arquitetura. Sessão Claude Code envia mensagem com botões e aguarda callback — não pode expirar durante a espera.
 
 - [ ] Sessão envia mensagem com botões via Bash (curl) pro Telegram
-- [ ] Sessão aguarda callback sem timeout
+- [ ] Sessão aguarda callback via polling ativo (loop `curl getUpdates` com sleep, não espera passiva — Claude Code não suspende sessão)
 - [ ] Resposta do botão é recebida e processada corretamente dentro da sessão
 
-**Critério de aprovação:** loop Telegram completo (envio → espera → recebimento) dentro de uma sessão Claude Code sem interrupção.
+**Critério de aprovação:** loop Telegram completo (envio → polling → recebimento do callback) dentro de uma sessão Claude Code sem interrupção.
 
 ---
 
