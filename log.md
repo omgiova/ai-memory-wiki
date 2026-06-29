@@ -441,3 +441,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Substituído "✅ APROVADO / ❌ REPROVADO / ❌ INVÁLIDO" nos cabeçalhos por "realizada" ou "realizada - INVÁLIDA"
 - STATUS (aprovado/reprovado) permanece dentro do bloco de resultado — cabeçalho só indica que a execução ocorreu
 - Afeta: Eval 1, Eval 2-A (2 execuções), Eval 2-B (5 execuções)
+
+## [2026-06-29] edit | procedures — adiciona ✅ APROVADA nos evals 1 e 2-A
+- Eval 1: execução marcada como "realizada — ✅ APROVADA"
+- Eval 2-A: ambas as execuções (1ª e 2ª) marcadas como "realizada — ✅ APROVADA"
+- Evals aprovados agora distinguíveis visualmente dos realizados sem aprovação

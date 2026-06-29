@@ -202,7 +202,7 @@ Verificação antes de qualquer execução — leitura do arquivo de definição
 
 **Critério de aprovação:** revisão manual do arquivo do subagente e do system prompt.
 
-**2026-06-29 — realizada**
+**2026-06-29 — realizada — ✅ APROVADA**
 Arquivo criado em `/root/.claude/agents/auditor-pasta.md`. Todos os 5 itens verificados manualmente.
 
 ---
@@ -239,14 +239,14 @@ Testa o mecanismo de spawn, sem nenhuma relação com o auditor. Agente genéric
 
 **Estatísticas a registrar:** `subagent_tokens` (da notificação), `input_tokens`, `cache_creation`, `cache_read`, `output_tokens`, modelo usado.
 
-**2026-06-29 — 1ª execução — realizada**
+**2026-06-29 — 1ª execução — realizada — ✅ APROVADA**
 - Resposta: `{"ok": true}` — JSON válido, sem prosa, `tool_uses: 0`
 - Duração: 1.245s
 - `subagent_tokens`: 12.603
 - `input_tokens`: 21
 - Modelo: ⚠️ não especificado explicitamente — herdou da sessão pai (claude-sonnet-4-6)
 
-**2026-06-29 — 2ª execução — realizada**
+**2026-06-29 — 2ª execução — realizada — ✅ APROVADA**
 
 **Contexto de invocação:**
 - Sessão iniciada com `/clear` — contexto zerado antes do eval
