@@ -738,6 +738,84 @@ Status final:         aguardando definição do Giovani
 **Lição:**
 O `/remote-control` skill não satisfaz o procedimento de "fechar terminal → reabrir → `/clear`". O skill entrega o prompt dentro da sessão existente, com contexto acumulado. Para o Eval 2-C ser válido, o procedimento de sessão limpa é mandatório — o skill não é substituto.
 
+**2026-06-29 — 5ª execução — ⚠️ INCOMPLETA (tamanho errado + tokens vazios — primeiro turno da sessão)**
+
+**Contexto de invocação:**
+- Invocado via `/remote-control` skill — viola o procedimento prescrito
+- Eval foi o PRIMEIRO turno da sessão — JSONL sem entradas anteriores ao Passo 2
+- Arquitetura: sem subagentes — 1 Read call direto na sessão principal
+
+```
+=== Eval 2-C — Checklist ===
+Read calls:           1 (apenas /tmp/eval-2c-test.md) ✅
+Arquivo extra lido:   nenhum ✅
+Campo ausente:        status ✅
+Severidade reportada: critico ✅
+Tamanho reportado:    259 chars ❌  (correto: 311 chars — verificado com python3 len())
+Prosa fora do report: nenhuma ✅
+
+Tokens da sessão pai: NÃO CAPTURADO — bash retornou vazio ❌
+Status final:         aguardando definição do Giovani
+```
+
+**Causa raiz — tokens vazios:** o eval foi o primeiro turno da sessão. O JSONL só grava a entrada do turno atual após o turno ser concluído. Quando o Passo 2 (bash) executou, a entrada ainda não estava gravada. Em primeiro turno, `entries[:-1]` = lista vazia → output vazio. O script estava correto; o procedimento estava errado.
+
+**Causa raiz — tamanho errado:** o modelo estimou 259 chars sem contar via Python. O arquivo tem 311 chars Unicode (316 bytes UTF-8 — 5 caracteres multibyte: é, ç, ã, ú, í). Contagem manual de LLM é imprecisa; a próxima versão deve usar bash para medir o tamanho exato.
+
+**Fix necessário para 6ª execução:** redesign em 2 turnos — T1 faz Read + análise + bash de tamanho; T2 faz bash de JSONL + compilação. Remove `entries[:-1]` do script (T2 não está no JSONL ainda quando o bash de T2 roda, então não há risco de capturar o próprio turno).
+
+**Prompt para 6ª execução — 2 turnos separados:**
+
+> ⚠️ São DOIS prompts distintos. Enviar T1 primeiro, aguardar resposta completa com "T1-CONCLUÍDO", depois enviar T2.
+
+**Turno 1 (colar e enviar):**
+```
+Eval 2-C — Turno 1. Execute em sequência, sem desviar:
+
+1. Leia /tmp/eval-2c-test.md (único Read permitido neste turno). Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção.
+
+2. Execute este bash para obter o tamanho exato:
+python3 -c "print(len(open('/tmp/eval-2c-test.md').read()))"
+
+Encerre com: T1-CONCLUÍDO
+```
+
+**Turno 2 (enviar somente após receber "T1-CONCLUÍDO"):**
+```
+Eval 2-C — Turno 2. Execute o bash abaixo e compile o resultado final:
+
+python3 -c "
+import json, glob, os
+files = sorted(glob.glob(os.path.expanduser('~/.claude/projects/-root/*.jsonl')), key=os.path.getmtime, reverse=True)
+if not files: print('JSONL nao encontrado'); exit(1)
+entries = []
+for line in open(files[0]):
+    try:
+        e = json.loads(line.strip())
+        u = e.get('message', {}).get('usage')
+        if not u: continue
+        key = (u.get('input_tokens',0), u.get('cache_creation_input_tokens',0), u.get('cache_read_input_tokens',0), u.get('output_tokens',0))
+        if not entries or entries[-1][0] != key:
+            entries.append((key, u))
+    except: pass
+for i, (k, u) in enumerate(entries, 1):
+    print(f'T{i}: in={u.get(\"input_tokens\",0)} cc={u.get(\"cache_creation_input_tokens\",0)} cr={u.get(\"cache_read_input_tokens\",0)} out={u.get(\"output_tokens\",0)}')
+"
+
+Compile o resultado final com:
+- checklist de campos do Turno 1
+- tamanho em chars do Turno 1
+- output do bash acima (tokens por turno)
+
+Encerre com: STATUS: aguardando definição do Giovani
+```
+
+**Por que funciona:**
+- T1 usa bash apenas para medir tamanho (sem leitura de outros arquivos — critério satisfeito)
+- T2 roda com T1 já gravado no JSONL → `entries` retorna os dados de T1 e turnos anteriores
+- `entries[:-1]` removido → sem exclusão que apagaria exatamente T1 (o turno que queremos medir)
+- Funciona mesmo em sessão com histórico (mostra todos os turnos anteriores, inclusive contexto)
+
 ---
 
 ### Eval 3 — Detecção precisa: valor inválido (não só campo ausente)
