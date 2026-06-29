@@ -752,13 +752,7 @@ Todas as pastas da wiki, uma por vez, após Eval 6. A mesma sessão lê cada pas
 
 ---
 
-### ~~Eval 9 — Coordenador isolado~~ — REMOVIDO
-
-Na arquitetura original havia um agente coordenador separado que consolidava os outputs dos agentes de pasta. Na nova arquitetura a sessão principal consolida inline — não existe componente separado a testar isoladamente.
-
----
-
-### Eval 10 — Correção aplicada corretamente
+### Eval 9 — Correção aplicada corretamente
 
 O maior risco técnico: LLMs normalizam espaços e quebras de linha — se `old_string` não bater exato com o arquivo, a edição falha.
 
@@ -775,7 +769,7 @@ Criar `/tmp/eval10-test.md` com 3 linhas e problema conhecido. Verificar que a e
 
 ---
 
-### Eval 11 — Dry-run completo
+### Eval 10 — Dry-run completo
 
 Fluxo completo de análise, sem aplicar nenhuma edição.
 
@@ -789,11 +783,11 @@ Fluxo completo de análise, sem aplicar nenhuma edição.
 
 ---
 
-### Eval 12 — Run completo real
+### Eval 11 — Run completo real
 
 Apenas após todos os evals anteriores passarem e com autorização explícita.
 
-- [ ] Evals 1–11 todos aprovados e documentados aqui
+- [ ] Evals 1–10 todos aprovados e documentados aqui
 - [ ] Giovani autorizou este run
 - [ ] `WIKI_DIR` apontando para `/root/wiki`
 - [ ] Log de execução em `/var/log/auditor-wiki.log`

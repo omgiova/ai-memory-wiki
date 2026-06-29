@@ -501,3 +501,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Eval 10: renomeado, checklist consolidado
 - Todas as ocorrências de "Critério de aprovação/reprovação" substituídas por "Critérios a serem observados"
 - Todas as anotações "(era Eval X)" removidas
+
+## [2026-06-29] edit | procedures — remove Eval 9 (coordenador) e renumera 10-12 para 9-11
+- Eval 9 (coordenador isolado) removido completamente — não existe na nova arquitetura
+- Evals 10, 11, 12 renumerados para 9, 10, 11
+- Lista final: Evals 1, 2-A, 2-B, 2-C, 3, 4, 5, 6, 7, 8, 9, 10, 11
