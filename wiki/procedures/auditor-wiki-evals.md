@@ -202,7 +202,7 @@ Verificação antes de qualquer execução — leitura do arquivo de definição
 
 **Critério de aprovação:** revisão manual do arquivo do subagente e do system prompt.
 
-**✅ APROVADO — 2026-06-29**
+**2026-06-29 — realizada**
 Arquivo criado em `/root/.claude/agents/auditor-pasta.md`. Todos os 5 itens verificados manualmente.
 
 ---
@@ -239,14 +239,14 @@ Testa o mecanismo de spawn, sem nenhuma relação com o auditor. Agente genéric
 
 **Estatísticas a registrar:** `subagent_tokens` (da notificação), `input_tokens`, `cache_creation`, `cache_read`, `output_tokens`, modelo usado.
 
-**✅ APROVADO — 2026-06-29 (1ª execução)**
+**2026-06-29 — 1ª execução — realizada**
 - Resposta: `{"ok": true}` — JSON válido, sem prosa, `tool_uses: 0`
 - Duração: 1.245s
 - `subagent_tokens`: 12.603
 - `input_tokens`: 21
 - Modelo: ⚠️ não especificado explicitamente — herdou da sessão pai (claude-sonnet-4-6)
 
-**✅ APROVADO — 2026-06-29 (2ª execução)**
+**2026-06-29 — 2ª execução — realizada**
 
 **Contexto de invocação:**
 - Sessão iniciada com `/clear` — contexto zerado antes do eval
@@ -328,7 +328,7 @@ Só inicia após Eval 2-A aprovado. Agora entra o `auditor-pasta` pela primeira 
 
 **Estatísticas a registrar:** `subagent_tokens`, `input_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens`, `duration_ms`.
 
-**❌ REPROVADO — 2026-06-29**
+**2026-06-29 — 1ª execução — realizada**
 
 ```
 === Eval 2-B — Resultado ===
@@ -369,7 +369,7 @@ Motivo: O agente nomeado 'auditor-pasta' não está registrado no sistema.
 
 **Pendência separada:** investigar se e como o harness mapeia `.claude/agents/<nome>.md` para a ferramenta `Agent` — pode ser que só funcione via `/agents` na UI, que precise de versão diferente do harness, ou que a sintaxe do `subagent_type` seja diferente. Essa investigação fica para depois dos evals 2-B e 2-C aprovados.
 
-**✅ APROVADO — 2026-06-29 (2ª execução — v2 Opção A: system prompt inline)**
+**2026-06-29 — 2ª execução — realizada (v2 Opção A: system prompt inline)**
 
 **Contexto de invocação:**
 - Sessão iniciada com `/clear` — contexto zerado antes do eval
@@ -425,7 +425,7 @@ Giovani usou o mesmo procedimento nos dois evals (`/clear` + prompt imediato, se
 **Procedimento para 3ª execução (acordado com Giovani):**
 Fechar o terminal completamente → reabrir → `/clear` → enviar prompt. Objetivo: garantir sessão nova de verdade (novo JSONL, cache do zero) para eliminar variáveis desconhecidas e obter medição limpa e reproduzível.
 
-**❌ REPROVADO — 2026-06-29 (3ª execução — v3: metodologia JSONL)**
+**2026-06-29 — 3ª execução — realizada (v3: metodologia JSONL)**
 
 **Contexto de invocação:**
 - Terminal fechado completamente → reaberto → `/clear` → prompt enviado
@@ -467,7 +467,7 @@ STATUS: ❌ REPROVADO
 - Adicionar critério formal: `subagent_tokens < 15.000`
 - Fluxo final: 2 turnos, 0 tool calls no turno 2
 
-**❌ INVÁLIDO — 2026-06-29 (4ª execução — v4: validação inline)**
+**2026-06-29 — 4ª execução — realizada - INVÁLIDA (v4: validação inline)**
 *(invalidado retroativamente: runner v4 omitiu tokens da sessão pai — viola a regra obrigatória de transparência de custos)*
 
 **Contexto de invocação:**
@@ -505,7 +505,7 @@ STATUS: ✅ APROVADO
 - Validação inline (sem ferramentas) é suficiente e mais limpa — a notificação entrega tudo que é necessário.
 - ⚠️ Invalidado: tokens do pai não foram reportados — viola a regra obrigatória de transparência de custos adicionada após esta execução.
 
-**✅ APROVADO — 2026-06-29 (5ª execução — v5: tokens do pai via JSONL deduplificado)**
+**2026-06-29 — 5ª execução — realizada (v5: tokens do pai via JSONL deduplificado)**
 
 **Contexto de invocação:**
 - Terminal fechado completamente → reaberto → `/clear` → prompt enviado

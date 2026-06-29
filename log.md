@@ -436,3 +436,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Passo 3 (turno 2): zero tool calls ✅ | Passo 4 (turno 3): bash/Python executado ✅
 - Todos os critérios de aprovação satisfeitos
 - auditor-wiki-evals.md atualizado com resultado completo
+
+## [2026-06-29] edit | procedures — corrige terminologia de cabeçalhos de execução nos evals
+- Substituído "✅ APROVADO / ❌ REPROVADO / ❌ INVÁLIDO" nos cabeçalhos por "realizada" ou "realizada - INVÁLIDA"
+- STATUS (aprovado/reprovado) permanece dentro do bloco de resultado — cabeçalho só indica que a execução ocorreu
+- Afeta: Eval 1, Eval 2-A (2 execuções), Eval 2-B (5 execuções)
