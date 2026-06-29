@@ -273,21 +273,32 @@ Apenas após todos os gates anteriores passarem. Este é o run que aplica ediç�
 
 ---
 
-## Consideração de arquitetura alternativa
+## Arquitetura candidata: subagentes nativos do Claude Code
 
-O diagnóstico e os raws apontam para uma alternativa ao modelo de subprocessos paralelos: **uma única sessão Claude Code que analisa a wiki sequencialmente**, usando os arquivos de prompt como skills lidos on-demand.
+O diagnóstico e os raws convergem para uma arquitetura concreta: em vez de um bash script invocando o `claude` CLI como subprocesso externo, o **Claude Code é o orquestrador**, usando sua ferramenta nativa `Agent` para spawnar sub-Claudes especializados.
 
-Vantagens:
-- Contexto único sem duplicação
-- Sem crescimento geométrico entre turnos independentes
-- Fail-fast nativo (uma falha interrompe a sessão, não fica oculta)
-- Modelo de skills do agents-cli: instrução focada injetada no agente em execução
+**Por que é diferente do v1:**
+No v1, o bash era o gerente — chamava o `claude` 8 vezes como ferramenta externa. Bash não foi feito pra gerenciar agentes: não controla estado, não propaga erros, não sabe o que fazer quando um filho falha silenciosamente. Na arquitetura candidata, o orquestrador é o próprio Claude Code: spawna subagentes via `Agent`, recebe os resultados de volta na sessão principal, lida com erros nativamente, e conduz o loop Telegram dentro da mesma sessão. A ideia de agentes especializados por pasta permanece válida — o que muda é o mecanismo.
 
-Desvantagens:
-- Perde o paralelismo (tempo total maior)
-- O contexto cresce ao longo da sessão (mas de forma linear, não geométrica por 8 subprocessos)
+**Como funciona:**
+1. Sessão principal do Claude Code inicia a auditoria
+2. Para cada pasta, spawna um subagente especializado via ferramenta `Agent`
+3. Subagente lê os arquivos, retorna findings em JSON para a sessão principal
+4. Sessão principal recebe os resultados, coordena, envia pro Telegram
+5. Aguarda resposta do usuário (botão), aplica edição, commita — tudo dentro da mesma sessão
 
-Essa alternativa não é uma decisão tomada — é um design candidato a avaliar se o Gate 2 revelar que o problema de JSON persiste mesmo com prompts corrigidos.
+**Modelo:** `claude-sonnet-4-6` para todos os subagentes.
+
+### Evals desta arquitetura (executar antes dos gates principais)
+
+**E1 — O subagente retorna JSON?**
+Criar `.claude/agents/auditor-pasta.md` com o system prompt de pasta e invocar para uma pasta pequena (ex: `todo/`). Verificar se o output que chega de volta na sessão principal é JSON válido com os campos obrigatórios. Equivale ao Gate 2, mas com o mecanismo novo. Parar aqui se falhar.
+
+**E2 — Erro propaga ou engole silencioso?**
+Provocar intencionalmente uma falha (subagente sem instrução de formato JSON) e verificar se a sessão principal recebe o erro e consegue reagir. Em v1, o bash engolia silenciosamente e seguia com `findings: []`. Com subagentes nativos, o runtime deve propagar. Esse é o teste que v1 nunca fez.
+
+**E3 — A sessão aguenta esperar o Telegram?**
+Enviar uma mensagem com botões pro Telegram via Bash (curl) dentro de uma sessão Claude Code e verificar se a sessão consegue ficar em espera pelo callback do usuário sem timeout. É o ponto mais crítico desta arquitetura: se a sessão expirar enquanto aguarda a resposta do botão, o modelo inteiro cai.
 
 ---
 
