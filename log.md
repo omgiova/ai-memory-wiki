@@ -472,3 +472,7 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 ## [2026-06-29] edit | procedures — cria runner 2-C e atualiza prompt/como-executar no evals
 - Criado /root/eval-2c-runner.md: 3 passos, custo isolado por turno via JSONL
 - Eval 2-C no evals: referência ao runner adicionada, prompt simplificado, nota de status pelo usuário
+
+## [2026-06-29] chore | procedures — remove runner 2-C; restaura prompt direto no evals
+- Runner /root/eval-2c-runner.md deletado (padrão 2-B aplicado errado em arquitetura sem subagentes)
+- Evals: referência ao runner removida, prompt direto original restaurado
