@@ -572,7 +572,7 @@ Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1
 
 **Arquivo sintético:** `/tmp/eval-2c-test.md` — frontmatter com `status` ausente (problema plantado). Criado antes desta sessão encerrar.
 
-**Transparência de custo:** sem subagente, sem JSONL, sem extração. O custo é proporcional ao conteúdo: 1 Read call + 1 resposta. O arquivo informa o tamanho em caracteres lidos — proxy direto do custo de input.
+**Transparência de custo:** sem subagente. Tokens capturados via extração JSONL na mesma resposta (one-shot): o modelo faz Read → gera checklist em texto → faz Bash de extração JSONL → compila relatório final. O Bash exclui o último grupo do JSONL (o próprio passo de extração) e reporta os turnos anteriores separados.
 
 **Critérios de aprovação:**
 - [ ] 1 Read call — apenas `/tmp/eval-2c-test.md`
@@ -580,13 +580,34 @@ Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1
 - [ ] Severidade `critico` reportada
 - [ ] Tamanho em caracteres do arquivo informado na resposta
 - [ ] Nenhum arquivo extra lido
+- [ ] Tokens da sessão capturados e reportados (input, cache_creation, cache_read, output por turno)
 
-**Critério de reprovação:** campo errado reportado | problema não detectado | mais de 1 Read call | nenhum tamanho reportado.
+**Critério de reprovação:** campo errado reportado | problema não detectado | mais de 1 Read call | nenhum tamanho reportado | tokens não capturados.
 
 **Prompt exato para a próxima sessão (copiar e colar):**
 
 ```
-Eval 2-C — sem subagentes. Leia /tmp/eval-2c-test.md. Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção. Informe o tamanho em caracteres do arquivo lido. Não leia mais nenhum arquivo.
+Eval 2-C — sem subagentes. Execute em sequência sem desviar:
+
+Passo 1 — Leia /tmp/eval-2c-test.md (único arquivo permitido). Verifique se o frontmatter contém todos os campos obrigatórios: type, tags, title, description, timestamp, status. Para cada campo ausente, reporte: nome do campo, severidade "critico", sugestão de correção. Informe o tamanho em caracteres do arquivo lido. Nenhum outro arquivo, nenhum outro tool call neste passo.
+
+Passo 2 — Execute este bash:
+python3 -c "
+import json, glob, os
+files = sorted(glob.glob(os.path.expanduser('~/.claude/projects/-root/*.jsonl')), key=os.path.getmtime, reverse=True)
+if not files: print('JSONL nao encontrado'); exit(1)
+lines = [l.strip() for l in open(files[0]) if l.strip()]
+unique = []
+for i in range(0, len(lines), 3):
+    try: unique.append(json.loads(lines[i]))
+    except: pass
+turns = unique[:-1]
+for i, e in enumerate(turns, 1):
+    u = e.get('message', {}).get('usage', {})
+    print(f'T{i}: in={u.get(\"input_tokens\",0)} cc={u.get(\"cache_creation_input_tokens\",0)} cr={u.get(\"cache_read_input_tokens\",0)} out={u.get(\"output_tokens\",0)}')
+"
+
+Passo 3 — Compile o resultado final com o checklist do Passo 1 e o output do Passo 2. Encerre com: STATUS: aguardando definição do Giovani
 ```
 
 **Como executar:**

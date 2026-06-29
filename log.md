@@ -476,3 +476,9 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 ## [2026-06-29] chore | procedures — remove runner 2-C; restaura prompt direto no evals
 - Runner /root/eval-2c-runner.md deletado (padrão 2-B aplicado errado em arquitetura sem subagentes)
 - Evals: referência ao runner removida, prompt direto original restaurado
+
+## [2026-06-29] edit | procedures — corrige critérios Eval 2-C: rastreabilidade obrigatória, prompt one-shot
+- "sem JSONL, sem extração" removido — contradiz regra de rastreabilidade
+- Critérios: adicionado "tokens capturados via JSONL" como obrigatório
+- Critério de reprovação: "tokens não capturados" adicionado
+- Prompt atualizado para one-shot (Read → checklist → Bash JSONL → relatório final)
