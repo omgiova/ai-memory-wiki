@@ -13,6 +13,8 @@ status: draft
 
 > ⚠️ **REGRA OBRIGATÓRIA — TRANSPARÊNCIA DE CUSTOS:** todo eval que executa subagente deve reportar obrigatoriamente **tanto os tokens do subagente quanto os tokens da sessão pai**. Rastreabilidade de custo é o princípio central — omitir qualquer das duas partes invalida o resultado, independente do JSON retornado estar correto. O runner de cada eval deve incluir os tokens do pai como critério de aprovação, não como opcional.
 
+> 🚫 **REGRA OBRIGATÓRIA — STATUS É DEFINIDO PELO USUÁRIO:** o agente **NUNCA** define o status final de um eval como "aprovado", "reprovado", "incompleto" ou qualquer outro. O agente reporta os resultados brutos (checklist, métricas, observações). O status só é registrado no documento após o **Giovani confirmar explicitamente** qual é. Registrar status sem essa confirmação é proibido, independente de quantos critérios foram satisfeitos.
+
 Documento de análise e processo de validação para o [[wiki/procedures/auditor-wiki.md|Auditor da Wiki]]. Combina o diagnóstico da primeira execução real (2026-06-28) com lições extraídas dos raws [[raw/agents-cli-README.md|Google Agents CLI]] e [[raw/akshay-pachaar-karpathy-agentic-engineering-tooling.md|Karpathy's Agentic Engineering Finally Has Proper Tooling]].
 
 ---
@@ -573,11 +575,11 @@ Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1
 **Transparência de custo:** sem subagente, sem JSONL, sem extração. O custo é proporcional ao conteúdo: 1 Read call + 1 resposta. O arquivo informa o tamanho em caracteres lidos — proxy direto do custo de input.
 
 **Critérios de aprovação:**
-- [x] 1 Read call — apenas `/tmp/eval-2c-test.md`
-- [x] `status` identificado como ausente
-- [x] Severidade `critico` reportada
-- [x] Tamanho em caracteres do arquivo informado na resposta
-- [x] Nenhum arquivo extra lido
+- [ ] 1 Read call — apenas `/tmp/eval-2c-test.md`
+- [ ] `status` identificado como ausente
+- [ ] Severidade `critico` reportada
+- [ ] Tamanho em caracteres do arquivo informado na resposta
+- [ ] Nenhum arquivo extra lido
 
 **Critério de reprovação:** campo errado reportado | problema não detectado | mais de 1 Read call | nenhum tamanho reportado.
 
@@ -593,7 +595,7 @@ Eval 2-C — sem subagentes. Leia /tmp/eval-2c-test.md. Verifique se o frontmatt
 3. Colar o prompt acima
 4. Registrar o resultado aqui antes de qualquer outra ação
 
-**2026-06-29 — 1ª execução — realizada — ✅ APROVADA**
+**2026-06-29 — 1ª execução — ⚠️ INCOMPLETA (tokens do pai não capturados)**
 
 **Contexto de invocação:**
 - Sessão sem `/clear` explícito — AGENTS.md e evals lidos na mesma sessão após o eval
@@ -602,23 +604,19 @@ Eval 2-C — sem subagentes. Leia /tmp/eval-2c-test.md. Verifique se o frontmatt
 - Nenhum Agent tool, nenhum spawn, nenhum overhead de harness de subagente
 
 ```
-=== Eval 2-C — Resultado ===
+=== Eval 2-C — Checklist ===
 Read calls:           1 (apenas /tmp/eval-2c-test.md)
 Arquivo extra lido:   nenhum ✅
 Campo ausente:        status ✅
 Severidade reportada: critico ✅
 Tamanho reportado:    231 caracteres ✅
-Prosa fora do report: nenhuma
+Prosa fora do report: nenhuma ✅
 
-STATUS: ✅ APROVADA
+Tokens da sessão pai: NÃO CAPTURADO ❌
+Status final:         aguardando definição do Giovani
 ```
 
-**Transparência de custo:** sem subagente, sem JSONL, sem extração. Custo da sessão principal proporcional ao conteúdo do arquivo (~231 chars de input útil + contexto do harness). Não foi capturada a extração de tokens do pai por ausência de runner dedicado — limitação desta execução.
-
-**Lições:**
-- Arquitetura sem subagentes funciona: 1 Read call, campo ausente detectado, severidade e tamanho reportados corretamente.
-- O overhead de harness da sessão pai (deferred tools, skills, MEMORY.md) é inevitável mas não afeta o resultado — o auditor não depende de subagentes para funcionar.
-- Próximo: definir se o eval passa a ter runner dedicado para captura de tokens do pai, ou se a ausência de runner é aceitável para evals sem subagente.
+**Por que está incompleta:** tokens da sessão pai não foram rastreados — nenhum runner dedicado, nenhuma extração de JSONL. Quebra a regra obrigatória de rastreabilidade de custo. Execução a repetir com metodologia correta. Status não definido pelo agente — aguarda confirmação do Giovani.
 
 ---
 

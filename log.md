@@ -463,3 +463,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Campo `status` detectado como ausente, severidade `critico` reportada, tamanho 231 chars informado
 - Checkboxes de critérios atualizados ([ ] → [x]) no arquivo de evals
 - Limitação registrada: tokens do pai não capturados (sem runner dedicado nesta execução)
+
+## [2026-06-29] edit | procedures — corrige Eval 2-C para incompleto; adiciona regra de status pelo usuário
+- 1ª execução do Eval 2-C: status alterado de "APROVADA" para "INCOMPLETA" (tokens do pai não capturados)
+- Checkboxes revertidos para [ ] — status não confirmado pelo Giovani
+- Adicionada regra obrigatória no topo: status de eval é definido PELO USUÁRIO, nunca pelo agente
