@@ -326,6 +326,45 @@ Só inicia após Eval 2-A aprovado. Agora entra o `auditor-pasta` pela primeira 
 
 **Estatísticas a registrar:** `subagent_tokens`, `input_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens`, `duration_ms`.
 
+**❌ REPROVADO — 2026-06-29**
+
+```
+=== Eval 2-B — Resultado ===
+Modelo usado:         claude-sonnet-4-6
+Resposta bruta:       Agent type 'auditor-pasta' not found.
+                      Available agents: claude, claude-code-guide,
+                      Explore, general-purpose, Plan, statusline-setup
+JSON válido:          ❌
+folder presente:      ❌
+findings == []:       ❌
+agent correto:        ❌
+_meta presente:       ❌
+read_calls == 0:      ❌
+limit_reached false:  ❌
+Sem prosa:            ❌
+tool_uses:            0 (spawn falhou antes de qualquer execução)
+
+=== Estatísticas ===
+subagent_tokens:              0
+input_tokens:                 —
+cache_creation_input_tokens:  —
+cache_read_input_tokens:      —
+output_tokens:                —
+duration_ms:                  —
+
+STATUS: ❌ REPROVADO
+Motivo: O agente nomeado 'auditor-pasta' não está registrado no sistema.
+        A ferramenta Agent só aceita subagent_type pré-definidos pelo harness
+        (claude, claude-code-guide, Explore, general-purpose, Plan, statusline-setup).
+        O arquivo .claude/agents/auditor-pasta.md existe mas o harness não o
+        carrega automaticamente por nome — subagent_type customizado não é suportado.
+        O spawn falhou com erro antes de qualquer execução.
+```
+
+**Causa raiz:** o mecanismo de subagentes nomeados via `.claude/agents/` não funciona como assumido. O harness não mapeia `subagent_type: "auditor-pasta"` para o arquivo `.claude/agents/auditor-pasta.md`. O system prompt do agente não é carregado automaticamente pelo nome.
+
+**Blocker antes do próximo run:** descobrir o mecanismo correto para injetar o system prompt do `auditor-pasta` no subagente. Opções a investigar: (1) passar o system prompt como parte do `prompt` da ferramenta Agent, (2) verificar se existe sintaxe de subagente nomeado diferente, (3) usar agente genérico com system prompt embutido no prompt.
+
 ---
 
 ### Eval 2-C — `auditor-pasta` detecta problema? (conteúdo inline com problema plantado)
