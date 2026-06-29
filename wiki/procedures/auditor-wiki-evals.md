@@ -9,6 +9,8 @@ status: draft
 
 # Auditor da Wiki — Evals e Validação
 
+> ⚠️ **REGRA OBRIGATÓRIA:** após executar qualquer eval — mesmo que seja revisão manual sem tokens — documentar o resultado aqui (data, checklist, aprovado/reprovado) antes de qualquer outra ação. Nenhum próximo eval começa sem o anterior estar registrado.
+
 Documento de análise e processo de validação para o [[wiki/procedures/auditor-wiki.md|Auditor da Wiki]]. Combina o diagnóstico da primeira execução real (2026-06-28) com lições extraídas dos raws [[raw/agents-cli-README.md|Google Agents CLI]] e [[raw/akshay-pachaar-karpathy-agentic-engineering-tooling.md|Karpathy's Agentic Engineering Finally Has Proper Tooling]].
 
 ---
@@ -154,13 +156,16 @@ Sequência única e bloqueante — Eval N só inicia se Eval N-1 passou. Nenhum 
 
 Verificação antes de qualquer execução — leitura do arquivo de definição do subagente e do system prompt.
 
-- [ ] Arquivo `.claude/agents/auditor-pasta.md` existe com frontmatter correto
-- [ ] `model: claude-sonnet-4-6` declarado no frontmatter do subagente
-- [ ] System prompt inclui exemplo concreto do JSON esperado com todos os campos
-- [ ] System prompt instrui caso vazio: `{"findings": []}`
-- [ ] System prompt proíbe prosa explicitamente
+- [x] Arquivo `.claude/agents/auditor-pasta.md` existe com frontmatter correto
+- [x] `model: claude-sonnet-4-6` declarado no frontmatter do subagente
+- [x] System prompt inclui exemplo concreto do JSON esperado com todos os campos
+- [x] System prompt instrui caso vazio: `{"findings": []}`
+- [x] System prompt proíbe prosa explicitamente
 
 **Critério de aprovação:** revisão manual do arquivo do subagente e do system prompt.
+
+**✅ APROVADO — 2026-06-29**
+Arquivo criado em `/root/.claude/agents/auditor-pasta.md`. Todos os 5 itens verificados manualmente.
 
 ---
 

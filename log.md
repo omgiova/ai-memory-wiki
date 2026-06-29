@@ -311,3 +311,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Eval 4: esclarecido que "aguardar callback" requer polling ativo (curl getUpdates com sleep)
 - Claude Code não suspende sessão passivamente; critério de aprovação atualizado
 - Páginas tocadas: wiki/procedures/auditor-wiki-evals.md
+
+## [2026-06-29] edit | procedures — regra obrigatória + resultado Eval 1
+- Adicionado aviso no topo do arquivo: documentar resultado antes de qualquer próxima ação
+- Eval 1 marcado como aprovado (2026-06-29): /root/.claude/agents/auditor-pasta.md criado e verificado
+- Páginas tocadas: wiki/procedures/auditor-wiki-evals.md
