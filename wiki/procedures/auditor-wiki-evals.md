@@ -361,9 +361,11 @@ Motivo: O agente nomeado 'auditor-pasta' não está registrado no sistema.
         O spawn falhou com erro antes de qualquer execução.
 ```
 
-**Causa raiz:** o mecanismo de subagentes nomeados via `.claude/agents/` não funciona como assumido. O harness não mapeia `subagent_type: "auditor-pasta"` para o arquivo `.claude/agents/auditor-pasta.md`. O system prompt do agente não é carregado automaticamente pelo nome.
+**Causa raiz:** o mecanismo de subagentes nomeados via `.claude/agents/` não funciona como assumido. O harness não mapeia `subagent_type: "auditor-pasta"` para o arquivo `.claude/agents/auditor-pasta.md`. O system prompt do agente não é carregado automaticamente pelo nome. O arquivo existe e tem frontmatter correto — o problema é no harness, não no arquivo.
 
-**Blocker antes do próximo run:** descobrir o mecanismo correto para injetar o system prompt do `auditor-pasta` no subagente. Opções a investigar: (1) passar o system prompt como parte do `prompt` da ferramenta Agent, (2) verificar se existe sintaxe de subagente nomeado diferente, (3) usar agente genérico com system prompt embutido no prompt.
+**Decisão para 2ª tentativa:** usar agente genérico (`subagent_type: "claude"`) com o system prompt do `auditor-pasta.md` injetado inline no campo `prompt`. Isso valida o contrato de output (que é o que o 2-B precisa provar), mas **não** valida se o harness carrega o arquivo `.claude/agents/` automaticamente.
+
+**Pendência separada:** investigar se e como o harness mapeia `.claude/agents/<nome>.md` para a ferramenta `Agent` — pode ser que só funcione via `/agents` na UI, que precise de versão diferente do harness, ou que a sintaxe do `subagent_type` seja diferente. Essa investigação fica para depois dos evals 2-B e 2-C aprovados.
 
 ---
 
