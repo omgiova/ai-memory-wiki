@@ -142,6 +142,9 @@ Cada agente recebe apenas os dados da sua pasta. O agente `todo/` não precisa s
 **6. Eval obrigatório — nenhum run completo sem todos os evals passados**
 Os evals abaixo substituem as validações opcionais V1–V17. A diferença: são sequenciais e bloqueantes. O Eval N não pode ser pulado se o Eval N-1 não passou.
 
+**7. Sintético antes de real**
+Qualquer eval que invoca subagente usa dados sintéticos (conteúdo inline ou arquivo mínimo em `/tmp/`) antes de usar arquivos reais da wiki. Dados reais só entram quando o contrato de output já foi validado com sintético. O princípio 2 ("zero tokens antes disso passar") não se cumpre com arquivos reais de 10KB+. Um custo "esperado" que não é critério de reprovação não é um gate — é wishful thinking.
+
 ---
 
 ## Evals de validação
@@ -149,6 +152,17 @@ Os evals abaixo substituem as validações opcionais V1–V17. A diferença: sã
 Sequência única e bloqueante — Eval N só inicia se Eval N-1 passou. Nenhum eval pode ser pulado.
 
 **Modelo para todos os subagentes:** `claude-sonnet-4-6`
+
+### Campo `_meta` — definição
+
+Todo subagente deve incluir `_meta` no JSON de saída a partir do Eval 2. Campos obrigatórios:
+
+| Campo | Tipo | O que é |
+|---|---|---|
+| `files_read` | array de strings | nomes dos arquivos lidos (basename) |
+| `read_calls` | integer | número de Read calls feitas |
+| `approx_chars_read` | integer | soma aproximada de `len()` de cada conteúdo lido |
+| `limit_reached` | boolean | `true` se atingiu o limite de calls antes de terminar |
 
 ---
 
@@ -169,35 +183,78 @@ Arquivo criado em `/root/.claude/agents/auditor-pasta.md`. Todos os 5 itens veri
 
 ---
 
-### Eval 2 — Subagente retorna JSON?
+### Eval 2 — Subagente retorna JSON? (sintético inline, zero reads)
 
-Primeiro teste com tokens. Um subagente, pasta mais pequena (`todo/`), invocado via ferramenta `Agent` pela sessão principal.
+Primeiro teste com tokens. Input sintético passado **inline no prompt** — sem Read calls, sem arquivos reais. O subagente deve auditar o conteúdo recebido diretamente e retornar JSON.
 
-- [ ] Sessão principal spawna o subagente via `Agent` sem erro
-- [ ] Resposta que chega de volta é JSON válido (`json.loads()` não lança exceção)
-- [ ] Campos obrigatórios presentes: `folder`, `findings`, `agent`
-- [ ] Cada finding tem: `id`, `severity`, `file`, `problem`, `correctable`, `correction` (se correctable)
+**Input sintético (conteúdo inline):**
+```
+---
+type: system
+title: Arquivo de Teste
+description: Arquivo mínimo para eval.
+---
+Conteúdo mínimo.
+```
+Problema plantado: campo `status` ausente. O subagente deve detectar e retornar finding `critico`.
+
+**Critérios:**
+- [ ] Subagente spawna sem erro
+- [ ] Resposta é JSON válido (`json.loads()` não lança exceção)
+- [ ] Campos presentes: `folder`, `findings`, `agent`, `_meta`
+- [ ] `_meta.read_calls == 0` — conteúdo passado inline, nenhum Read necessário
+- [ ] `_meta.limit_reached == false`
+- [ ] Finding F1: `severity: "critico"`, problem menciona ausência de `status`
 - [ ] Nenhuma prosa fora do JSON
 
-**Critério de aprovação:** JSON válido recebido na sessão principal. Parar aqui se falhar — não continuar.
+**Critério de reprovação (qualquer um reprova):** `output_tokens > 500` | `read_calls > 0` | JSON inválido | prosa fora do JSON.
 
-**Custo esperado:** 1–3 requests, contexto < 30KB.
-
----
-
-### Eval 3 — Erro propaga ou engole silencioso?
-
-Provocar falha intencional: invocar subagente sem instrução de formato JSON e verificar se a sessão principal recebe e reage ao erro — o teste que v1 nunca fez.
-
-- [ ] Sessão principal detecta que o subagente não retornou JSON válido
-- [ ] Erro não é silenciosamente descartado (equivalente ao fallback `findings: []` do v1)
-- [ ] Sessão principal consegue abortar, logar ou alertar
-
-**Critério de aprovação:** falha no subagente resulta em erro visível e tratável na sessão principal.
+**Critério de aprovação:** JSON válido com `_meta.read_calls == 0` e finding esperado presente.
 
 ---
 
-### Eval 4 — Sessão aguenta esperar o Telegram?
+### Eval 3 — `_meta` reporta corretamente? (1 read sintético)
+
+Criar `/tmp/eval3-test.md` com ~5 linhas e problema conhecido. Invocar subagente pedindo que leia o arquivo. Verificar que `_meta` reflete exatamente o que foi feito — não o que o subagente acha que fez.
+
+**Critérios:**
+- [ ] `_meta.files_read` lista `eval3-test.md`
+- [ ] `_meta.read_calls == 1`
+- [ ] `_meta.approx_chars_read` condizente com tamanho real do arquivo (± 20%)
+- [ ] `_meta.limit_reached == false`
+- [ ] Finding esperado presente (problema plantado no arquivo)
+
+**Critério de reprovação:** `read_calls != 1` | `approx_chars_read` implausível | `_meta` ausente ou incompleto.
+
+---
+
+### Eval 4 — Erro propaga ou engole silencioso? (era Eval 3)
+
+Input sintético inline. Invocar subagente **sem** instrução de formato JSON (remover exemplo do JSON e instrução de prosa do prompt). Verificar que a sessão principal reage.
+
+**Mecanismo de detecção — o que a sessão principal executa:**
+```python
+result = agent_response  # string retornada pelo Agent tool
+try:
+    json.loads(result)
+    # se chegou aqui: subagente obedeceu mesmo sem instrução — registrar como observação
+except json.JSONDecodeError:
+    print("PASSOU: erro detectado")
+    print("Output (primeiros 300 chars):", result[:300])
+    # não avança para nenhum próximo passo
+```
+
+**Critérios:**
+- [ ] `json.loads(result)` lança exceção (subagente produziu prosa, como esperado)
+- [ ] Sessão principal captura a exceção e para
+- [ ] Os primeiros 300 chars do output são logados e visíveis
+- [ ] Nenhuma ação downstream é disparada após a falha
+
+**Critério de aprovação:** falha detectada, logada, sessão não avança.
+
+---
+
+### Eval 5 — Sessão aguenta esperar o Telegram? (era Eval 4)
 
 O ponto mais crítico da arquitetura. Sessão Claude Code envia mensagem com botões e aguarda callback — não pode expirar durante a espera.
 
@@ -209,31 +266,51 @@ O ponto mais crítico da arquitetura. Sessão Claude Code envia mensagem com bot
 
 ---
 
-### Eval 5 — Agentes de pasta em série
+### Eval 6 — Um agente, dados reais (rampa antes do serial)
 
-Todos os agentes de pasta, um por vez, antes de qualquer paralelismo.
+Primeiro contato com dados reais da wiki. Um agente, pasta `todo/` (menor pasta real). Registrar custo e tempo antes de escalar para todos os agentes.
 
-- [ ] Cada agente retorna JSON válido
-- [ ] Nenhum agente retorna `findings: []` de forma suspeita para pasta com problemas óbvios
-- [ ] Tempo e custo por agente registrados
+**Critérios:**
+- [ ] Agente retorna JSON válido
+- [ ] `_meta.read_calls` ≤ 3 (AGENTS.md + arquivos da pasta)
+- [ ] `_meta.limit_reached == false`
+- [ ] Wall clock registrado (tempo total do spawn à resposta)
+- [ ] Token delta registrado (input + output via JSONL delta da sessão)
 
-**Critério de aprovação:** todos os agentes passam individualmente.
+**Critério de reprovação:** `input_tokens > 20K` | `output_tokens > 1K` | `read_calls > 3` | `limit_reached == true`.
 
 ---
 
-### Eval 6 — Agentes Overlap e Links isolados
+### Eval 7 — Agentes de pasta em série (era Eval 5)
+
+Todos os agentes de pasta, um por vez, após Eval 6 aprovado com dados reais.
+
+**Critérios:**
+- [ ] Cada agente retorna JSON válido
+- [ ] `_meta.read_calls` plausível por agente (≤ nº de arquivos da pasta + 1 para AGENTS.md)
+- [ ] `_meta.limit_reached == false` em todos
+- [ ] Nenhum agente retorna `findings: []` de forma suspeita para pasta com problemas óbvios
+- [ ] Wall clock e token delta registrados por agente
+
+**Critério de reprovação por agente:** `input_tokens > 30K` | `output_tokens > 2K` | `limit_reached == true`.
+
+**Critério de aprovação:** todos os agentes passam individualmente dentro dos limites.
+
+---
+
+### Eval 8 — Agentes Overlap e Links (era Eval 6)
 
 - [ ] Agente Overlap retorna JSON válido sem falsos positivos óbvios
 - [ ] Agente Links detecta pelo menos um link quebrado se houver
-- [ ] Ambos retornam JSON válido com campos corretos
+- [ ] Ambos retornam `_meta` com `read_calls` plausível e `limit_reached == false`
 
-**Critério de aprovação:** os dois agentes retornam JSON válido.
+**Critério de aprovação:** os dois agentes retornam JSON válido dentro dos limites de custo.
 
 ---
 
-### Eval 7 — Coordenador isolado
+### Eval 9 — Coordenador isolado (era Eval 7)
 
-Alimentado com outputs reais dos Evals 5 e 6.
+Alimentado com outputs reais dos Evals 7 e 8.
 
 - [ ] Output é JSON válido com `executive_summary` e `findings`
 - [ ] Campo `correctable` classificado coerentemente
@@ -244,20 +321,25 @@ Alimentado com outputs reais dos Evals 5 e 6.
 
 ---
 
-### Eval 8 — Agente Corretor isolado
+### Eval 10 — Agente Corretor (era Eval 8)
 
 O maior risco técnico: LLMs normalizam espaços e quebras de linha — se `old_string` não bater exato com o arquivo, a edição falha.
 
-- [ ] `old_string` é substring exata do arquivo alvo (verificar com `grep -F`)
-- [ ] `new_string` está correto
+**Primeiro: arquivo sintético**
+Criar `/tmp/eval10-test.md` com 3 linhas e problema conhecido. Verificar que a edição é aplicada antes de tocar em qualquer arquivo real.
+
+- [ ] `old_string` é substring exata do arquivo sintético (verificar com `grep -F`)
+- [ ] Edição aplicada com sucesso no arquivo sintético
+
+**Depois: arquivo real**
 - [ ] Campo `file` usa caminho relativo ao `WIKI_DIR` (ex: `systems/hermes.md`, não absoluto)
 - [ ] Testar com dois findings no mesmo arquivo (ordem de aplicação)
 
-**Critério de aprovação:** edição aplicada sem erro de "old_string não encontrado".
+**Critério de aprovação:** edição aplicada sem erro de "old_string não encontrado" nos dois cenários.
 
 ---
 
-### Eval 9 — Dry-run completo
+### Eval 11 — Dry-run completo (era Eval 9)
 
 Fluxo completo de análise e coordenação, sem aplicar nenhuma edição.
 
@@ -270,11 +352,11 @@ Fluxo completo de análise e coordenação, sem aplicar nenhuma edição.
 
 ---
 
-### Eval 10 — Run completo real
+### Eval 12 — Run completo real (era Eval 10)
 
 Apenas após todos os evals anteriores passarem e com autorização explícita.
 
-- [ ] Evals 1–9 todos aprovados e documentados aqui
+- [ ] Evals 1–11 todos aprovados e documentados aqui
 - [ ] Giovani autorizou este run
 - [ ] `WIKI_DIR` apontando para `/root/wiki`
 - [ ] Log de execução em `/var/log/auditor-wiki.log`

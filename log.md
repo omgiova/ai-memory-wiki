@@ -316,3 +316,5 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Adicionado aviso no topo do arquivo: documentar resultado antes de qualquer próxima ação
 - Eval 1 marcado como aprovado (2026-06-29): /root/.claude/agents/auditor-pasta.md criado e verificado
 - Páginas tocadas: wiki/procedures/auditor-wiki-evals.md
+
+- **2026-06-29T08:07:02-03:00** | edit(auditor-wiki-evals) | reescrita da seção de princípios e evals: adicionado princípio 7 (sintético antes de real), campo _meta definido, soft timeout (10 calls), evals reestruturados de 10 para 12 com 2 novos (Eval 3: _meta validation; Eval 6: rampa de dados reais), critérios de reprovação explícitos em todos os evals com tokens
