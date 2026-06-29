@@ -465,7 +465,41 @@ STATUS: ❌ REPROVADO
 - Adicionar critério formal: `subagent_tokens < 15.000`
 - Fluxo final: 2 turnos, 0 tool calls no turno 2
 
-**⏳ 4ª execução pendente** com runner v4.
+**✅ APROVADO — 2026-06-29 (4ª execução — v4: validação inline)**
+
+**Contexto de invocação:**
+- Terminal fechado completamente → reaberto → `/clear` → prompt enviado
+- Runner lido: `/root/eval-2b-runner.md` (v4)
+- Modelo declarado explicitamente via `model: "sonnet"` ✅
+- Mecanismo: agente genérico (sem `subagent_type`) com system prompt do `auditor-pasta.md` injetado inline
+- Turno 2: zero tool calls — validação inline a partir da notificação
+
+```
+=== Eval 2-B — Resultado (v4) ===
+Modelo usado:         claude-sonnet-4-6
+Resposta bruta:       {"folder":"test/","agent":"auditor-pasta","findings":[],"_meta":{"files_read":[],"read_calls":0,"approx_chars_read":0,"limit_reached":false}}
+JSON válido:          ✅
+folder presente:      ✅
+findings == []:       ✅
+agent correto:        ✅
+_meta presente:       ✅
+read_calls == 0:      ✅
+limit_reached false:  ✅
+Sem prosa:            ✅
+tool_uses:            0  (esperado: 0)
+
+=== Estatísticas — subagente (da notificação) ===
+subagent_tokens:  12.830  (limite: < 15.000) ✅
+tool_uses:        0
+duration_ms:      2.427
+
+STATUS: ✅ APROVADO
+```
+
+**Lições desta execução:**
+- Remover os passos de extração JSONL e Python eliminou o turno extra e os tool calls no pai — fluxo ficou em exatamente 2 turnos, 0 tool calls no turno 2.
+- `subagent_tokens` de 12.830 confirma o padrão: overhead base do harness (~12.6K) domina; conteúdo do prompt é marginal.
+- Validação inline (sem ferramentas) é suficiente e mais limpa — a notificação entrega tudo que é necessário.
 
 ---
 

@@ -409,3 +409,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - V1 consolidado: duas ocorrências da mesma violação (edição de log.md) + correção aplicada (hook) + checklist de validação pendente
 - V2 registrado: não atualizar log.md após editar a wiki (ocorrência 1: esta sessão)
 - Arquivos: wiki/todo/violacoes-agentes.md
+
+## [2026-06-29] edit | evals — Eval 2-B aprovado (4ª execução — v4)
+- Runner v4: validação inline, zero tool calls no turno 2, subagent_tokens < 15.000
+- subagent_tokens: 12.830, tool_uses: 0, duration_ms: 2.427, JSON válido ✅
+- Arquivo: wiki/procedures/auditor-wiki-evals.md
