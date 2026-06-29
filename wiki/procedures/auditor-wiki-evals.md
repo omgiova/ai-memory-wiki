@@ -202,7 +202,7 @@ Verificação antes de qualquer execução — leitura do arquivo de definição
 - [x] System prompt instrui caso vazio: `{"findings": []}`
 - [x] System prompt proíbe prosa explicitamente
 
-**Critério de aprovação:** revisão manual do arquivo do subagente e do system prompt.
+**Critérios a serem observados:** todos os 5 itens verificados manualmente no arquivo do subagente e do system prompt.
 
 **2026-06-29 — realizada — ✅ APROVADA**
 Arquivo criado em `/root/.claude/agents/auditor-pasta.md`. Todos os 5 itens verificados manualmente.
@@ -235,9 +235,7 @@ Testa o mecanismo de spawn, sem nenhuma relação com o auditor. Agente genéric
 - [x] `resposta["ok"] == True`
 - [x] Nenhuma prosa fora do JSON
 
-**Critério de reprovação:** JSON inválido | prosa fora do JSON.
-
-**Critério de aprovação:** `{"ok": true}` parseável, sem prosa.
+**Critérios a serem observados:** JSON parseável? `ok == true`? prosa fora do JSON?
 
 **Estatísticas a registrar:** `subagent_tokens` (da notificação), `input_tokens`, `cache_creation`, `cache_read`, `output_tokens`, modelo usado.
 
@@ -324,9 +322,7 @@ Só inicia após Eval 2-A aprovado. Agora entra o `auditor-pasta` pela primeira 
 - [x] `_meta.limit_reached == false`
 - [x] Nenhuma prosa fora do JSON
 
-**Critério de reprovação:** JSON inválido | prosa fora do JSON | campo obrigatório ausente | `findings` não vazio | `read_calls != 0` | `agent != "auditor-pasta"`.
-
-**Critério de aprovação:** JSON válido, todos os campos presentes, `findings: []`, `read_calls == 0`, sem prosa.
+**Critérios a serem observados:** JSON válido? todos os campos presentes? `findings: []`? `read_calls == 0`? sem prosa?
 
 **Estatísticas a registrar:** `subagent_tokens`, `input_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, `output_tokens`, `duration_ms`.
 
@@ -582,7 +578,7 @@ Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1
 - [ ] Nenhum arquivo extra lido
 - [ ] Tokens da sessão capturados e reportados (input, cache_creation, cache_read, output por turno)
 
-**Critério de reprovação:** campo errado reportado | problema não detectado | mais de 1 Read call | nenhum tamanho reportado | tokens não capturados.
+**Critérios a serem observados:** campo correto identificado? problema detectado? exatamente 1 Read call? tamanho reportado? tokens capturados?
 
 **Prompt exato para a próxima sessão (copiar e colar):**
 
@@ -670,48 +666,39 @@ Status final:         aguardando definição do Giovani
 
 ---
 
-### Eval 3 — `_meta` reporta corretamente? (1 read sintético)
+### Eval 3 — Detecção precisa: valor inválido (não só campo ausente)
 
-Criar `/tmp/eval3-test.md` com ~5 linhas e problema conhecido. Invocar subagente pedindo que leia o arquivo. Verificar que `_meta` reflete exatamente o que foi feito — não o que o subagente acha que fez.
+Eval 2-C testou campo ausente. Este testa um problema diferente: campo presente com valor fora do enum válido. Confirma que a sessão detecta categorias de problema além da ausência simples.
+
+**Arquivo sintético:** criar `/tmp/eval3-test.md` com `type: invalido` no frontmatter — todos os outros campos obrigatórios presentes e corretos.
 
 **Critérios:**
-- [ ] `_meta.files_read` lista `eval3-test.md`
-- [ ] `_meta.read_calls == 1`
-- [ ] `_meta.approx_chars_read` condizente com tamanho real do arquivo (± 20%)
-- [ ] `_meta.limit_reached == false`
-- [ ] Finding esperado presente (problema plantado no arquivo)
+- [ ] 1 Read call — apenas `/tmp/eval3-test.md`
+- [ ] Finding identifica `type` como o campo problemático (não outro)
+- [ ] Severidade `critico` reportada
+- [ ] Sugestão inclui pelo menos um valor válido do enum (`system`, `tool`, `concept`, `procedure`, etc.)
+- [ ] Tamanho em caracteres reportado (verificável com `python3 -c "print(len(open('/tmp/eval3-test.md').read()))"`)
+- [ ] Tokens da sessão capturados via JSONL
 
-**Critério de reprovação:** `read_calls != 1` | `approx_chars_read` implausível | `_meta` ausente ou incompleto.
+**Critérios a serem observados:** campo correto identificado? valor válido sugerido? exatamente 1 Read call? tokens capturados?
 
 ---
 
-### Eval 4 — Erro propaga ou engole silencioso? (era Eval 3)
+### Eval 4 — Fail-fast: arquivo inexistente não resulta em findings vazio silencioso
 
-Input sintético inline. Invocar subagente **sem** instrução de formato JSON (remover exemplo do JSON e instrução de prosa do prompt). Verificar que a sessão principal reage.
-
-**Mecanismo de detecção — o que a sessão principal executa:**
-```python
-result = agent_response  # string retornada pelo Agent tool
-try:
-    json.loads(result)
-    # se chegou aqui: subagente obedeceu mesmo sem instrução — registrar como observação
-except json.JSONDecodeError:
-    print("PASSOU: erro detectado")
-    print("Output (primeiros 300 chars):", result[:300])
-    # não avança para nenhum próximo passo
-```
+Testa o Princípio de Redesign #1 (fail-fast, não silencioso). Na v1, agentes que falhavam retornavam `findings: []` silenciosamente — o erro era invisível até o final. Na nova arquitetura, se o arquivo-alvo não existe, a sessão deve reportar o problema explicitamente.
 
 **Critérios:**
-- [ ] `json.loads(result)` lança exceção (subagente produziu prosa, como esperado)
-- [ ] Sessão principal captura a exceção e para
-- [ ] Os primeiros 300 chars do output são logados e visíveis
-- [ ] Nenhuma ação downstream é disparada após a falha
+- [ ] Sessão tenta auditar `/tmp/eval4-nao-existe.md` (arquivo que não existe)
+- [ ] Sessão reporta explicitamente que o arquivo não foi encontrado — erro visível, não silêncio
+- [ ] Nenhum finding gerado para arquivo inexistente
+- [ ] Tokens da sessão capturados via JSONL
 
-**Critério de aprovação:** falha detectada, logada, sessão não avança.
+**Critérios a serem observados:** sessão reportou erro explícito? retornou findings vazios sem mensagem? sessão avançou ou parou após o erro?
 
 ---
 
-### Eval 5 — Sessão aguenta esperar o Telegram? (era Eval 4)
+### Eval 5 — Sessão aguenta esperar o Telegram?
 
 O ponto mais crítico da arquitetura. Sessão Claude Code envia mensagem com botões e aguarda callback — não pode expirar durante a espera.
 
@@ -719,97 +706,90 @@ O ponto mais crítico da arquitetura. Sessão Claude Code envia mensagem com bot
 - [ ] Sessão aguarda callback via polling ativo (loop `curl getUpdates` com sleep, não espera passiva — Claude Code não suspende sessão)
 - [ ] Resposta do botão é recebida e processada corretamente dentro da sessão
 
-**Critério de aprovação:** loop Telegram completo (envio → polling → recebimento do callback) dentro de uma sessão Claude Code sem interrupção.
+**Critérios a serem observados:** loop completo (envio → polling → recebimento do callback) dentro de uma sessão Claude Code sem interrupção?
 
 ---
 
-### Eval 6 — Um agente, dados reais (rampa antes do serial)
+### Eval 6 — Sessão com dados reais: pasta `todo/` (rampa antes do completo)
 
-Primeiro contato com dados reais da wiki. Um agente, pasta `todo/` (menor pasta real). Registrar custo e tempo antes de escalar para todos os agentes.
+Primeiro contato com dados reais da wiki. Sessão lê e audita diretamente a pasta `todo/` (menor pasta real). Registrar custo e tempo antes de processar todas as pastas.
 
 **Critérios:**
-- [ ] Agente retorna JSON válido
-- [ ] `_meta.read_calls` ≤ 3 (AGENTS.md + arquivos da pasta)
-- [ ] `_meta.limit_reached == false`
-- [ ] Wall clock registrado (tempo total do spawn à resposta)
-- [ ] Token delta registrado (input + output via JSONL delta da sessão)
+- [ ] Sessão lê corretamente os arquivos de `todo/` + `AGENTS.md`
+- [ ] Findings têm todos os campos obrigatórios
+- [ ] Read calls ≤ número de arquivos da pasta + 1 (AGENTS.md)
+- [ ] Wall clock registrado (tempo total do início ao relatório)
+- [ ] Tokens da sessão capturados via JSONL
 
-**Critério de reprovação:** `input_tokens > 20K` | `output_tokens > 1K` | `read_calls > 3` | `limit_reached == true`.
+**Critérios a serem observados:** input abaixo de 20K? output abaixo de 1K? findings coerentes com o conteúdo real da pasta?
 
 ---
 
-### Eval 7 — Agentes de pasta em série (era Eval 5)
+### Eval 7 — Sessão processa todas as pastas em série
 
-Todos os agentes de pasta, um por vez, após Eval 6 aprovado com dados reais.
+Todas as pastas da wiki, uma por vez, após Eval 6. A mesma sessão lê cada pasta sequencialmente e consolida os findings.
 
 **Critérios:**
-- [ ] Cada agente retorna JSON válido
-- [ ] `_meta.read_calls` plausível por agente (≤ nº de arquivos da pasta + 1 para AGENTS.md)
-- [ ] `_meta.limit_reached == false` em todos
-- [ ] Nenhum agente retorna `findings: []` de forma suspeita para pasta com problemas óbvios
-- [ ] Wall clock e token delta registrados por agente
+- [ ] Sessão processa cada pasta e produz findings por pasta
+- [ ] Read calls plausíveis por pasta (≤ nº de arquivos + 1 para AGENTS.md)
+- [ ] Nenhuma pasta retorna findings vazios de forma suspeita quando há problemas óbvios
+- [ ] Wall clock e token delta registrados por pasta
+- [ ] Tokens da sessão capturados via JSONL
 
-**Critério de reprovação por agente:** `input_tokens > 30K` | `output_tokens > 2K` | `limit_reached == true`.
-
-**Critério de aprovação:** todos os agentes passam individualmente dentro dos limites.
+**Critérios a serem observados:** input por pasta abaixo de 30K? output por pasta abaixo de 2K? findings coerentes em todas as pastas?
 
 ---
 
-### Eval 8 — Agentes Overlap e Links (era Eval 6)
+### Eval 8 — Verificações cross-folder: sobreposição e links quebrados
 
-- [ ] Agente Overlap retorna JSON válido sem falsos positivos óbvios
-- [ ] Agente Links detecta pelo menos um link quebrado se houver
-- [ ] Ambos retornam `_meta` com `read_calls` plausível e `limit_reached == false`
+**Critérios:**
+- [ ] Verificação de sobreposição semântica produz findings sem falsos positivos óbvios
+- [ ] Verificação de wikilinks detecta pelo menos um link quebrado se houver
+- [ ] Read calls plausíveis para varredura cross-folder
+- [ ] Tokens da sessão capturados via JSONL
 
-**Critério de aprovação:** os dois agentes retornam JSON válido dentro dos limites de custo.
-
----
-
-### Eval 9 — Coordenador isolado (era Eval 7)
-
-Alimentado com outputs reais dos Evals 7 e 8.
-
-- [ ] Output é JSON válido com `executive_summary` e `findings`
-- [ ] Campo `correctable` classificado coerentemente
-- [ ] Nenhum finding duplicado
-- [ ] Funciona com input misto (pasta com findings + pasta com `findings: []`)
-
-**Critério de aprovação:** JSON válido, sem duplicatas.
+**Critérios a serem observados:** findings de sobreposição coerentes? links quebrados detectados corretamente? custo dentro do esperado?
 
 ---
 
-### Eval 10 — Agente Corretor (era Eval 8)
+### ~~Eval 9 — Coordenador isolado~~ — REMOVIDO
+
+Na arquitetura original havia um agente coordenador separado que consolidava os outputs dos agentes de pasta. Na nova arquitetura a sessão principal consolida inline — não existe componente separado a testar isoladamente.
+
+---
+
+### Eval 10 — Correção aplicada corretamente
 
 O maior risco técnico: LLMs normalizam espaços e quebras de linha — se `old_string` não bater exato com o arquivo, a edição falha.
 
 **Primeiro: arquivo sintético**
 Criar `/tmp/eval10-test.md` com 3 linhas e problema conhecido. Verificar que a edição é aplicada antes de tocar em qualquer arquivo real.
 
+**Critérios:**
 - [ ] `old_string` é substring exata do arquivo sintético (verificar com `grep -F`)
 - [ ] Edição aplicada com sucesso no arquivo sintético
-
-**Depois: arquivo real**
 - [ ] Campo `file` usa caminho relativo ao `WIKI_DIR` (ex: `systems/hermes.md`, não absoluto)
 - [ ] Testar com dois findings no mesmo arquivo (ordem de aplicação)
 
-**Critério de aprovação:** edição aplicada sem erro de "old_string não encontrado" nos dois cenários.
+**Critérios a serem observados:** edição aplicou sem erro de "old_string não encontrado" nos dois cenários?
 
 ---
 
-### Eval 11 — Dry-run completo (era Eval 9)
+### Eval 11 — Dry-run completo
 
-Fluxo completo de análise e coordenação, sem aplicar nenhuma edição.
+Fluxo completo de análise, sem aplicar nenhuma edição.
 
-- [ ] Todos os agentes retornam JSON válido em condições reais de paralelismo
-- [ ] Coordenador consolida sem erro
+**Critérios:**
+- [ ] Sessão processa todas as pastas e verificações cross-folder em sequência
+- [ ] Consolidação de findings sem erro
 - [ ] Custo total de tokens dentro do esperado
 - [ ] Resumo executivo chega no Telegram com findings reais
 
-**Critério de aprovação:** resumo executivo no Telegram com findings reais, nenhum erro de JSON.
+**Critérios a serem observados:** findings coerentes? custo compatível com Evals 7 e 8? resumo chegou no Telegram?
 
 ---
 
-### Eval 12 — Run completo real (era Eval 10)
+### Eval 12 — Run completo real
 
 Apenas após todos os evals anteriores passarem e com autorização explícita.
 

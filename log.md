@@ -493,3 +493,11 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Bug: range(0,n,3) capturava linhas sem message.usage — retornava zeros
 - Fix: filtrar linhas com message.usage, deduplicar por chave consecutiva (mesmo padrão v5 do 2-B)
 - Prompt atualizado em "Prompt exato para a próxima sessão"
+
+## [2026-06-29] edit | procedures — revisão geral dos evals 3-12 para nova arquitetura
+- Evals 3 e 4: reescritos para nova arquitetura (sem subagentes)
+- Evals 6, 7, 8, 11: linguagem atualizada (removido "agente/spawn/_meta")
+- Eval 9: marcado como REMOVIDO (coordenador era componente separado, não existe na nova arch)
+- Eval 10: renomeado, checklist consolidado
+- Todas as ocorrências de "Critério de aprovação/reprovação" substituídas por "Critérios a serem observados"
+- Todas as anotações "(era Eval X)" removidas
