@@ -126,7 +126,7 @@ Os gates abaixo substituem as validações opcionais V1–V17. A diferença: sã
 
 ## Gates de validação
 
-### Gate 0 — Contrato de output (zero tokens)
+### Gate 1 — Contrato de output (zero tokens)
 
 Verificação estática antes de qualquer chamada à API.
 
@@ -140,7 +140,7 @@ Verificação estática antes de qualquer chamada à API.
 
 ---
 
-### Gate 1 — Agente de pasta isolado
+### Gate 2 — Agente de pasta isolado
 
 Um único agente, uma pasta, dados reais mínimos. Equivale à validação V2 original.
 
@@ -160,7 +160,7 @@ Um único agente, uma pasta, dados reais mínimos. Equivale à validação V2 or
 
 ---
 
-### Gate 2 — Agentes de pasta em série (não paralelo)
+### Gate 3 — Agentes de pasta em série (não paralelo)
 
 Rodar cada agente de pasta individualmente, em sequência, antes de paralelizar. Coleta relatórios reais.
 
@@ -168,13 +168,13 @@ Rodar cada agente de pasta individualmente, em sequência, antes de paralelizar.
 - [ ] Nenhum agente retorna findings vazios de forma suspeita (pasta com arquivos que claramente têm problemas)
 - [ ] Log mostra tempo e tokens por agente
 
-**Critério de aprovação:** todos os agentes passam no Gate 1 individualmente.
+**Critério de aprovação:** todos os agentes passam no Gate 2 individualmente.
 
 **Custo esperado:** N agentes × (1–3 requests cada), contexto filtrado por pasta.
 
 ---
 
-### Gate 3 — Agentes Overlap e Links isolados
+### Gate 4 — Agentes Overlap e Links isolados
 
 Equivale a V3 e V4 originais.
 
@@ -187,7 +187,7 @@ Equivale a V3 e V4 originais.
 
 ---
 
-### Gate 4 — Coordenador isolado
+### Gate 5 — Coordenador isolado
 
 Alimentar o coordenador com outputs reais dos Gates 2 e 3. Equivale a V6 original.
 
@@ -200,9 +200,9 @@ Alimentar o coordenador com outputs reais dos Gates 2 e 3. Equivale a V6 origina
 
 ---
 
-### Gate 5 — Agente Corretor isolado
+### Gate 6 — Agente Corretor isolado
 
-Passar um finding real do Gate 4 e verificar a edição proposta. Equivale a V7 original — o maior risco técnico do script.
+Passar um finding real do Gate 5 e verificar a edição proposta. Equivale a V7 original — o maior risco técnico do script.
 
 - [ ] `old_string` é substring exata do arquivo alvo (verificar com `grep -F`)
 - [ ] `new_string` está correto
@@ -213,7 +213,7 @@ Passar um finding real do Gate 4 e verificar a edição proposta. Equivale a V7 
 
 ---
 
-### Gate 6 — Telegram (já validado)
+### Gate 7 — Telegram (já validado)
 
 V9a, V9b e V9c passaram em 2026-06-28 (3/3, 3/3, 2/2). Revalidar apenas se houver mudança no script de interação Telegram.
 
@@ -223,12 +223,12 @@ V9a, V9b e V9c passaram em 2026-06-28 (3/3, 3/3, 2/2). Revalidar apenas se houve
 
 ---
 
-### Gate 7 — Run completo em dry-run
+### Gate 8 — Run completo em dry-run
 
 Executar Fase 1 + Fase 2 + Fase 3 completas, mas **sem Fase 5** (sem aplicar nenhuma edição).
 
-- [ ] Todos os agentes retornam JSON válido (Gate 1–3 em paralelo agora)
-- [ ] Coordenador consolida sem erro (Gate 4 em condições reais de paralelismo)
+- [ ] Todos os agentes retornam JSON válido (Gate 2–3 em paralelo agora)
+- [ ] Coordenador consolida sem erro (Gate 5 em condições reais de paralelismo)
 - [ ] Log mostra tempo total e estimativa de tokens consumidos
 - [ ] Mensagem Telegram de resumo executivo chega com conteúdo real
 
@@ -238,7 +238,7 @@ Executar Fase 1 + Fase 2 + Fase 3 completas, mas **sem Fase 5** (sem aplicar nen
 
 ---
 
-### Gate 8 — Run completo real
+### Gate 9 — Run completo real
 
 Apenas após todos os gates anteriores passarem. Este é o run que aplica edições na wiki.
 
@@ -253,23 +253,23 @@ Apenas após todos os gates anteriores passarem. Este é o run que aplica ediç�
 
 | Validação original | Gate correspondente | Status |
 |---|---|---|
-| V1 — Fase 1: descoberta dinâmica | Gate 7 (dry-run) | pendente |
-| V2 — Agente de pasta isolado | **Gate 1** | pendente |
-| V3 — Agente Overlap isolado | **Gate 3** | pendente |
-| V4 — Agente Links isolado | **Gate 3** | pendente |
-| V5 — Extração JSON (fallback) | **Gate 0** (estático) + Gate 1 | pendente |
-| V6 — Coordenador isolado | **Gate 4** | pendente |
-| V7 — Agente Corretor isolado | **Gate 5** | pendente |
-| V8 — Telegram: token e chat_id | Gate 6 (pré-requisito) | ✅ |
-| V9 — Telegram: interação completa | **Gate 6** | ✅ |
-| V10 — apply_edit: old_string exato | **Gate 5** | pendente |
-| V11 — Commits por finding | pós-Gate 8 (1º run real) | pendente |
-| V12 — Push final + hook conflict | pós-Gate 8 (1º run real) | pendente |
-| V13 — Execução paralela: recursos | **Gate 7** (dry-run paralelo) | pendente |
-| V14 — Pasta diary/ vazia | Gate 2 (cobertura por série) | pendente |
-| V15 — Timeout Telegram | Gate 6 ou Gate 7 | pendente |
-| V16 — claude CLI: autenticação standalone | **Gate 0** (verificar antes de tudo) | pendente |
-| V17 — Dois findings no mesmo arquivo | **Gate 5** | pendente |
+| V1 — Fase 1: descoberta dinâmica | Gate 8 (dry-run) | pendente |
+| V2 — Agente de pasta isolado | **Gate 2** | pendente |
+| V3 — Agente Overlap isolado | **Gate 4** | pendente |
+| V4 — Agente Links isolado | **Gate 4** | pendente |
+| V5 — Extração JSON (fallback) | **Gate 1** (estático) + Gate 2 | pendente |
+| V6 — Coordenador isolado | **Gate 5** | pendente |
+| V7 — Agente Corretor isolado | **Gate 6** | pendente |
+| V8 — Telegram: token e chat_id | Gate 7 (pré-requisito) | ✅ |
+| V9 — Telegram: interação completa | **Gate 7** | ✅ |
+| V10 — apply_edit: old_string exato | **Gate 6** | pendente |
+| V11 — Commits por finding | pós-Gate 9 (1º run real) | pendente |
+| V12 — Push final + hook conflict | pós-Gate 9 (1º run real) | pendente |
+| V13 — Execução paralela: recursos | **Gate 8** (dry-run paralelo) | pendente |
+| V14 — Pasta diary/ vazia | Gate 3 (cobertura por série) | pendente |
+| V15 — Timeout Telegram | Gate 7 ou Gate 8 | pendente |
+| V16 — claude CLI: autenticação standalone | **Gate 1** (verificar antes de tudo) | pendente |
+| V17 — Dois findings no mesmo arquivo | **Gate 6** | pendente |
 
 ---
 
@@ -287,7 +287,7 @@ Desvantagens:
 - Perde o paralelismo (tempo total maior)
 - O contexto cresce ao longo da sessão (mas de forma linear, não geométrica por 8 subprocessos)
 
-Essa alternativa não é uma decisão tomada — é um design candidato a avaliar se o Gate 1 revelar que o problema de JSON persiste mesmo com prompts corrigidos.
+Essa alternativa não é uma decisão tomada — é um design candidato a avaliar se o Gate 2 revelar que o problema de JSON persiste mesmo com prompts corrigidos.
 
 ---
 
