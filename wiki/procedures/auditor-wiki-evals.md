@@ -582,6 +582,8 @@ Esta seção não tem resultado APROVADO nem REPROVADO. Todas as execuções (v1
 
 **Prompt exato para a próxima sessão (copiar e colar):**
 
+> ⚠️ Copiar o bloco abaixo **sem editar nenhum caractere**. Nas execuções 2ª e 3ª o script chegou corrompido porque foi copiado de fonte externa. A versão correta é esta.
+
 ```
 Eval 2-C — sem subagentes. Execute em sequência sem desviar:
 
@@ -693,7 +695,21 @@ Status final:         aguardando definição do Giovani
 - Sugestão: adicionar `status: draft` após `timestamp:`
 
 **Fix necessário no prompt antes da 4ª execução:**
-Linha com `cc={u.get(",0)}` deve ser `cc={u.get("cache_creation_input_tokens",0)}`
+O script salvo no arquivo (seção "Prompt exato para a próxima sessão") está **correto** — `cache_creation_input_tokens` aparece sem truncamento. A corrupção (`cc={u.get(",0)}`) estava no texto que o usuário copiou de fonte externa, não no arquivo. Na 4ª execução: copiar o prompt diretamente desta seção, sem editar.
+
+**2026-06-29 — 4ª execução — aguardando**
+
+**O que mudou em relação à 3ª execução:**
+- Causa raiz identificada: o usuário copiou uma versão corrompida do prompt (não do arquivo). A seção "Prompt exato" abaixo tem o script correto.
+- Instrução adicionada: copiar o bloco ` ``` ` da seção "Prompt exato" sem editar — nenhum caractere a mais ou a menos.
+- Procedimento reforçado: fechar terminal → reabrir → `/clear` → colar.
+
+**Procedimento:**
+1. Fechar terminal completamente → reabrir
+2. `/clear`
+3. Copiar o bloco de código da seção "Prompt exato para a próxima sessão" (linhas entre os ` ``` `) e colar sem editar
+
+**Resultado:** *(a preencher após execução)*
 
 ---
 

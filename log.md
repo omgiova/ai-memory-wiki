@@ -516,3 +516,8 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Passo 2: SyntaxError no script — chave `cache_creation_input_tokens` truncada no prompt salvo
 - Tokens não capturados — execução incompleta
 - Fix necessário no prompt antes da 4ª execução
+
+## [2026-06-29] edit | procedures — prepara 4ª execução Eval 2-C
+- Causa raiz identificada: usuário copiou versão corrompida do prompt (não do arquivo)
+- Aviso adicionado na seção "Prompt exato" para copiar sem editar
+- 4ª execução placeholder adicionada com procedimento atualizado
