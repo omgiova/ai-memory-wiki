@@ -355,3 +355,10 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Adicionada regra: modelo deve ser declarado explicitamente e exibido no resultado de cada eval
 - Modelo do 2-A: herdou da sessão pai (claude-sonnet-4-6) — não foi declarado explicitamente
 - Timestamp: 2026-06-29T09:16:44-03:00
+
+## [2026-06-29] ingest | /root/eval-2a-runner.md — arquivo runner autocontido para Eval 2-A
+- Criado em /root/ (fora da wiki) para uso em sessão limpa (/clear)
+- Autocontido: instrui Claude a não ler wiki nem outros arquivos
+- Inclui: spawn com model=sonnet explícito, validação via Bash, template de relatório
+- Métrica: subagent_tokens da notificação (não JSONL delta — lição do run anterior)
+- Timestamp: 2026-06-29T09:26:30-03:00
