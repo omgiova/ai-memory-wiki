@@ -284,3 +284,7 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Seção raw/: google-okf-README.md movido para ### raiz (estava incorretamente em ### google-okf/)
 - Seção diary/ renomeada para diario/ com 2 entradas de 2026-06-28 adicionadas
 - Páginas tocadas: index.md
+
+## [2026-06-29] edit | todo — adicionar item prioridade altíssima: corrigir wiki_review pasta diario/
+- Adicionado item 0 no topo das pendências: wiki_review grava em diary/ (errado) em vez de diario/
+- Páginas tocadas: wiki/todo/proximos-passos.md
