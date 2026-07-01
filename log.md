@@ -528,3 +528,7 @@ Registro cronológico de operações na wiki. Append-only — nunca editar entra
 - Passo 2 rodou contra JSONL errado (sessão anterior)
 - Passo 3 não executado — usuário interrompeu
 - Lição registrada: /remote-control não substitui procedimento de sessão limpa
+
+## [2026-07-01] edit | raw — atualização de copies aprovadas em libertas.md
+- Arquivo raw/libertas.md atualizado pelo usuário com copies aprovadas/atualizadas
+- 151 linhas adicionadas, 117 removidas (268 linhas totais modificadas)
